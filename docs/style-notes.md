@@ -30,6 +30,13 @@ review; confirm before promoting it to a rule).
   decoupling drawn next to the pin it serves, related parts grouped, readable net names. (proposed, not yet
   confirmed)
 
+- Engineering notes on the schematic: minimal, high-impact text at the power path input and output, rails and key
+  parts: expected voltage range, rail voltage and tolerance, design max current, worst-case full-scale error,
+  scaling (A per V, A per count), key limits. Every number comes from spec.md or the worst-case analysis report.
+  Instance values sit on the parent sheet next to the block; the reusable sheet carries block notes. (stated, 2026-11-15)
+- Organize notes and circuit areas with drawn rectangles (solid or dashed) carrying a short title, so a reader
+  sees the groups at a glance (e.g. "POWER PATH IN", "CURRENT SENSE", "LOGIC SUPPLY", "SPI / ALERT", "DESIGN
+  VALUES"). Notes sit inside or on the edge of the box they describe. (stated, 2026-11-15)
 - Board-level nets leaving a sheet use LOCAL labels, not global labels. KiCad ERC then flags a local label as
   dangling when its sheet has no component pin and the net has several pins inside a sub-sheet; those errors are
   accepted until the board's connectors/host exist. (stated, 2026-11-15)

@@ -1518,6 +1518,144 @@
 			(embedded_fonts no)
 		)
 	)
+	(rectangle
+		(start 55.88 62.23)
+		(end 236.22 86.36)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "0bfeba42-a175-4435-92f0-0272f7f59454")
+	)
+	(rectangle
+		(start 157.48 99.06)
+		(end 236.22 139.7)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "129f4204-8f46-42f9-bb98-0a74b189fc83")
+	)
+	(rectangle
+		(start 55.88 88.9)
+		(end 154.94 149.86)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "999d1253-cb7b-482c-adbe-5e425b88730d")
+	)
+	(text "POWER PATH / CURRENT SENSE"
+		(exclude_from_sim no)
+		(at 57.15 63.5 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "0a348f8f-c9c2-4ad1-a416-6385905fed70")
+	)
+	(text "INA229 MONITOR"
+		(exclude_from_sim no)
+		(at 57.15 90.17 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "6c44c74f-5b3e-47f9-a6cc-91186a86319f")
+	)
+	(text "33 ohm MISO source term.\n(placeholder, R_out TBD)"
+		(exclude_from_sim no)
+		(at 206.12 109.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "836fb7ea-0043-4953-ae1b-419c00a81694")
+	)
+	(text "High-side path, + current\nBUS_IN -> BUS_OUT, <= 40 V"
+		(exclude_from_sim no)
+		(at 82.55 72.39 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "92e935d6-4b0c-4731-8521-449c59e7ad3f")
+	)
+	(text "ALERT_N pull-up;\nDNP if host pulls up"
+		(exclude_from_sim no)
+		(at 206.12 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a55b9bae-f20e-408c-8b62-a01201f62704")
+	)
+	(text "Rshunt 25 mohm +/-0.5 %\nKelvin E1/E2 -> IN+/IN-\n5 A FS: 125.8 mV max\n(ADC range 163.84 mV)"
+		(exclude_from_sim no)
+		(at 151.13 75.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c44bc510-2ee2-4deb-8f9e-60ae185e31d5")
+	)
+	(text "U1 VBUS (pin 8)\n= BUS_OUT, load side"
+		(exclude_from_sim no)
+		(at 81.28 128 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right top)
+		)
+		(uuid "c91b0861-1f80-45cc-8280-121a71afcbfd")
+	)
+	(text "SPI / ALERT_N"
+		(exclude_from_sim no)
+		(at 158.75 100.33 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "ca0f260d-7781-4dca-be21-7d8a28b9b2ea")
+	)
+	(text "V3V3: 3.3 V +/-3 %\n(INA229 VS 2.7-5.5 V)\nC1 100 nF at VS"
+		(exclude_from_sim no)
+		(at 58.42 94 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "fbd6fcf9-6272-49cf-96dd-75fc5b425710")
+	)
 	(junction
 		(at 162.56 129.54)
 		(diameter 0)
