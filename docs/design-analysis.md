@@ -11,11 +11,12 @@ High-side current sense: 6 A bidirectional full scale, bus 12 to 40 V, TA 0 to 7
 ## Operating conditions and assumptions
 
 - Full scale: 6 A, bidirectional (designer choice 2026-11-15). Bus 12 to 40 V DC, high-side.
-- Accuracy requirement: +/-1 % of reading at 6 A full scale (designer requirement 2026-11-15), judged on the self-heated worst case (ESTIMATE). The 100 mA error is REPORT ONLY.
+- Accuracy requirement: +/-1 % of reading at 6 A full scale (designer requirement 2026-11-15), judged on the BOL CALIBRATED self-heated worst case (ESTIMATE). The uncalibrated BOL error is reported, not judged. The 100 mA error is REPORT ONLY.
 - TA 0 to 70 degC (board ambient); nominal (typ) reference 25 degC.
 - VS = 3.3 V +/-3 %, one rail shared by the host and the INA229.
 - Derate = 1. Shunt TCR reference temperature 25 degC (the WSK2512 DS states none; assumed).
 - Self-heating is an ESTIMATE from the shunt derating curve (theta_est, section 3).
+- Production: one-point gain calibration at 6 A and 25 degC ambient (ASSUMPTION, `CAL_TA`), reference +/-0.1 % of reading (design input). Solder-heat shift: qualification test limit, used as a bound.
 - Element temperature limit 170 degC is an ASSUMPTION (`T_ELEM_LIMIT`), not t_oper.
 - Ambient full-scale error uses 2 interior samples per input (quadratic in TA); the self-heated band is multilinear in its two temperatures, so corners are exact (section 5).
 - MISO series resistor 33 ohm (placeholder), ALERT_N pull-up 10 kohm (spec.md).
@@ -24,7 +25,7 @@ Conventions: PASS / FAIL against a datasheet, spec.md or the designer's requirem
 
 ## Contents
 
-Design definition; summary; 1 shunt operating point; 2 shunt power and rating; 3 shunt self-heating (estimate); 4 firmware constants; 5 full-scale current error; 6 error vs current; 7 bus-voltage error; 8 power measurement error; 9 INA229 junction temperature (estimate); 10 quiescent current and power budget; 11 ratings; 12 MISO; 13 limits.
+Design definition; summary; 1 shunt operating point; 2 shunt power and rating; 3 shunt self-heating (estimate); 4 firmware constants; 5 full-scale current error (pre-solder reference); 5b BOL accuracy, uncalibrated and calibrated (judged, stack-up); 6 error vs current; 7 bus-voltage error; 8 power measurement error; 9 INA229 junction temperature (estimate); 10 quiescent current and power budget; 11 ratings; 12 MISO; 13 limits.
 
 ## Design definition
 
@@ -43,10 +44,11 @@ Design definition; summary; 1 shunt operating point; 2 shunt power and rating; 3
 | Sense voltage headroom (self-heated worst Vsense at 6 A) | 60.47 mV | 163.8 mV (ADCRANGE 0) | 103.4 mV (63.09 %) | PASS |
 | Shunt dissipation at 6 A, 70 degC (ambient rating) | 0.3624 W | 1 W (p70 x derate) | 0.6376 W (63.76 %) | PASS |
 | Shunt element temperature at 6 A, 70 degC (theta_est 100 degC/W, self-consistent) | 106.3 degC | 170 degC (ASSUMED element limit) | 63.72 degC | ESTIMATE, PASS only if element limit = 170 degC (assumption) |
-| Full-scale current error at 6 A, SELF-HEATED (judged) | -0.9246 to +0.9296 % (max 0.930 %) | +/-1 % of reading | +0.070 % of reading | PASS, ESTIMATE |
+| BOL calibrated error at 6 A (REQUIREMENT, judged) | -0.374 to +0.375 % (max 0.375 %) | +/-1 % of reading | +0.625 % of reading | PASS, BOL, self-heated, one-point cal at 6 A / 25 degC |
+| BOL uncalibrated error at 6 A (self-heated, solder-heat limit) | -6.424 to +6.444 % (max 6.444 %) | +/-1 % (not the judged case) | -5.444 % of reading | FAIL (reported; the judged case is calibrated) |
 | Full-scale current error at 6 A, ambient only (reference) | -0.7984 to +0.8018 % (max 0.802 %) | reference only | n/a | REFERENCE (not judged) |
-| Current error at 100 mA, self-heated (report) | -0.9523 to +0.9557 % (max 0.956 %) | none set at 100 mA | n/a | REPORT ONLY (no limit set), ESTIMATE |
-| Current error at 100 mA, ambient only (report) | -0.9522 to +0.9557 % (max 0.956 %) | none set at 100 mA | n/a | REPORT ONLY (no limit set) |
+| BOL calibrated error at 100 mA (report) | -0.587 to +0.590 % (max 0.590 %) | none set at 100 mA | n/a | REPORT ONLY (no limit set) |
+| BOL uncalibrated error at 100 mA (report) | -6.445 to +6.463 % (max 6.463 %) | none set at 100 mA | n/a | REPORT ONLY (no limit set) |
 | Bus-voltage error at 12 V (incl. 1 LSB) | +/-20.4 mV (+/-0.17 %) | none set | n/a | REPORT ONLY (no limit set) |
 | Bus-voltage error at 40 V (incl. 1 LSB) | +/-59.6 mV (+/-0.149 %) | none set | n/a | REPORT ONLY (no limit set) |
 | Power error at 6 A, 12 V (ambient) | -0.967 to +0.9731 % | none set | n/a | REPORT ONLY (no limit set) |
@@ -184,28 +186,136 @@ Typ = all terms at their DS typical value of zero (bound-only rows are centred; 
 
 Sampling check (ambient): the function is quadratic in TA (the shunt TCR times the gain drift), so interior samples are needed. Corners only (samples = 0) give min -0.0478926 A, max 0.0480975 A; with 2 interior samples min -0.0478926 A, max 0.0480975 A. Difference: 0.00e+00 A low side, 0.00e+00 A high side.
 
-**Self-heated ESTIMATE (the judged result).** The shunt element runs from TA 0 degC plus its lowest-R rise to TA 70 degC plus its worst-R rise (self-consistent, section 3). At 6 A the element reaches 106.3 degC at TA 70 degC (rise 36.28 degC), so the shunt TCR is evaluated up to 106.3 degC. The INA229 drift stays at the ambient 0 to 70 degC.
+**Self-heated ESTIMATE, pre-solder (reference, not judged).** The shunt element runs from TA 0 degC plus its lowest-R rise to TA 70 degC plus its worst-R rise (self-consistent, section 3). At 6 A the element reaches 106.3 degC at TA 70 degC (rise 36.28 degC), so the shunt TCR is evaluated up to 106.3 degC. The INA229 drift stays at the ambient 0 to 70 degC.
 
 | Case (6 A) | Min error (A) | Max error (A) | Min (% of reading) | Max (% of reading) | Max magnitude (% of reading) | 1 % check |
 |---|---|---|---|---|---|---|
 | Ambient only (TA 0-70 degC), reference | -0.0479 | 0.04811 | -0.7984 | 0.8018 | 0.8018 | REFERENCE, not judged |
-| With self-heating (ESTIMATE), judged | -0.05547 | 0.05578 | -0.9246 | 0.9296 | 0.9296 | PASS vs 1 % (margin +0.070 %), ESTIMATE |
+| With self-heating, pre-solder (ESTIMATE), reference | -0.05547 | 0.05578 | -0.9246 | 0.9296 | 0.9296 | REFERENCE, not judged (BOL: section 5b) |
 
 Self-heating check: corners only give min -0.0554633 A, max 0.0557658 A; with 2 interior samples min -0.0554633 A, max 0.0557658 A. The function is MULTILINEAR in the shunt and the ambient temperature (separate inputs), so corners are exact, and the interior check agrees.
 
-Result: the self-heated worst case at 6 A is **0.930 %** of reading (ambient reference 0.802 %). Requirement 1 %: **PASS** for the current design. The shunt TCR and the self-heating rise are the terms that move from the ambient to the self-heated case.
+Result: the self-heated worst case at 6 A, before the solder-heat shift, is **0.930 %** of reading (ambient reference 0.802 %). This is a reference only; the judged BOL result (uncalibrated and calibrated, with the solder-heat shift and the one-point calibration) is section 5b. The shunt TCR and the self-heating rise are the terms that move from the ambient to the self-heated case.
 
-## 6. Error spread vs current (100 mA to 6 A)
+## 5b. BOL accuracy, uncalibrated and calibrated (judged)
 
-40 log-spaced points. Each point is the worst-case function of section 5, with the 1 LSB term added to min and max. Blue: ambient only (TA 0-70 degC). Orange: with self-heating (ESTIMATE), where the shunt is at its element temperature band. Top: % of reading, with the +/-1 % requirement dotted. Bottom: mA.
+Beginning of life (BOL), self-heated, TA 0 to 70 degC, at 6 A and 100 mA. Every contributor is a library datasheet row (cited) or a design input; the judged total is the worst case over the corners of all inputs together.
+
+**Uncalibrated.** The shunt initial tolerance and the solder-heat shift are worst-case bounds. The solder-heat shift is the qualification TEST LIMIT +/-(0.5 % of R + 0.0005 ohm) (`perf_solder_heat`, `perf_offset_ohm`): for 10 mohm the 0.0005 ohm term alone is 5 %, so the limit is +/-5.50 % of R (+/-0.55 mohm). It is a bound, not a typical value: typical shifts are usually much smaller but are not specified, so they are not used. The element temperature band includes the shift.
+
+**Calibrated (judged).** One-point gain calibration at 6 A and 25 degC ambient (ASSUMPTION: `CAL_TA`), after assembly, against a reference of +/-0.1 % of reading (design input). The gain removes the shunt tolerance, the solder-heat shift, GSERR and the SHUNT_CAL rounding (each scales the whole reading the same way at the cal point; their residual is zero, shown as 'removed' rows). What remains is the reference, the shunt TCR between the operating and the cal element temperature, the INA229 gain and offset drift relative to 25 degC, the offset away from the cal point, and the quantisation of the cal reading and of the operating reading (1 LSB each). Derivation: `fs_cal_error`.
+
+A zero-current offset-only calibration would remove only the offset, which is 0.0017 % of reading at 6 A (1 uV / (10 mohm x 6 A)). It is not what is modelled: the gain calibration at 6 A is.
+
+**Stack-up, BOL UNCALIBRATED, 6 A, self-heated**
+
+| # | Contributor | Source / cite | Min (% of reading) | Max (% of reading) | Magnitude (% of reading) | Worst-case sign handling |
+|---|---|---|---|---|---|---|
+| 1 | Resistance shift at solder heat (qualification test limit) | DS p.3, PERFORMANCE, Resistance to solder heat, TEST LIMITS; DS p.3, PERFORMANCE, TEST LIMITS column, '+ 0.0005 ohm' (all rows) | -5.5 | 5.5 | 5.5 | both signs: max at solder +; min at solder - |
+| 2 | Shunt initial tolerance (code D) | DS p.1, Standard Electrical Specifications, TOL. +/-0.5 % column; DS p.1, Global Part Number Information, tolerance code D = +/-0.5 % | -0.5 | 0.5 | 0.5 | both signs: max at tol +; min at tol - |
+| 3 | Shunt TCR over the self-heated element temperature | DS p.2, Technical Specifications, Temperature coefficient (RESISTOR CHARACTERISTICS), +/-35 for 0.005 ohm to 0.2 ohm | -0.2915 | 0.2915 | 0.2915 | both signs: max at TCR +, element hot; min at TCR -, element hot |
+| 4 | INA229 gain drift over TA 0-70 degC (vs 25 degC) | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error drift GS_DRFT | -0.09 | 0.09 | 0.09 | both signs: max at GS drift +, TA 70; min at GS drift -, TA 70 |
+| 5 | INA229 gain error GSERR (25 degC) | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error GSERR | -0.05 | 0.05 | 0.05 | both signs: max at GSERR +; min at GSERR - |
+| 6 | INA229 offset Vos (larger DS row) | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage Vos, VCM = 48 V | -0.001667 | 0.001667 | 0.001667 | both signs: max at Vos +; min at Vos - |
+| 7 | INA229 offset drift over TA 0-70 degC (vs 25 degC), referred to the shunt | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage drift dVos/dT | -0.00075 | 0.00075 | 0.00075 | both signs: max at dVos +, TA 70; min at dVos -, TA 70 |
+| 8 | 1 LSB of the operating reading (added outside the corner analysis) | `current_lsb`, DS p.30 Eq. 3 | -0.0001907 | 0.0001907 | 0.0001907 | both signs, fixed +/-1 LSB |
+| 9 | SHUNT_CAL integer rounding (register 1500) | `calc.shunt_cal`, DS p.30 Eq. 2 | 0 | 0 | 0 | none (no spread) |
+
+| Total | % of reading | Note |
+|---|---|---|
+| Linear sum, worst case (sum of magnitudes) | 6.434 | a bound, but it adds every contributor's worst side, which cannot all occur together |
+| Judged worst case (corner analysis of all inputs, + 1 LSB) | -6.424 to +6.444 (magnitude 6.444) | THE judged number; cross products included |
+| Linear sum minus judged magnitude | -0.01027 | positive: linear sum is more conservative; negative: cross products add beyond it |
+| RSS, information only (NOT a bound) | 5.531 | root-sum-square of magnitudes; assumes independent contributors |
+
+**Stack-up, BOL CALIBRATED, 6 A, self-heated (judged)**
+
+| # | Contributor | Source / cite | Min (% of reading) | Max (% of reading) | Magnitude (% of reading) | Worst-case sign handling |
+|---|---|---|---|---|---|---|
+| 1 | Shunt TCR: operating element temperature vs the calibration element temperature | DS p.2, Technical Specifications, Temperature coefficient (RESISTOR CHARACTERISTICS), +/-35 for 0.005 ohm to 0.2 ohm; element bands from `rise()` (ESTIMATE) | -0.1734 | 0.1729 | 0.1734 | both signs: max at TCR +, element hot, cal element cold; min at TCR -, element hot, cal element cold |
+| 2 | One-point calibration reference accuracy | design input `CAL_REF_PCT` = +/-0.1 % | -0.1 | 0.1 | 0.1 | both signs: max at ref +; min at ref - |
+| 3 | INA229 gain drift relative to 25 degC | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error drift GS_DRFT | -0.09 | 0.09 | 0.09 | both signs: max at GS drift +, TA 70; min at GS drift -, TA 70 |
+| 4 | INA229 offset drift relative to 25 degC, referred to the shunt | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage drift dVos/dT | -0.00075 | 0.00075 | 0.00075 | both signs: max at dVos +, TA 70; min at dVos -, TA 70 |
+| 5 | 1 LSB quantisation of the reading taken at the cal point | `current_lsb`, DS p.30 Eq. 3 | -0.0001907 | 0.0001907 | 0.0001907 | both signs: max at cal quant -; min at cal quant + |
+| 6 | 1 LSB of the operating reading (added outside the corner analysis) | `current_lsb`, DS p.30 Eq. 3 | -0.0001907 | 0.0001907 | 0.0001907 | both signs, fixed +/-1 LSB |
+| 7 | INA229 offset: not a gain, so its share differs away from the cal point | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage Vos, VCM = 48 V | 0 | 0 | 0 | none (cancels) |
+| 8 | Shunt initial tolerance (removed by the gain) | DS p.1, Standard Electrical Specifications, TOL. +/-0.5 % column; DS p.1, Global Part Number Information, tolerance code D = +/-0.5 % | 0 | 0 | 0 | none (cancels) |
+| 9 | Solder-heat shift (removed by the gain) | DS p.3, PERFORMANCE, Resistance to solder heat, TEST LIMITS; DS p.3, PERFORMANCE, TEST LIMITS column, '+ 0.0005 ohm' (all rows) | 0 | 0 | 0 | none (cancels) |
+| 10 | INA229 gain error GSERR at 25 degC (removed by the gain) | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error GSERR | 0 | 0 | 0 | none (cancels) |
+
+| Total | % of reading | Note |
+|---|---|---|
+| Linear sum, worst case (sum of magnitudes) | 0.3645 | a bound, but it adds every contributor's worst side, which cannot all occur together |
+| Judged worst case (corner analysis of all inputs, + 1 LSB) | -0.3743 to +0.3747 (magnitude 0.3747) | THE judged number; cross products included |
+| Linear sum minus judged magnitude | -0.01025 | positive: linear sum is more conservative; negative: cross products add beyond it |
+| RSS, information only (NOT a bound) | 0.2194 | root-sum-square of magnitudes; assumes independent contributors |
+
+**Stack-up, BOL UNCALIBRATED, 100 mA, self-heated (report only)**
+
+| # | Contributor | Source / cite | Min (% of reading) | Max (% of reading) | Magnitude (% of reading) | Worst-case sign handling |
+|---|---|---|---|---|---|---|
+| 1 | Resistance shift at solder heat (qualification test limit) | DS p.3, PERFORMANCE, Resistance to solder heat, TEST LIMITS; DS p.3, PERFORMANCE, TEST LIMITS column, '+ 0.0005 ohm' (all rows) | -5.5 | 5.5 | 5.5 | both signs: max at solder +; min at solder - |
+| 2 | Shunt initial tolerance (code D) | DS p.1, Standard Electrical Specifications, TOL. +/-0.5 % column; DS p.1, Global Part Number Information, tolerance code D = +/-0.5 % | -0.5 | 0.5 | 0.5 | both signs: max at tol +; min at tol - |
+| 3 | Shunt TCR over the self-heated element temperature | DS p.2, Technical Specifications, Temperature coefficient (RESISTOR CHARACTERISTICS), +/-35 for 0.005 ohm to 0.2 ohm | -0.1575 | 0.1575 | 0.1575 | both signs: max at TCR +, element hot; min at TCR -, element hot |
+| 4 | INA229 offset Vos (larger DS row) | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage Vos, VCM = 48 V | -0.1 | 0.1 | 0.1 | both signs: max at Vos +; min at Vos - |
+| 5 | INA229 gain drift over TA 0-70 degC (vs 25 degC) | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error drift GS_DRFT | -0.09 | 0.09 | 0.09 | both signs: max at GS drift +, TA 70; min at GS drift -, TA 70 |
+| 6 | INA229 gain error GSERR (25 degC) | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error GSERR | -0.05 | 0.05 | 0.05 | both signs: max at GSERR +; min at GSERR - |
+| 7 | INA229 offset drift over TA 0-70 degC (vs 25 degC), referred to the shunt | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage drift dVos/dT | -0.045 | 0.045 | 0.045 | both signs: max at dVos +, TA 70; min at dVos -, TA 70 |
+| 8 | 1 LSB of the operating reading (added outside the corner analysis) | `current_lsb`, DS p.30 Eq. 3 | -0.01144 | 0.01144 | 0.01144 | both signs, fixed +/-1 LSB |
+| 9 | SHUNT_CAL integer rounding (register 1500) | `calc.shunt_cal`, DS p.30 Eq. 2 | 0 | 0 | 0 | none (no spread) |
+
+| Total | % of reading | Note |
+|---|---|---|
+| Linear sum, worst case (sum of magnitudes) | 6.454 | a bound, but it adds every contributor's worst side, which cannot all occur together |
+| Judged worst case (corner analysis of all inputs, + 1 LSB) | -6.445 to +6.463 (magnitude 6.463) | THE judged number; cross products included |
+| Linear sum minus judged magnitude | -0.009409 | positive: linear sum is more conservative; negative: cross products add beyond it |
+| RSS, information only (NOT a bound) | 5.527 | root-sum-square of magnitudes; assumes independent contributors |
+
+**Stack-up, BOL CALIBRATED, 100 mA, self-heated (report only)**
+
+| # | Contributor | Source / cite | Min (% of reading) | Max (% of reading) | Magnitude (% of reading) | Worst-case sign handling |
+|---|---|---|---|---|---|---|
+| 1 | Shunt TCR: operating element temperature vs the calibration element temperature | DS p.2, Technical Specifications, Temperature coefficient (RESISTOR CHARACTERISTICS), +/-35 for 0.005 ohm to 0.2 ohm; element bands from `rise()` (ESTIMATE) | -0.2209 | 0.2215 | 0.2215 | both signs: max at TCR -, element cold, cal element hot; min at TCR +, element cold, cal element hot |
+| 2 | One-point calibration reference accuracy | design input `CAL_REF_PCT` = +/-0.1 % | -0.1 | 0.1 | 0.1 | both signs: max at ref +; min at ref - |
+| 3 | INA229 offset: not a gain, so its share differs away from the cal point | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage Vos, VCM = 48 V | -0.09833 | 0.09833 | 0.09833 | both signs: max at Vos +; min at Vos - |
+| 4 | INA229 gain drift relative to 25 degC | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error drift GS_DRFT | -0.09 | 0.09 | 0.09 | both signs: max at GS drift +, TA 70; min at GS drift -, TA 70 |
+| 5 | INA229 offset drift relative to 25 degC, referred to the shunt | DS p.5, 6.5 Electrical Characteristics, INPUT, Shunt offset voltage drift dVos/dT | -0.045 | 0.045 | 0.045 | both signs: max at dVos +, TA 70; min at dVos -, TA 70 |
+| 6 | 1 LSB of the operating reading (added outside the corner analysis) | `current_lsb`, DS p.30 Eq. 3 | -0.01144 | 0.01144 | 0.01144 | both signs, fixed +/-1 LSB |
+| 7 | 1 LSB quantisation of the reading taken at the cal point | `current_lsb`, DS p.30 Eq. 3 | -0.0001907 | 0.0001907 | 0.0001907 | both signs: max at cal quant -; min at cal quant + |
+| 8 | Shunt initial tolerance (removed by the gain) | DS p.1, Standard Electrical Specifications, TOL. +/-0.5 % column; DS p.1, Global Part Number Information, tolerance code D = +/-0.5 % | 0 | 0 | 0 | none (cancels) |
+| 9 | Solder-heat shift (removed by the gain) | DS p.3, PERFORMANCE, Resistance to solder heat, TEST LIMITS; DS p.3, PERFORMANCE, TEST LIMITS column, '+ 0.0005 ohm' (all rows) | 0 | 0 | 0 | none (cancels) |
+| 10 | INA229 gain error GSERR at 25 degC (removed by the gain) | DS p.5, 6.5 Electrical Characteristics, DC ACCURACY, Shunt voltage gain error GSERR | 0 | 0 | 0 | none (cancels) |
+
+| Total | % of reading | Note |
+|---|---|---|
+| Linear sum, worst case (sum of magnitudes) | 0.5665 | a bound, but it adds every contributor's worst side, which cannot all occur together |
+| Judged worst case (corner analysis of all inputs, + 1 LSB) | -0.5872 to +0.5897 (magnitude 0.5897) | THE judged number; cross products included |
+| Linear sum minus judged magnitude | -0.02316 | positive: linear sum is more conservative; negative: cross products add beyond it |
+| RSS, information only (NOT a bound) | 0.2811 | root-sum-square of magnitudes; assumes independent contributors |
+
+**Judged result (requirement +/-1 % of reading at 6 A, BOL, calibrated, self-heated):** -0.374 to +0.375 %, max magnitude **0.375 %**, **PASS**, margin +0.625 % of reading. Top contributors: Shunt TCR vs cal element T, Cal reference, INA229 gain drift.
+
+Uncalibrated, same case: max magnitude **6.444 %** (min -6.424 %, max +6.444 %): **FAIL** against 1 %, reported and not judged. The uncalibrated error is set by the solder-heat test limit (DS p.3, PERFORMANCE, Resistance to solder heat, TEST LIMITS; DS p.3, PERFORMANCE, TEST LIMITS column, '+ 0.0005 ohm' (all rows)). Top contributors: Solder-heat shift, Shunt tolerance, Shunt TCR, element T.
+
+At 100 mA (REPORT ONLY, no limit set): calibrated max 0.590 % (min -0.587 %, max +0.590 %); uncalibrated max 6.463 %. The calibrated 100 mA error is set by the shunt TCR relative to the cal element temperature and by the offset away from the cal point.
+
+Sampling check (uniform random draws of every input inside its limits, 20000 points, at 6 A): calibrated -0.2815 to +0.2725 % (inside the corner bounds); uncalibrated -6.186 to +6.121 % (inside the corner bounds). The ratio form of the calibrated error is not multilinear, so the corners are checked by sampling.
+
+![Error stack-up](design-analysis/error_stackup.png)
+
+Figure 4a. Contributors, largest first, for uncalibrated and calibrated BOL error at 6 A (top) and 100 mA (bottom). Magnitudes in % of reading; the dotted line is the 1 % requirement (6 A only). Each panel has its own x scale.
+
+## 6. Error vs current (100 mA to 6 A, BOL)
+
+40 log-spaced points, each the worst case over all corners of section 5b with 1 LSB added. Blue: BOL calibrated, self-heated (judged). Orange: BOL uncalibrated, self-heated. Top: the full range, with the uncalibrated band. Bottom: zoom on the calibrated band against the 1 % requirement.
 
 ![INA229 current error](design-analysis/current_error.png)
 
-Figure 4. Full-scale current error vs load current, ambient only and with the self-heating estimate.
+Figure 4. BOL error vs load current: uncalibrated and calibrated, self-heated.
 
-Ambient only: at 0.1 A min -0.952 %, max 0.956 %; at 6 A min -0.798 %, max 0.802 %. With self-heating (ESTIMATE): at 0.1 A min -0.952 %, max 0.956 %; at 6 A min -0.925 %, max 0.93 %. The self-heated band differs only at the high end (the shunt rises 36.3 degC at 6 A and 0.01 degC at 0.1 A).
+Calibrated: at 0.1 A min -0.587 %, max 0.59 %; at 6 A min -0.374 %, max 0.375 %. Uncalibrated: at 0.1 A min -6.44 %, max 6.46 %; at 6 A min -6.42 %, max 6.44 %.
 
-Worst case, self-heated (ESTIMATE): **6 A: 0.930 % of reading (judged vs 1 %: PASS); 100 mA: 0.956 % (REPORT ONLY, no limit set at 100 mA)** (ambient only: 6 A 0.802 %, 100 mA 0.956 %).
+**Judged: BOL calibrated, self-heated, 6 A: 0.375 % of reading (vs 1 %: PASS); 100 mA: 0.590 % (REPORT ONLY, no limit set at 100 mA).** Uncalibrated: 6.444 % at 6 A, 6.463 % at 100 mA (reported, not judged).
 
 ## 7. Bus-voltage worst-case error
 
@@ -347,6 +457,9 @@ The ESD rows (DS p.4 ESD ratings) and the storage temperature are rating-only: t
 - The shunt TCR reference temperature (25 degC) and the TCR validity span are not stated in the WSK2512 DS.
 - Excluded terms: CMRR (`cmrr_full`), INL, DNL, INA229 internal die-temperature effects, PCB and Kelvin trace resistance, the ADC noise, and the 1 LSB term is conservative (a quantizer is +/-0.5 LSB; 1 LSB was requested). SHUNT_CAL rounding is included (section 5). The INA229 POWER register is not used: the power result here is V x I from the measured current and bus voltage.
 - The gain error row (`gserr_25c`) is specified at VCM = 24 V; the bus is 12-40 V (open item).
+- End-of-life (EOL) drift is OUT OF SCOPE for now (open item): load life, thermal shock, high-temperature exposure and bias humidity (test limits +/-(0.5-1 % + 0.0005 ohm), DS p.3) are not analysed. The INA229 has no long-term drift spec.
+- Calibration: the cal ambient (25 degC) and the cal reference (+/-0.1 % of reading) are assumptions / design inputs. A one-point gain calibration at 6 A is modelled; a zero-current offset-only calibration is not.
+- The solder-heat shift is a qualification test limit used as a worst-case bound; typical shifts are not specified and are not used.
 - The shunt rating is a DS rating against ambient at 70 degC; the element temperature is an estimate (section 3).
 - The board's `vsense_max` (60.5 mV, `ina229.zen`) is the self-heated worst Vsense (60.47 mV) rounded up to 0.1 mV. It is a declared value for the rating check, not a measured one.
 

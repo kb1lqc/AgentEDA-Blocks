@@ -10,9 +10,9 @@
   "p_shunt_w": 0.36236983500000003,
   "p_rating_w": 1.0,
   "t_element_c": 106.28292857245117,
-  "err_fs_pct": 0.9296203805653059,
+  "err_fs_pct": 0.3747317080902738,
   "err_fs_ambient_pct": 0.8018165040299504,
-  "err_low_pct": 0.9556886504311558,
+  "err_low_pct": 0.5896661750425802,
   "current_lsb_ua": 11.444091796875,
   "shunt_cal": 1500,
   "a_per_v": 100.0,
@@ -21,6 +21,21 @@
   "vbus_lsb_uv": 195.3125,
   "req_pct": 1.0,
   "req_status": "PASS",
+  "err_fs_cal_pct": 0.3747317080902738,
+  "err_low_cal_pct": 0.5896661750425802,
+  "err_fs_uncal_pct": 6.444358996989719,
+  "err_low_uncal_pct": 6.463390600519259,
+  "cal_ref_pct": 0.1,
+  "top_contrib_fs_cal": [
+    "Shunt TCR vs cal element T",
+    "Cal reference",
+    "INA229 gain drift"
+  ],
+  "top_contrib_fs_uncal": [
+    "Solder-heat shift",
+    "Shunt tolerance",
+    "Shunt TCR, element T"
+  ],
   "text": {
     "i_fs_a": "6 A",
     "rshunt_mohm": "10 mohm",
@@ -33,9 +48,9 @@
     "p_shunt_w": "0.362 W (70 degC)",
     "p_rating_w": "1.000 W",
     "t_element_c": "106.3 degC (ESTIMATE)",
-    "err_fs_pct": "0.930 % (self-heated, ESTIMATE)",
+    "err_fs_pct": "0.375 % (BOL calibrated, self-heated, judged; same as err_fs_cal_pct)",
     "err_fs_ambient_pct": "0.802 %",
-    "err_low_pct": "0.956 % (100 mA, self-heated, report only)",
+    "err_low_pct": "0.590 % (100 mA, BOL calibrated, report only)",
     "current_lsb_ua": "11.4441 uA",
     "shunt_cal": "1500",
     "a_per_v": "100 A/V",
@@ -43,6 +58,13 @@
     "bus_err_12v_mv": "+/-20.4 mV",
     "vbus_lsb_uv": "195.3125 uV",
     "req_pct": "+/-1 % of reading at 6 A",
-    "req_status": "PASS"
+    "req_status": "PASS",
+    "err_fs_cal_pct": "0.375 % (BOL calibrated, judged)",
+    "err_low_cal_pct": "0.590 % (100 mA, BOL calibrated, report only)",
+    "err_fs_uncal_pct": "6.444 % (BOL uncalibrated, reported, FAIL vs 1 %)",
+    "err_low_uncal_pct": "6.463 % (100 mA, BOL uncalibrated, report only)",
+    "cal_ref_pct": "+/-0.1 % of reading (design input)",
+    "top_contrib_fs_cal": "Shunt TCR vs cal element T, Cal reference, INA229 gain drift",
+    "top_contrib_fs_uncal": "Solder-heat shift, Shunt tolerance, Shunt TCR, element T"
   }
 }

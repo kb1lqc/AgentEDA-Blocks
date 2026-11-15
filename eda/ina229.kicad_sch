@@ -316,7 +316,7 @@
 		)
 		(uuid "022ebba2-d96f-49d9-b166-50474a1dcd19")
 	)
-	(text "I error +/-0.93 % at 6 A, +/-0.96 % at 100 mA (self-heated worst case)\nRequirement +/-1 % at 6 A: PASS\nVBUS error +/-59.6 mV at 40 V, +/-20.4 mV at 12 V\nVBUS LSB 195.3 uV/count\nShunt 0.36 W max of 1.0 W; element ~106 C (estimate)\nV3V3 3.3 V +/-3 %, shared with host"
+	(text "I error +/-0.37 % cal, +/-6.44 % uncal at 6 A (BOL worst case)\nRequirement +/-1 % at 6 A, 1-point cal (ref +/-0.1 %): PASS\nVBUS error +/-59.6 mV at 40 V, +/-20.4 mV at 12 V\nVBUS LSB 195.3 uV/count\nShunt 0.36 W max of 1.0 W; element ~106 C (estimate)\nV3V3 3.3 V +/-3 %, shared with host"
 		(exclude_from_sim no)
 		(at 152.4 143.54 0)
 		(effects

@@ -21,8 +21,10 @@
 
 # %%
 import datetime
+import itertools
 import json
 import math
+import random
 from pathlib import Path
 
 from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.path)
@@ -62,6 +64,9 @@ I_PLOT_LO = 0.1  # A, error chart starts here
 R_MISO = 33.0  # ohm, MISO series resistor: PLACEHOLDER DESIGN CHOICE (open item, section 12)
 R_PULLUP = 10e3  # ohm, ALERT_N pull-up (spec.md block design, DS Fig 8-2); tolerance and TCR come from the library
 ERR_LIMIT_PCT = 1.0  # % of reading at I_MAX: designer requirement 2026-11-15 (+/-1 % of reading, 6 A full scale)
+CAL_REF_PCT = 0.1  # % of reading, one-point calibration reference accuracy (design input, designer 2026-11-15)
+CAL_TA = 25.0  # degC, ASSUMPTION: ambient at the calibration (designer decision 2026-11-15 states 25 degC)
+CAL_I = I_MAX  # A, calibration point: one-point gain calibration at full scale (designer decision 2026-11-15)
 T_ELEM_LIMIT = 170.0  # degC, ASSUMPTION: element limit read as the derating curve's zero point (derate_zero). NOT t_oper,
 # which the library records as an AMBIENT rating
 N_PLOT_PWR = 30  # log-spaced current points for the power-error chart
@@ -593,8 +598,8 @@ md += [
 
 # %% [markdown]
 # ## Full-scale current error at I_MAX (section 5)
-# Two results: the ambient-only result (INA229 and shunt both at TA) for reference, and the self-heated ESTIMATE (shunt
-# at its element temperature), which is the one judged against the 1 % requirement.
+# Two references: the ambient-only result (INA229 and shunt both at TA), and the self-heated ESTIMATE (shunt at its element
+# temperature, datasheet tolerance only, before the solder-heat shift). The judged BOL result is section 5b.
 
 # %%
 VOS_KEY_AMB = worst_fs(R_NOM, code, CAL_GAIN, I_MAX)[0]
@@ -698,7 +703,7 @@ md += [
     f"interior samples min {FS.min:.6g} A, max {FS.max:.6g} A. Difference: {abs(FS.min - FS_CORNERS.min):.2e} A low side, "
     f"{abs(FS.max - FS_CORNERS.max):.2e} A high side.",
     "",
-    f"**Self-heated ESTIMATE (the judged result).** The shunt element runs from TA 0 degC plus its lowest-R rise to TA 70 "
+    f"**Self-heated ESTIMATE, pre-solder (reference, not judged).** The shunt element runs from TA 0 degC plus its lowest-R rise to TA 70 "
     f"degC plus its worst-R rise (self-consistent, section 3). At {I_MAX:g} A the element reaches {T_HOT_5:.4g} degC at TA 70 degC "
     f"(rise {T_RISE_5:.4g} degC), so the shunt TCR is evaluated up to {T_HOT_5:.4g} degC. The INA229 drift stays at the "
     "ambient 0 to 70 degC.",
@@ -708,9 +713,8 @@ md += mdtable([f"Case ({I_MAX:g} A)", "Min error (A)", "Max error (A)", "Min (% 
                "Max magnitude (% of reading)", "1 % check"], [
     ["Ambient only (TA 0-70 degC), reference", f"{FS_MIN:.4g}", f"{FS_MAX:.4g}", pct(FS_MIN / I_MAX),
      pct(FS_MAX / I_MAX), f"{FS_AMB_PCT:.4g}", "REFERENCE, not judged"],
-    ["With self-heating (ESTIMATE), judged", f"{FS_SH_MIN:.4g}", f"{FS_SH_MAX:.4g}", pct(FS_SH_MIN / I_MAX),
-     pct(FS_SH_MAX / I_MAX), f"{FS_SH_PCT:.4g}",
-     f"{err_pf(FS_SH_PCT)} vs {ERR_LIMIT_PCT:g} % (margin {ERR_LIMIT_PCT - FS_SH_PCT:+.3f} %), ESTIMATE"],
+    ["With self-heating, pre-solder (ESTIMATE), reference", f"{FS_SH_MIN:.4g}", f"{FS_SH_MAX:.4g}", pct(FS_SH_MIN / I_MAX),
+     pct(FS_SH_MAX / I_MAX), f"{FS_SH_PCT:.4g}", "REFERENCE, not judged (BOL: section 5b)"],
 ])
 md += [
     "",
@@ -718,92 +722,400 @@ md += [
     f"samples min {FS_SH_CHK.min:.6g} A, max {FS_SH_CHK.max:.6g} A. The function is MULTILINEAR in the shunt and the "
     "ambient temperature (separate inputs), so corners are exact, and the interior check agrees.",
     "",
-    f"Result: the self-heated worst case at {I_MAX:g} A is **{FS_SH_PCT:.3f} %** of reading "
-    f"(ambient reference {FS_AMB_PCT:.3f} %). Requirement {ERR_LIMIT_PCT:g} %: **{err_pf(FS_SH_PCT)}** for the current "
-    "design. The shunt TCR and the self-heating rise are the terms that move from the ambient to the self-heated case.",
+    f"Result: the self-heated worst case at {I_MAX:g} A, before the solder-heat shift, is **{FS_SH_PCT:.3f} %** of reading "
+    f"(ambient reference {FS_AMB_PCT:.3f} %). This is a reference only; the judged BOL result (uncalibrated and calibrated, "
+    "with the solder-heat shift and the one-point calibration) is section 5b. The shunt TCR and the self-heating rise are the "
+    "terms that move from the ambient to the self-heated case.",
     "",
 ]
 
 # %% [markdown]
-# ## Error spread vs current (section 6)
+# ## 5b. BOL accuracy, uncalibrated and calibrated (judged)
+# Beginning of life, self-heated (element band, section 3), TA 0 to 70 degC. UNCALIBRATED: the shunt initial tolerance and
+# the solder-heat shift are both worst-case bounds. CALIBRATED: one-point gain calibration at CAL_I (6 A) and CAL_TA
+# (25 degC) with a reference of +/-CAL_REF_PCT. The calibrated case is the judged one.
 
 # %%
-CURRENTS = [I_PLOT_LO * (I_MAX / I_PLOT_LO) ** (k / (N_PLOT - 1)) for k in range(N_PLOT)]
-lo_a, typ_a, hi_a = [], [], []
-lo_s, hi_s = [], []
-for i_pt in CURRENTS:
-    w = fs_for(R_NOM, code, CAL_GAIN, VOS_KEY_AMB, SAMPLES, i_pt)
-    lo_a.append(w.min - LSB)
-    typ_a.append(w.typ)
-    hi_a.append(w.max + LSB)
-    ws = fs_sh_for(R_NOM, TOL_W, TCR_W, CAL_GAIN, i_pt, VOS_KEY)
-    lo_s.append(ws.min - LSB)
-    hi_s.append(ws.max + LSB)
+SOLDER = shunt.param("perf_solder_heat")  # DS p.3 PERFORMANCE, resistance to solder heat, +/-0.5 % of R (percent)
+OFFSET_P = shunt.param("perf_offset_ohm")  # DS p.3 PERFORMANCE, +0.0005 ohm on every row
+SOLDER_FRAC = max(abs(SOLDER.min), abs(SOLDER.max))  # fraction of R: the library stores the printed % as a fraction (0.005)
+S_MAX = SOLDER_FRAC * R_NOM + OFFSET_P.max  # ohm, test limit +/-(0.5 % of R + 0.0005 ohm)
+S_ABS = Param(min=-S_MAX, max=S_MAX, unit="ohm")  # solder-heat shift of R, absolute
+SOLDER_CITE = f"{cite(SOLDER)}; {cite(OFFSET_P)}"
+VOS_P = ina.param(VOS_KEY_AMB)  # DS p.5 offset row (the one used in section 5)
+ZERO_P = Param(min=0.0, max=0.0, unit="1")
+CAL_REF = Param(min=-CAL_REF_PCT / 100, max=CAL_REF_PCT / 100, unit="1")  # calibration reference, fraction
+Q_CAL = Param(min=-LSB, max=LSB, unit="A")  # 1 LSB quantisation of the reading taken at the cal point
+OFF_FS_PCT = max(abs(VOS_P.min), abs(VOS_P.max)) / (R_NOM * I_MAX) * 100  # % of reading at I_MAX: offset alone
 
-lo_pct = [100 * e / i_pt for e, i_pt in zip(lo_a, CURRENTS)]
-typ_pct = [100 * e / i_pt for e, i_pt in zip(typ_a, CURRENTS)]
-hi_pct = [100 * e / i_pt for e, i_pt in zip(hi_a, CURRENTS)]
-lo_s_pct = [100 * e / i_pt for e, i_pt in zip(lo_s, CURRENTS)]
-hi_s_pct = [100 * e / i_pt for e, i_pt in zip(hi_s, CURRENTS)]
+# %%
+def t_sh_band(i):
+    """ESTIMATE: operating element temperature band (degC) at current i over TA 0 to 70 degC. The solder-heat shift moves
+    the rise (rise scales with R): the low end uses R - S_MAX at TA min, the high end R + S_MAX at TA max."""
+    return Param(min=TA.min + rise(i, R_NOM - S_MAX, TOL_W, TCR_W, TA.min, "lo")[0],
+                 max=TA.max + rise(i, R_NOM + S_MAX, TOL_W, TCR_W, TA.max, "hi")[0], unit="degC")
+
+
+T_CAL = Param(min=CAL_TA + rise(CAL_I, R_NOM - S_MAX, TOL_W, TCR_W, CAL_TA, "lo")[0],
+              max=CAL_TA + rise(CAL_I, R_NOM + S_MAX, TOL_W, TCR_W, CAL_TA, "hi")[0], unit="degC")  # cal element band
+T_CAL_NOM = CAL_TA + rise(CAL_I, R_NOM, ZERO_P, ZERO_P, CAL_TA, "hi")[0]  # nominal cal element temperature (base value)
+
+
+def meas_i(i_true, tau, alpha, s_abs, t_el, t_amb, gserr, gs_drift, vos25, vos_drift, cal_gain=1.0):
+    """Not a DS equation: INA229 current reading (A) before any calibration, for true current i_true. The shunt is
+    resistance_worst(R_NOM, tau, alpha, t_el) + s_abs (initial tolerance, TCR at element temperature t_el, solder-heat
+    shift). The INA229 gain and offset are calc.current_error at ambient t_amb (DS p.5 terms). cal_gain: SHUNT_CAL scale.
+    Returns: A (positive = reads high)."""
+    r_act = shunt.calc.resistance_worst(R_NOM, tau, alpha, t_el, T_REF) + s_abs
+    i_seen = i_true * r_act / R_NOM * cal_gain
+    return i_seen + ina.calc.current_error(i_seen, R_NOM, vos25, vos_drift, gserr, gs_drift, t_amb)
+
+
+def fs_uncal_error(i_true, tau, alpha, s_abs, t_sh, t_amb, gserr, gs_drift, vos25, vos_drift, cal_gain):
+    """Not a DS equation: uncalibrated BOL error (A), measured minus true. No calibration, so every term of meas_i stays.
+    Returns: A (positive = reads high)."""
+    return meas_i(i_true, tau, alpha, s_abs, t_sh, t_amb, gserr, gs_drift, vos25, vos_drift, cal_gain) - i_true
+
+
+def fs_cal_error(i_true, tau, alpha, s_abs, t_cal, t_sh, t_amb, gserr, gs_drift, vos25, vos_drift, e_ref, q_cal):
+    """Not a DS equation: calibrated BOL error (A) after ONE-POINT GAIN calibration at CAL_I and CAL_TA.
+
+    At calibration the unit reads m_cal = meas_i(CAL_I; element t_cal, ambient CAL_TA) + q_cal (q_cal: 1 LSB quantisation
+    of that reading). The reference is CAL_I x (1 + e_ref). One gain k = CAL_I (1 + e_ref) / m_cal is written, so the
+    operating reading is k x meas_i(i_true; element t_sh, ambient t_amb) and the error is that minus i_true.
+
+    What the gain absorbs, exactly: a term that scales the whole reading by the same factor at the cal point is removed.
+    The shunt tolerance, the solder-heat shift, GSERR and the SHUNT_CAL rounding are such terms (they cancel in k x m / i,
+    residual 0). What remains: e_ref; the shunt TCR between the operating element temperature and the cal element
+    temperature (the cal element sits at CAL_TA plus its own rise at CAL_I); the INA229 gain drift relative to CAL_TA
+    (GS_DRFT x (TA - CAL_TA)); the offset drift; and the offset away from the cal point. The offset is NOT a gain: Vos/R
+    adds a fixed current, so its share of the reading is Vos/(i R) at i and Vos/(CAL_I R) at the cal point. The gain
+    fixes only the share at CAL_I, leaving Vos/(i R) - Vos/(CAL_I R) at other currents. Its drift is the offset drift term.
+    The 1 LSB of the operating reading is added outside this function (section 5b totals).
+    Returns: A (positive = reads high)."""
+    m_cal = meas_i(CAL_I, tau, alpha, s_abs, t_cal, CAL_TA, gserr, gs_drift, vos25, vos_drift) + q_cal
+    k = CAL_I * (1.0 + e_ref) / m_cal
+    return k * meas_i(i_true, tau, alpha, s_abs, t_sh, t_amb, gserr, gs_drift, vos25, vos_drift) - i_true
+
+
+BASE_UNCAL = dict(tau=0.0, alpha=0.0, s_abs=0.0, t_sh=T_REF, t_amb=T_REF, gserr=0.0, gs_drift=0.0, vos25=0.0,
+                  vos_drift=0.0, cal_gain=CAL_GAIN)  # every input fixed at its nominal (zero spread)
+BASE_CAL = dict(tau=0.0, alpha=0.0, s_abs=0.0, t_cal=T_CAL_NOM, t_sh=T_CAL_NOM, t_amb=T_REF, gserr=0.0, gs_drift=0.0,
+                vos25=0.0, vos_drift=0.0, e_ref=0.0, q_cal=0.0)
+
+
+def uncal_active(i):
+    """Every uncalibrated input as a Param (the judged total)."""
+    return dict(tau=TOL_W, alpha=TCR_W, s_abs=S_ABS, t_sh=t_sh_band(i), t_amb=TA, gserr=GSERR, gs_drift=GS_DRIFT,
+                vos25=VOS_P, vos_drift=VOS_DRIFT)
+
+
+def cal_active(i):
+    """Every calibrated input as a Param (the judged total). The unit's own tolerance, solder shift and GSERR are included:
+    the corner analysis shows they cancel, rather than assuming it."""
+    return dict(tau=TOL_W, alpha=TCR_W, s_abs=S_ABS, t_cal=T_CAL, t_sh=t_sh_band(i), t_amb=TA, gserr=GSERR,
+                gs_drift=GS_DRIFT, vos25=VOS_P, vos_drift=VOS_DRIFT, e_ref=CAL_REF, q_cal=Q_CAL)
+
+
+def wca_case(fn, i, base, active):
+    """wca of fn at current i: floats from base, Params from active (corners of every Param)."""
+    return wca(fn, unit="A", samples=0, i_true=i, **{**base, **active})
+
+
+def total_uncal(i):
+    return wca_case(fs_uncal_error, i, BASE_UNCAL, uncal_active(i))
+
+
+def total_cal(i):
+    return wca_case(fs_cal_error, i, BASE_CAL, cal_active(i))
+
+
+def judged(w, i):
+    """Judged worst case in % of reading: the corner result plus 1 LSB of the operating reading. Returns (min, max, mag)."""
+    lo = (w.min - LSB) / i * 100
+    hi = (w.max + LSB) / i * 100
+    return lo, hi, max(abs(lo), abs(hi))
+
+
+# Contributor specs: (short label, name, source/cite, active Params for this term alone). Others stay at base.
+def uncal_specs(i):
+    return [
+        ("Shunt tolerance", f"Shunt initial tolerance (code {code})", cite(TOL), dict(tau=TOL_W)),
+        ("Solder-heat shift", "Resistance shift at solder heat (qualification test limit)", SOLDER_CITE,
+         dict(s_abs=S_ABS)),
+        ("Shunt TCR, element T", "Shunt TCR over the self-heated element temperature", cite(TCR),
+         dict(alpha=TCR_W, t_sh=t_sh_band(i))),
+        ("INA229 gain error", "INA229 gain error GSERR (25 degC)", cite(GSERR), dict(gserr=GSERR)),
+        ("INA229 gain drift", "INA229 gain drift over TA 0-70 degC (vs 25 degC)", cite(GS_DRIFT),
+         dict(gs_drift=GS_DRIFT, t_amb=TA)),
+        ("INA229 offset", "INA229 offset Vos (larger DS row)", cite(VOS_P), dict(vos25=VOS_P)),
+        ("INA229 offset drift", "INA229 offset drift over TA 0-70 degC (vs 25 degC), referred to the shunt", cite(VOS_DRIFT),
+         dict(vos_drift=VOS_DRIFT, t_amb=TA)),
+        ("SHUNT_CAL rounding", f"SHUNT_CAL integer rounding (register {SHUNT_CAL})", "`calc.shunt_cal`, DS p.30 Eq. 2",
+         dict()),
+    ]
+
+
+def cal_specs(i):
+    return [
+        ("Cal reference", "One-point calibration reference accuracy", f"design input `CAL_REF_PCT` = +/-{CAL_REF_PCT:g} %",
+         dict(e_ref=CAL_REF)),
+        ("Cal reading quantisation", "1 LSB quantisation of the reading taken at the cal point",
+         "`current_lsb`, DS p.30 Eq. 3", dict(q_cal=Q_CAL)),
+        ("Shunt TCR vs cal element T", "Shunt TCR: operating element temperature vs the calibration element temperature",
+         f"{cite(TCR)}; element bands from `rise()` (ESTIMATE)", dict(alpha=TCR_W, t_sh=t_sh_band(i), t_cal=T_CAL)),
+        ("INA229 gain drift", "INA229 gain drift relative to 25 degC", cite(GS_DRIFT), dict(gs_drift=GS_DRIFT, t_amb=TA)),
+        ("INA229 offset drift", "INA229 offset drift relative to 25 degC, referred to the shunt", cite(VOS_DRIFT),
+         dict(vos_drift=VOS_DRIFT, t_amb=TA)),
+        ("Offset away from cal", "INA229 offset: not a gain, so its share differs away from the cal point", cite(VOS_P),
+         dict(vos25=VOS_P)),
+        ("Shunt tolerance (removed)", "Shunt initial tolerance (removed by the gain)", cite(TOL), dict(tau=TOL_W)),
+        ("Solder-heat shift (removed)", "Solder-heat shift (removed by the gain)", SOLDER_CITE, dict(s_abs=S_ABS)),
+        ("GSERR (removed)", "INA229 gain error GSERR at 25 degC (removed by the gain)", cite(GSERR), dict(gserr=GSERR)),
+    ]
+
+
+LBL = {
+    "tau": ("tol -", "tol +"), "alpha": ("TCR -", "TCR +"), "s_abs": ("solder -", "solder +"),
+    "gserr": ("GSERR -", "GSERR +"), "gs_drift": ("GS drift -", "GS drift +"), "vos25": ("Vos -", "Vos +"),
+    "vos_drift": ("dVos -", "dVos +"), "t_sh": ("element cold", "element hot"), "t_cal": ("cal element cold", "cal element hot"),
+    "t_amb": ("TA 0", "TA 70"), "e_ref": ("ref -", "ref +"), "q_cal": ("cal quant -", "cal quant +"),
+}
+
+
+def sign_text(fn, i, base, active):
+    """Worst-case sign handling of one term: which corner gives its max and min (computed by enumerating its corners)."""
+    names = [n for n, p in active.items() if p.max > p.min]
+    if not names:
+        return "none (no spread)"
+    pts = []
+    for sides in itertools.product((0, 1), repeat=len(names)):
+        kw = {**base, **{n: active[n].min for n in active}}
+        kw.update({n: (active[n].max if s else active[n].min) for n, s in zip(names, sides)})
+        pts.append((fn(i_true=i, **kw), sides))
+    hi_v, hi_s = max(pts, key=lambda p: p[0])
+    lo_v, lo_s = min(pts, key=lambda p: p[0])
+    eps = 1e-12  # A
+    if abs(hi_v) < eps and abs(lo_v) < eps:
+        return "none (cancels)"
+    if lo_v > -eps:
+        return "one-sided, + only"
+    if hi_v < eps:
+        return "one-sided, - only"
+    lab = lambda s: ", ".join(LBL[n][b] for n, b in zip(names, s))
+    return f"both signs: max at {lab(hi_s)}; min at {lab(lo_s)}"
+
+
+def contrib_rows(fn, i, base, specs):
+    """One row per contributor (its own corners only), plus 1 LSB of the operating reading. Sorted largest first."""
+    rows = []
+    for short, name, src, active in specs:
+        w = wca_case(fn, i, base, active)
+        lo, hi = w.min / i * 100, w.max / i * 100
+        lo, hi = (0.0 if abs(x) < 1e-9 else x for x in (lo, hi))  # floating-point noise from cancelling terms
+        rows.append(dict(short=short, name=name, src=src, lo=lo, hi=hi, mag=max(abs(lo), abs(hi)),
+                         sign=sign_text(fn, i, base, active)))
+    rows.append(dict(short="1 LSB (operating)", name="1 LSB of the operating reading (added outside the corner analysis)",
+                     src="`current_lsb`, DS p.30 Eq. 3", lo=-LSB / i * 100, hi=LSB / i * 100, mag=LSB / i * 100,
+                     sign="both signs, fixed +/-1 LSB"))
+    return sorted(rows, key=lambda r: -r["mag"])
+
+
+def stack_md(title, rows, w, i):
+    """Markdown: contributor table (largest first) and the totals block."""
+    lo, hi, jm = judged(w, i)
+    lin = sum(r["mag"] for r in rows)
+    rss = math.sqrt(sum(r["mag"] ** 2 for r in rows))
+    out = [f"**{title}**", ""]
+    out += mdtable(["#", "Contributor", "Source / cite", "Min (% of reading)", "Max (% of reading)",
+                    "Magnitude (% of reading)", "Worst-case sign handling"],
+                   [[k + 1, r["name"], r["src"], f"{r['lo']:.4g}", f"{r['hi']:.4g}", f"{r['mag']:.4g}", r["sign"]]
+                    for k, r in enumerate(rows)])
+    out += [""]
+    out += mdtable(["Total", "% of reading", "Note"], [
+        ["Linear sum, worst case (sum of magnitudes)", f"{lin:.4g}",
+         "a bound, but it adds every contributor's worst side, which cannot all occur together"],
+        ["Judged worst case (corner analysis of all inputs, + 1 LSB)", f"{lo:.4g} to +{hi:.4g} (magnitude {jm:.4g})",
+         "THE judged number; cross products included"],
+        ["Linear sum minus judged magnitude", f"{lin - jm:+.4g}",
+         "positive: linear sum is more conservative; negative: cross products add beyond it"],
+        ["RSS, information only (NOT a bound)", f"{rss:.4g}", "root-sum-square of magnitudes; assumes independent contributors"],
+    ])
+    return out
+
+
+def mc_extremes(fn, i, base, active, n=20000, seed=7):
+    """Sampling check: uniform random draws of every Param inside its min/max. Returns (min, max) of the error (A)."""
+    rng = random.Random(seed)
+    vals = []
+    for _ in range(n):
+        kw = {**base, **{k: rng.uniform(p.min, p.max) for k, p in active.items()}}
+        vals.append(fn(i_true=i, **kw))
+    return min(vals), max(vals)
+
+
+# %%
+UN_FS, UN_LO = total_uncal(I_MAX), total_uncal(I_LOW)
+CA_FS, CA_LO = total_cal(I_MAX), total_cal(I_LOW)
+FS_UN_LO, FS_UN_HI, FS_UNCAL_PCT = judged(UN_FS, I_MAX)
+FS_CAL_LO, FS_CAL_HI, FS_CAL_PCT = judged(CA_FS, I_MAX)
+LO_UN_LO, LO_UN_HI, LO_UNCAL_PCT = judged(UN_LO, I_LOW)
+LO_CAL_LO, LO_CAL_HI, LO_CAL_PCT = judged(CA_LO, I_LOW)
+R_UN_FS = contrib_rows(fs_uncal_error, I_MAX, BASE_UNCAL, uncal_specs(I_MAX))
+R_CA_FS = contrib_rows(fs_cal_error, I_MAX, BASE_CAL, cal_specs(I_MAX))
+R_UN_LO = contrib_rows(fs_uncal_error, I_LOW, BASE_UNCAL, uncal_specs(I_LOW))
+R_CA_LO = contrib_rows(fs_cal_error, I_LOW, BASE_CAL, cal_specs(I_LOW))
+MC_UN = mc_extremes(fs_uncal_error, I_MAX, BASE_UNCAL, uncal_active(I_MAX))
+MC_CA = mc_extremes(fs_cal_error, I_MAX, BASE_CAL, cal_active(I_MAX))
+MC_UN_OK = MC_UN[1] <= UN_FS.max + 1e-15 and MC_UN[0] >= UN_FS.min - 1e-15
+MC_CA_OK = MC_CA[1] <= CA_FS.max + 1e-15 and MC_CA[0] >= CA_FS.min - 1e-15
+TOP_CA_FS = [r["short"] for r in R_CA_FS[:3]]
+TOP_UN_FS = [r["short"] for r in R_UN_FS[:3]]
+FS_CAL_MARGIN = ERR_LIMIT_PCT - FS_CAL_PCT
+
+md += ["## 5b. BOL accuracy, uncalibrated and calibrated (judged)", ""]
+md += [
+    "Beginning of life (BOL), self-heated, TA 0 to 70 degC, at 6 A and 100 mA. Every contributor is a library datasheet "
+    "row (cited) or a design input; the judged total is the worst case over the corners of all inputs together.",
+    "",
+    "**Uncalibrated.** The shunt initial tolerance and the solder-heat shift are worst-case bounds. The solder-heat shift is "
+    "the qualification TEST LIMIT +/-(0.5 % of R + 0.0005 ohm) (`perf_solder_heat`, `perf_offset_ohm`): for 10 mohm the "
+    f"0.0005 ohm term alone is 5 %, so the limit is +/-{S_MAX / R_NOM * 100:.2f} % of R (+/-{S_MAX * 1e3:.3g} mohm). It is a "
+    "bound, not a typical value: typical shifts are usually much smaller but are not specified, so they are not used. The "
+    "element temperature band includes the shift.",
+    "",
+    f"**Calibrated (judged).** One-point gain calibration at {CAL_I:g} A and {CAL_TA:g} degC ambient (ASSUMPTION: "
+    f"`CAL_TA`), after assembly, against a reference of +/-{CAL_REF_PCT:g} % of reading (design input). The gain removes the "
+    "shunt tolerance, the solder-heat shift, GSERR and the SHUNT_CAL rounding (each scales the whole reading the same way at "
+    "the cal point; their residual is zero, shown as 'removed' rows). What remains is the reference, the shunt TCR between "
+    "the operating and the cal element temperature, the INA229 gain and offset drift relative to 25 degC, the offset away "
+    "from the cal point, and the quantisation of the cal reading and of the operating reading (1 LSB each). Derivation: "
+    "`fs_cal_error`.",
+    "",
+    f"A zero-current offset-only calibration would remove only the offset, which is {OFF_FS_PCT:.4f} % of reading at "
+    f"{I_MAX:g} A (1 uV / (10 mohm x 6 A)). It is not what is modelled: the gain calibration at {CAL_I:g} A is.",
+    "",
+]
+md += stack_md(f"Stack-up, BOL UNCALIBRATED, {I_MAX:g} A, self-heated", R_UN_FS, UN_FS, I_MAX)
+md += [""]
+md += stack_md(f"Stack-up, BOL CALIBRATED, {I_MAX:g} A, self-heated (judged)", R_CA_FS, CA_FS, I_MAX)
+md += [""]
+md += stack_md(f"Stack-up, BOL UNCALIBRATED, {I_LOW * 1e3:g} mA, self-heated (report only)", R_UN_LO, UN_LO, I_LOW)
+md += [""]
+md += stack_md(f"Stack-up, BOL CALIBRATED, {I_LOW * 1e3:g} mA, self-heated (report only)", R_CA_LO, CA_LO, I_LOW)
+md += [
+    "",
+    f"**Judged result (requirement +/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A, BOL, calibrated, self-heated):** "
+    f"{FS_CAL_LO:.3f} to +{FS_CAL_HI:.3f} %, max magnitude **{FS_CAL_PCT:.3f} %**, **{err_pf(FS_CAL_PCT)}**, margin "
+    f"{FS_CAL_MARGIN:+.3f} % of reading. Top contributors: {', '.join(TOP_CA_FS)}.",
+    "",
+    f"Uncalibrated, same case: max magnitude **{FS_UNCAL_PCT:.3f} %** (min {FS_UN_LO:.3f} %, max +{FS_UN_HI:.3f} %): "
+    f"**{err_pf(FS_UNCAL_PCT)}** against {ERR_LIMIT_PCT:g} %, reported and not judged. The uncalibrated error is set by the "
+    f"solder-heat test limit ({SOLDER_CITE}). Top contributors: {', '.join(TOP_UN_FS)}.",
+    "",
+    f"At 100 mA (REPORT ONLY, no limit set): calibrated max {LO_CAL_PCT:.3f} % (min {LO_CAL_LO:.3f} %, max "
+    f"+{LO_CAL_HI:.3f} %); uncalibrated max {LO_UNCAL_PCT:.3f} %. The calibrated 100 mA error is set by the shunt TCR "
+    "relative to the cal element temperature and by the offset away from the cal point.",
+    "",
+    f"Sampling check (uniform random draws of every input inside its limits, {20000} points, at {I_MAX:g} A): calibrated "
+    f"{MC_CA[0] / I_MAX * 100:.4f} to +{MC_CA[1] / I_MAX * 100:.4f} % ({'inside' if MC_CA_OK else 'OUTSIDE'} the corner "
+    f"bounds); uncalibrated {MC_UN[0] / I_MAX * 100:.3f} to +{MC_UN[1] / I_MAX * 100:.3f} % "
+    f"({'inside' if MC_UN_OK else 'OUTSIDE'} the corner bounds). The ratio form of the calibrated error is not multilinear, "
+    "so the corners are checked by sampling.",
+    "",
+    "![Error stack-up](design-analysis/error_stackup.png)",
+    "",
+    "Figure 4a. Contributors, largest first, for uncalibrated and calibrated BOL error at 6 A (top) and 100 mA (bottom). "
+    "Magnitudes in % of reading; the dotted line is the 1 % requirement (6 A only). Each panel has its own x scale.",
+    "",
+]
+
+# %%
+fig, axes = plt.subplots(2, 2, figsize=(12.2, 9.4))
+panels = [
+    (axes[0][0], R_UN_FS, ORANGE, f"BOL uncalibrated, {I_MAX:g} A", FS_UNCAL_PCT, True),
+    (axes[0][1], R_CA_FS, BLUE, f"BOL calibrated, {I_MAX:g} A (judged)", FS_CAL_PCT, True),
+    (axes[1][0], R_UN_LO, ORANGE, f"BOL uncalibrated, {I_LOW * 1e3:g} mA", LO_UNCAL_PCT, False),
+    (axes[1][1], R_CA_LO, BLUE, f"BOL calibrated, {I_LOW * 1e3:g} mA", LO_CAL_PCT, False),
+]
+for ax, rows, col, title, jm, is_judged in panels:
+    names = [r["short"] for r in rows][::-1]  # barh plots the first item at the bottom: largest ends on top
+    vals = [r["mag"] for r in rows][::-1]
+    ax.barh(names, vals, color=col, height=0.62)
+    top = max(vals)
+    for y, v in enumerate(vals):
+        ax.text(v + top * 0.012, y, f"{v:.3g}", va="center", fontsize=8, color=INK)
+    ax.axvline(ERR_LIMIT_PCT, color=INK, lw=0.9, ls=(0, (1, 2)))
+    ax.text(ERR_LIMIT_PCT, len(vals) - 0.45, " 1 % requirement", fontsize=7.5, color=INK, va="bottom")
+    ax.set_xlim(0, max(top, ERR_LIMIT_PCT) * 1.32)
+    style_axes(ax, "Magnitude (% of reading)", "")
+    ax.tick_params(axis="y", labelsize=8.5, colors=INK)
+    ax.set_title(f"{title}: worst case {jm:.3g} %" + ("" if is_judged else " (report only)"), color=INK, fontsize=9.5)
+fig.suptitle("INA229 + 10 mohm WSK2512, BOL error stack-up, self-heated, TA 0-70 degC (largest contributor first)",
+             color=INK, fontsize=10.5)
+fig.tight_layout()
+save(fig, "error_stackup.png")
 
 # %% [markdown]
-# ### Chart: current error, ambient and self-heated
+# ## Error vs current (section 6)
 
 # %%
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(9.4, 7.6))
-for ax, sc, unit_lbl in ((ax1, 1.0, "Error (% of reading)"), (ax2, 1e3, "Error (mA)")):
-    ax.fill_between(CURRENTS, [v * sc for v in lo_pct] if sc == 1.0 else [v * sc for v in lo_a],
-                    [v * sc for v in hi_pct] if sc == 1.0 else [v * sc for v in hi_a],
-                    color=BLUE, alpha=0.12, linewidth=0)
-    ax.fill_between(CURRENTS, [v * sc for v in lo_s_pct] if sc == 1.0 else [v * sc for v in lo_s],
-                    [v * sc for v in hi_s_pct] if sc == 1.0 else [v * sc for v in hi_s],
-                    color=ORANGE, alpha=0.12, linewidth=0)
-    ax.plot(CURRENTS, lo_pct if sc == 1.0 else [v * sc for v in lo_a], color=BLUE, lw=1.3, ls="--")
-    ax.plot(CURRENTS, hi_pct if sc == 1.0 else [v * sc for v in hi_a], color=BLUE, lw=1.3)
-    ax.plot(CURRENTS, lo_s_pct if sc == 1.0 else [v * sc for v in lo_s], color=ORANGE, lw=1.3, ls="--")
-    ax.plot(CURRENTS, hi_s_pct if sc == 1.0 else [v * sc for v in hi_s], color=ORANGE, lw=1.3)
-    ax.plot(CURRENTS, typ_pct if sc == 1.0 else [v * sc for v in typ_a], color=INK, lw=1.0)
+CURRENTS = [I_PLOT_LO * (I_MAX / I_PLOT_LO) ** (k / (N_PLOT - 1)) for k in range(N_PLOT)]  # log-spaced, 0.1 to 6 A
+CUR_UN = [total_uncal(i) for i in CURRENTS]
+CUR_CA = [total_cal(i) for i in CURRENTS]
+un_lo_p = [judged(w, i)[0] for w, i in zip(CUR_UN, CURRENTS)]
+un_hi_p = [judged(w, i)[1] for w, i in zip(CUR_UN, CURRENTS)]
+ca_lo_p = [judged(w, i)[0] for w, i in zip(CUR_CA, CURRENTS)]
+ca_hi_p = [judged(w, i)[1] for w, i in zip(CUR_CA, CURRENTS)]
+
+# %%
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(9.4, 7.8))
+for ax in (ax1, ax2):
+    if ax is ax1:  # the uncalibrated band is off the scale of the zoom panel
+        ax.fill_between(CURRENTS, un_lo_p, un_hi_p, color=ORANGE, alpha=0.14, linewidth=0)
+        ax.plot(CURRENTS, un_hi_p, color=ORANGE, lw=1.3)
+        ax.plot(CURRENTS, un_lo_p, color=ORANGE, lw=1.3, ls="--")
+    ax.fill_between(CURRENTS, ca_lo_p, ca_hi_p, color=BLUE, alpha=0.18, linewidth=0)
+    ax.plot(CURRENTS, ca_hi_p, color=BLUE, lw=1.3)
+    ax.plot(CURRENTS, ca_lo_p, color=BLUE, lw=1.3, ls="--")
     ax.axhline(0, color=MUTED, lw=0.6)
-    if sc == 1.0:
-        ax.axhline(ERR_LIMIT_PCT, color=INK, lw=0.9, ls=(0, (1, 2)))
-        ax.axhline(-ERR_LIMIT_PCT, color=INK, lw=0.9, ls=(0, (1, 2)))
+    ax.axhline(ERR_LIMIT_PCT, color=INK, lw=0.9, ls=(0, (1, 2)))
+    ax.axhline(-ERR_LIMIT_PCT, color=INK, lw=0.9, ls=(0, (1, 2)))
     ax.set_xscale("log")
-    style_axes(ax, "Load current (A), log scale", unit_lbl)
-ax1.set_title(f"INA229 + {R_NOM * 1e3:g} mohm WSK2512: full-scale error vs load current, TA 0-70 degC", color=INK,
-              fontsize=10.5)
+    style_axes(ax, "Load current (A), log scale", "Error (% of reading)")
+ax1.set_ylim(-1.12 * max(abs(v) for v in un_lo_p + un_hi_p), 1.12 * max(abs(v) for v in un_lo_p + un_hi_p))
+ax2.set_ylim(-1.3 * ERR_LIMIT_PCT, 1.3 * ERR_LIMIT_PCT)
 handles = [
-    Line2D([], [], color=BLUE, lw=1.3, label="ambient only: max (min dashed)"),
-    Line2D([], [], color=ORANGE, lw=1.3, label="with self-heating, ESTIMATE: max (min dashed)"),
-    Line2D([], [], color=INK, lw=1.0, label="typ (ambient, nominal)"),
-    Line2D([], [], color=INK, lw=0.9, ls=(0, (1, 2)), label=f"+/-{ERR_LIMIT_PCT:g} % requirement"),
+    Line2D([], [], color=ORANGE, lw=1.3, label="BOL uncalibrated, self-heated: max (min dashed)"),
+    Line2D([], [], color=BLUE, lw=1.3, label="BOL calibrated, self-heated (judged): max (min dashed)"),
+    Line2D([], [], color=INK, lw=0.9, ls=(0, (1, 2)), label=f"+/-{ERR_LIMIT_PCT:g} % requirement (6 A)"),
 ]
-ax1.legend(handles=handles, frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1.0), fontsize=8.5,
-           labelcolor=INK)
-ax1.set_ylim(-1.15 * ERR_LIMIT_PCT, 1.15 * ERR_LIMIT_PCT)  # headroom so the +/-1 % lines are not on the frame
-ax1.text(1.01, 0.62, f"at {I_MAX:g} A, max:\n{FS_AMB_PCT:.3f} % ambient\n{FS_SH_PCT:.3f} % self-heated (est.)",
-         transform=ax1.transAxes, fontsize=8.5, color=INK, va="top", ha="left")
+ax1.legend(handles=handles, frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1.0), fontsize=8.5, labelcolor=INK)
+ax1.set_title(f"INA229 + {R_NOM * 1e3:g} mohm WSK2512: BOL error vs load current, TA 0-70 degC", color=INK, fontsize=10.5)
+ax2.set_title("Zoom on the calibrated band (uncalibrated is off this scale)", color=INK, fontsize=9.5)
+ax2.text(CURRENTS[-1], ca_hi_p[-1], f" 6 A: {FS_CAL_LO:.2f} to +{FS_CAL_HI:.2f} %", fontsize=8, color=INK, va="bottom",
+         ha="right")
 ax2.set_xlabel("Load current (A), log scale", color=MUTED)
 fig.tight_layout()
 save(fig, "current_error.png")
 
-md += [f"## 6. Error spread vs current (100 mA to {I_MAX:g} A)", ""]
+md += [f"## 6. Error vs current (100 mA to {I_MAX:g} A, BOL)", ""]
 md += [
-    f"{N_PLOT} log-spaced points. Each point is the worst-case function of section 5, with the 1 LSB term added to min and "
-    "max. Blue: ambient only (TA 0-70 degC). Orange: with self-heating (ESTIMATE), where the shunt is at its element "
-    "temperature band. Top: % of reading, with the +/-1 % requirement dotted. Bottom: mA.",
+    f"{N_PLOT} log-spaced points, each the worst case over all corners of section 5b with 1 LSB added. Blue: BOL calibrated, "
+    "self-heated (judged). Orange: BOL uncalibrated, self-heated. Top: the full range, with the uncalibrated band. Bottom: "
+    "zoom on the calibrated band against the 1 % requirement.",
     "",
     "![INA229 current error](design-analysis/current_error.png)",
     "",
-    "Figure 4. Full-scale current error vs load current, ambient only and with the self-heating estimate.",
+    "Figure 4. BOL error vs load current: uncalibrated and calibrated, self-heated.",
     "",
-    f"Ambient only: at 0.1 A min {lo_pct[0]:.3g} %, max {hi_pct[0]:.3g} %; at {I_MAX:g} A min {lo_pct[-1]:.3g} %, "
-    f"max {hi_pct[-1]:.3g} %. With self-heating (ESTIMATE): at 0.1 A min {lo_s_pct[0]:.3g} %, max {hi_s_pct[0]:.3g} %; "
-    f"at {I_MAX:g} A min {lo_s_pct[-1]:.3g} %, max {hi_s_pct[-1]:.3g} %. The self-heated band differs only at the high end "
-    f"(the shunt rises {T_RISE_5:.3g} degC at {I_MAX:g} A and {T_RISE_LOW:.2g} degC at 0.1 A).",
+    f"Calibrated: at 0.1 A min {ca_lo_p[0]:.3g} %, max {ca_hi_p[0]:.3g} %; at {I_MAX:g} A min {ca_lo_p[-1]:.3g} %, max "
+    f"{ca_hi_p[-1]:.3g} %. Uncalibrated: at 0.1 A min {un_lo_p[0]:.3g} %, max {un_hi_p[0]:.3g} %; at {I_MAX:g} A min "
+    f"{un_lo_p[-1]:.3g} %, max {un_hi_p[-1]:.3g} %.",
     "",
-    f"Worst case, self-heated (ESTIMATE): **{I_MAX:g} A: {FS_SH_PCT:.3f} % of reading (judged vs {ERR_LIMIT_PCT:g} %: "
-    f"{err_pf(FS_SH_PCT)}); 100 mA: {FS_SH_LO01_PCT:.3f} % (REPORT ONLY, no limit set at 100 mA)** (ambient only: {I_MAX:g} A "
-    f"{FS_AMB_PCT:.3f} %, 100 mA {FS_AMB_LO01_PCT:.3f} %).",
+    f"**Judged: BOL calibrated, self-heated, {I_MAX:g} A: {FS_CAL_PCT:.3f} % of reading (vs {ERR_LIMIT_PCT:g} %: "
+    f"{err_pf(FS_CAL_PCT)}); 100 mA: {LO_CAL_PCT:.3f} % (REPORT ONLY, no limit set at 100 mA).** Uncalibrated: "
+    f"{FS_UNCAL_PCT:.3f} % at {I_MAX:g} A, {LO_UNCAL_PCT:.3f} % at 100 mA (reported, not judged).",
     "",
 ]
 
@@ -1323,15 +1635,18 @@ SUMMARY = [
     [f"Shunt element temperature at {I_MAX:g} A, 70 degC (theta_est " f"{THETA:g} degC/W, self-consistent)",
      f"{T_HOT_5:.4g} degC", f"{T_ELEM_LIMIT:g} degC (ASSUMED element limit)", f"{T_MARGIN_5:.4g} degC",
      elem_status(T_MARGIN_5)],
-    [f"Full-scale current error at {I_MAX:g} A, SELF-HEATED (judged)", f"{err_row_val(FS_SH_MIN, FS_SH_MAX, I_MAX)} (max "
-     f"{FS_SH_PCT:.3f} %)", f"+/-{ERR_LIMIT_PCT:g} % of reading", f"{ERR_LIMIT_PCT - FS_SH_PCT:+.3f} % of reading",
-     f"{err_pf(FS_SH_PCT)}, ESTIMATE"],
+    [f"BOL calibrated error at {I_MAX:g} A (REQUIREMENT, judged)", f"{FS_CAL_LO:.3f} to +{FS_CAL_HI:.3f} % (max {FS_CAL_PCT:.3f} %)",
+     f"+/-{ERR_LIMIT_PCT:g} % of reading", f"{FS_CAL_MARGIN:+.3f} % of reading",
+     f"{err_pf(FS_CAL_PCT)}, BOL, self-heated, one-point cal at {I_MAX:g} A / {CAL_TA:g} degC"],
+    [f"BOL uncalibrated error at {I_MAX:g} A (self-heated, solder-heat limit)", f"{FS_UN_LO:.3f} to +{FS_UN_HI:.3f} % (max {FS_UNCAL_PCT:.3f} %)",
+     f"+/-{ERR_LIMIT_PCT:g} % (not the judged case)", f"{ERR_LIMIT_PCT - FS_UNCAL_PCT:+.3f} % of reading",
+     f"{err_pf(FS_UNCAL_PCT)} (reported; the judged case is calibrated)"],
     [f"Full-scale current error at {I_MAX:g} A, ambient only (reference)", err_row_val(FS_MIN, FS_MAX, I_MAX)
      + f" (max {FS_AMB_PCT:.3f} %)", "reference only", "n/a", "REFERENCE (not judged)"],
-    ["Current error at 100 mA, self-heated (report)", err_row_val(FS_SH_LO01_MIN, FS_SH_LO01_MAX, I_LOW)
-     + f" (max {FS_SH_LO01_PCT:.3f} %)", "none set at 100 mA", "n/a", "REPORT ONLY (no limit set), ESTIMATE"],
-    ["Current error at 100 mA, ambient only (report)", err_row_val(FS_AMB_LO01_MIN, FS_AMB_LO01_MAX, I_LOW)
-     + f" (max {FS_AMB_LO01_PCT:.3f} %)", "none set at 100 mA", "n/a", "REPORT ONLY (no limit set)"],
+    [f"BOL calibrated error at {I_LOW * 1e3:g} mA (report)", f"{LO_CAL_LO:.3f} to +{LO_CAL_HI:.3f} % (max {LO_CAL_PCT:.3f} %)",
+     "none set at 100 mA", "n/a", "REPORT ONLY (no limit set)"],
+    [f"BOL uncalibrated error at {I_LOW * 1e3:g} mA (report)", f"{LO_UN_LO:.3f} to +{LO_UN_HI:.3f} % (max {LO_UNCAL_PCT:.3f} %)",
+     "none set at 100 mA", "n/a", "REPORT ONLY (no limit set)"],
     ["Bus-voltage error at 12 V (incl. 1 LSB)", f"+/-{mv(BUS_12)} mV (+/-{pct(BUS_12 / VBUS_LO)} %)",
      "none set", "n/a", "REPORT ONLY (no limit set)"],
     ["Bus-voltage error at 40 V (incl. 1 LSB)", f"+/-{mv(BUS_40)} mV (+/-{pct(BUS_40 / VBUS_HI)} %)",
@@ -1396,6 +1711,12 @@ md += [
     "is included (section 5). The INA229 POWER register is not used: the power result here is V x I from the measured "
     "current and bus voltage.",
     "- The gain error row (`gserr_25c`) is specified at VCM = 24 V; the bus is 12-40 V (open item).",
+    "- End-of-life (EOL) drift is OUT OF SCOPE for now (open item): load life, thermal shock, high-temperature exposure and "
+    "bias humidity (test limits +/-(0.5-1 % + 0.0005 ohm), DS p.3) are not analysed. The INA229 has no long-term drift spec.",
+    "- Calibration: the cal ambient (25 degC) and the cal reference (+/-0.1 % of reading) are assumptions / design inputs. "
+    "A one-point gain calibration at 6 A is modelled; a zero-current offset-only calibration is not.",
+    "- The solder-heat shift is a qualification test limit used as a worst-case bound; typical shifts are not specified and "
+    "are not used.",
     "- The shunt rating is a DS rating against ambient at 70 degC; the element temperature is an estimate (section 3).",
     f"- The board's `vsense_max` ({VSENSE_MAX_MV:.1f} mV, `ina229.zen`) is the self-heated worst Vsense ({mv(VS_SH)} mV) "
     "rounded up to 0.1 mV. It is a declared value for the rating check, not a measured one.",
@@ -1424,11 +1745,14 @@ HEADER = [
     "",
     f"- Full scale: {I_MAX:g} A, bidirectional (designer choice 2026-11-15). Bus {VBUS_LO:g} to {VBUS_HI:g} V DC, high-side.",
     f"- Accuracy requirement: +/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A full scale (designer requirement 2026-11-15), "
-    "judged on the self-heated worst case (ESTIMATE). The 100 mA error is REPORT ONLY.",
+    "judged on the BOL CALIBRATED self-heated worst case (ESTIMATE). The uncalibrated BOL error is reported, not judged. "
+    "The 100 mA error is REPORT ONLY.",
     f"- TA {TA.min:g} to {TA.max:g} degC (board ambient); nominal (typ) reference 25 degC.",
     f"- VS = {VS_NOM:g} V +/-{VS_TOL * 100:g} %, one rail shared by the host and the INA229.",
     f"- Derate = {DERATE:g}. Shunt TCR reference temperature {T_REF:g} degC (the WSK2512 DS states none; assumed).",
     f"- Self-heating is an ESTIMATE from the shunt derating curve (theta_est, section 3).",
+    f"- Production: one-point gain calibration at {CAL_I:g} A and {CAL_TA:g} degC ambient (ASSUMPTION, `CAL_TA`), reference "
+    f"+/-{CAL_REF_PCT:g} % of reading (design input). Solder-heat shift: qualification test limit, used as a bound.",
     f"- Element temperature limit {T_ELEM_LIMIT:g} degC is an ASSUMPTION (`T_ELEM_LIMIT`), not t_oper.",
     f"- Ambient full-scale error uses {SAMPLES} interior samples per input (quadratic in TA); the self-heated band is "
     "multilinear in its two temperatures, so corners are exact (section 5).",
@@ -1441,7 +1765,8 @@ HEADER = [
     "## Contents",
     "",
     "Design definition; summary; 1 shunt operating point; 2 shunt power and rating; 3 shunt self-heating (estimate); "
-    "4 firmware constants; 5 full-scale current error; 6 error vs current; 7 bus-voltage error; 8 power measurement error; "
+    "4 firmware constants; 5 full-scale current error (pre-solder reference); 5b BOL accuracy, uncalibrated and calibrated "
+    "(judged, stack-up); 6 error vs current; 7 bus-voltage error; 8 power measurement error; "
     "9 INA229 junction temperature (estimate); 10 quiescent current and power budget; 11 ratings; 12 MISO; 13 limits.",
     "",
 ]
@@ -1480,9 +1805,9 @@ VALUES = {
     "p_shunt_w": PW.max,
     "p_rating_w": RATED,
     "t_element_c": T_HOT_5,
-    "err_fs_pct": FS_SH_PCT,
+    "err_fs_pct": FS_CAL_PCT,  # the judged BOL calibrated value (was the pre-solder self-heated estimate)
     "err_fs_ambient_pct": FS_AMB_PCT,
-    "err_low_pct": FS_SH_LO01_PCT,
+    "err_low_pct": LO_CAL_PCT,  # BOL calibrated at 100 mA (report only)
     "current_lsb_ua": CURRENT_LSB * 1e6,
     "shunt_cal": SHUNT_CAL,
     "a_per_v": 1 / R_NOM,
@@ -1490,7 +1815,14 @@ VALUES = {
     "bus_err_12v_mv": BUS_12 * 1e3,
     "vbus_lsb_uv": LSB_VBUS * 1e6,
     "req_pct": ERR_LIMIT_PCT,
-    "req_status": err_pf(FS_SH_PCT),
+    "req_status": err_pf(FS_CAL_PCT),
+    "err_fs_cal_pct": FS_CAL_PCT,
+    "err_low_cal_pct": LO_CAL_PCT,
+    "err_fs_uncal_pct": FS_UNCAL_PCT,
+    "err_low_uncal_pct": LO_UNCAL_PCT,
+    "cal_ref_pct": CAL_REF_PCT,
+    "top_contrib_fs_cal": TOP_CA_FS,
+    "top_contrib_fs_uncal": TOP_UN_FS,
 }
 TEXT = {
     "i_fs_a": f"{I_MAX:g} A",
@@ -1504,9 +1836,9 @@ TEXT = {
     "p_shunt_w": f"{PW.max:.3f} W (70 degC)",
     "p_rating_w": f"{RATED:.3f} W",
     "t_element_c": f"{T_HOT_5:.1f} degC (ESTIMATE)",
-    "err_fs_pct": f"{FS_SH_PCT:.3f} % (self-heated, ESTIMATE)",
+    "err_fs_pct": f"{FS_CAL_PCT:.3f} % (BOL calibrated, self-heated, judged; same as err_fs_cal_pct)",
     "err_fs_ambient_pct": f"{FS_AMB_PCT:.3f} %",
-    "err_low_pct": f"{FS_SH_LO01_PCT:.3f} % (100 mA, self-heated, report only)",
+    "err_low_pct": f"{LO_CAL_PCT:.3f} % (100 mA, BOL calibrated, report only)",
     "current_lsb_ua": f"{CURRENT_LSB * 1e6:.4f} uA",
     "shunt_cal": f"{SHUNT_CAL}",
     "a_per_v": f"{1 / R_NOM:g} A/V",
@@ -1514,7 +1846,14 @@ TEXT = {
     "bus_err_12v_mv": f"+/-{BUS_12 * 1e3:.1f} mV",
     "vbus_lsb_uv": f"{LSB_VBUS * 1e6:.4f} uV",
     "req_pct": f"+/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A",
-    "req_status": err_pf(FS_SH_PCT),
+    "req_status": err_pf(FS_CAL_PCT),
+    "err_fs_cal_pct": f"{FS_CAL_PCT:.3f} % (BOL calibrated, judged)",
+    "err_low_cal_pct": f"{LO_CAL_PCT:.3f} % (100 mA, BOL calibrated, report only)",
+    "err_fs_uncal_pct": f"{FS_UNCAL_PCT:.3f} % (BOL uncalibrated, reported, FAIL vs 1 %)",
+    "err_low_uncal_pct": f"{LO_UNCAL_PCT:.3f} % (100 mA, BOL uncalibrated, report only)",
+    "cal_ref_pct": f"+/-{CAL_REF_PCT:g} % of reading (design input)",
+    "top_contrib_fs_cal": ", ".join(TOP_CA_FS),
+    "top_contrib_fs_uncal": ", ".join(TOP_UN_FS),
 }
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 (FIG_DIR / "values.json").write_text(json.dumps({**VALUES, "text": TEXT}, indent=2) + "\n")
@@ -1526,9 +1865,9 @@ print(f"Power worst {PW.max:.4g} W, rated {RATED:.4g} W, margin {PW_MARGIN:.4g} 
 print(f"theta_est {THETA:g} degC/W; element at {I_MAX:g} A, 70 degC {T_HOT_5:.4g} degC (ESTIMATE, residual {T_RESID_5:.1e} degC); "
       f"margin to assumed {T_ELEM_LIMIT:g} degC {T_MARGIN_5:.4g} degC")
 print(f"CURRENT_LSB {CURRENT_LSB:.10g} A/LSB, SHUNT_CAL raw {SHUNT_CAL_RAW:.6f} -> {SHUNT_CAL}")
-print(f"FS error at {I_MAX:g} A, self-heated (judged vs {ERR_LIMIT_PCT:g} %): max {FS_SH_PCT:.3f} % -> {err_pf(FS_SH_PCT)}; "
-      f"ambient reference max {FS_AMB_PCT:.3f} %")
-print(f"Error at {I_LOW:g} A (report only): self-heated max {FS_SH_LO01_PCT:.3f} %, ambient max {FS_AMB_LO01_PCT:.3f} %")
+print(f"BOL calibrated at {I_MAX:g} A (judged vs {ERR_LIMIT_PCT:g} %): max {FS_CAL_PCT:.3f} % -> {err_pf(FS_CAL_PCT)}; "
+      f"uncalibrated max {FS_UNCAL_PCT:.3f} % (reported); pre-solder self-heated reference {FS_SH_PCT:.3f} %")
+print(f"BOL at {I_LOW:g} A (report only): calibrated max {LO_CAL_PCT:.3f} %, uncalibrated max {LO_UNCAL_PCT:.3f} %")
 print(f"Power error at {I_MAX:g} A: 12 V {pct(PW_5[12.0][0])} to +{pct(PW_5[12.0][1])} %, "
       f"40 V {pct(PW_5[40.0][0])} to +{pct(PW_5[40.0][1])} %")
 print(f"INA229 Tj at TA {TA.max:g}: V3V3 only {TJ_V3:.4g} degC, all power {TJ_ALL:.4g} degC (ESTIMATE, typ rtheta_ja)")
