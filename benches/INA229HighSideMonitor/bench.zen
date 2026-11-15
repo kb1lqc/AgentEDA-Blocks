@@ -1,5 +1,7 @@
 """
-ina229: INA229-based 85 V power, energy and charge monitor with SPI.
+Bench board for the INA229HighSideMonitor block: the reference instance (12-40 V high-side bus, 6 A full scale).
+Its gates (build, sync check, ERC) and its arranged sheets are the block's reference; eda/INA.kicad_sch is the
+reference sheet that boards stamp per instance (tools/schematic/stamp_block.py).
 
 Parts come from github.com/kb1lqc/zener-library (see CLAUDE.md). Pass `ambient` and `derate` to every library
 wrapper; an unset ambient reports UNVERIFIED on each part's temperature check.
@@ -8,9 +10,11 @@ wrapper; an unset ambient reports UNVERIFIED on each part's temperature check.
 load("@stdlib/units.zen", "Temperature")
 load("@stdlib/interfaces.zen", "Spi")
 
-INA229HighSideMonitor = Module("./modules/INA229HighSideMonitor.zen")
+INA229HighSideMonitor = Module(
+    "github.com/kb1lqc/circuit-blocks/blocks/INA229HighSideMonitor/INA229HighSideMonitor.zen"
+)
 
-# Board ambient range: 0 to 70 degC, the spec.md requirement (see spec.md, Requirements).
+# Board ambient range: 0 to 70 degC, the block spec.md bench requirement (Requirements).
 ambient = config(
     Temperature, default="273.15K to 343.15K", help="Board ambient temperature range (set in spec.md first)"
 )
@@ -30,14 +34,12 @@ SPI = Spi(
     MISO=Net("SPI_MISO", voltage="0V to 3.399V"),
 )
 
-# Full scale: 6 A bidirectional. Basis: designer choice (2026-11-15); the +/-1 % of reading requirement at 6 A is judged on
-# the self-heated worst case (docs/design-analysis.md, section 5: 0.930 %, PASS).
-# rshunt, rshunt_tol: WSK2512R0100DEA (10 mohm, code D, +/-0.5 %), designer choice 2026-11-15 (docs/design-analysis.md,
-# Design definition). Availability and lifecycle are not checked in the analysis (open item in spec.md).
-# vsense_max: self-heated worst-case Vsense 60.47 mV at 6 A (docs/design-analysis.md, section 1), rounded
-# up to 0.1 mV: 60.5 mV (63.1 % headroom to 163.84 mV). Shunt dissipation
-# 0.362 W vs 1 W rating at 70 degC (section 2); element 106.3 degC at 70 degC
-# (ESTIMATE, section 3).
+# Design inputs and their basis; numbers live in docs/design-analysis.md / values.json next to this file (do not copy them here).
+# Full scale: 6 A bidirectional, designer choice 2026-11-15. The +/-1 % of reading requirement at 6 A is judged on the
+# BOL calibrated, self-heated worst case (docs/design-analysis.md, section 5b; values.json err_fs_cal_pct).
+# rshunt, rshunt_tol: WSK2512R0100DEA (10 mohm, code D, +/-0.5 %), designer choice 2026-11-15 (Design definition).
+# Availability and lifecycle are not checked in the analysis (open item in spec.md).
+# vsense_max: self-heated worst-case Vsense rounded up to 0.1 mV (section 1; values.json vsense_round_up_mv).
 INA = INA229HighSideMonitor(
     name="INA",
     BUS_IN=VBUS_IN,
@@ -54,7 +56,7 @@ INA = INA229HighSideMonitor(
 )
 
 Board(
-    name="ina229",
+    name="INA229HighSideMonitor_bench",
     path="eda",
     layers=4,
     schematic=True,

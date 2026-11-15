@@ -9,8 +9,8 @@
 		(date "2026-11-15")
 		(rev "A")
 		(company "Bryce Salmi Consulting")
-		(comment 1 "github.com/kb1lqc/ina229 @ 6a0152a")
-		(comment 2 "Reusable INA229 high-side monitor: shunt, decoupling, MISO term., ALERT_N pull-up")
+		(comment 1 "github.com/kb1lqc/circuit-blocks: blocks/INA229HighSideMonitor")
+		(comment 2 "Reference sheet: INA229 high-side monitor, on-block shunt, SPI")
 		(comment 3 "Author: Bryce Salmi")
 	)
 	(lib_symbols
@@ -1357,7 +1357,7 @@
 		)
 		(uuid "a55b9bae-f20e-408c-8b62-a01201f62704")
 	)
-	(text "Rshunt 10 mohm +/-0.5 %\nKelvin E1/E2 -> IN+/IN-\n6 A FS: 60.5 mV max\n(ADC range 163.84 mV)"
+	(text "Rshunt set per instance\nKelvin E1/E2 -> IN+/IN-\nVshunt <= 163.84 mV\n(ADCRANGE 0 full scale)"
 		(exclude_from_sim no)
 		(at 151.13 75.9 0)
 		(effects
@@ -1391,7 +1391,7 @@
 		)
 		(uuid "ca0f260d-7781-4dca-be21-7d8a28b9b2ea")
 	)
-	(text "V3V3: 3.3 V +/-3 %\n(INA229 VS 2.7-5.5 V)\nC1 100 nF at VS"
+	(text "V3V3: INA229 VS 2.7-5.5 V\nlogic in <= VS + 0.3 V\nC1 100 nF at VS"
 		(exclude_from_sim no)
 		(at 58.42 94 0)
 		(effects
@@ -1943,7 +1943,7 @@
 			(uuid "9d8b72d1-3ffb-55fe-a3bc-72bce4be552d")
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/8749cfd6-e66f-59fa-961a-8aa97d408460"
 					(reference "C1")
 					(unit 1)
@@ -2058,7 +2058,7 @@
 			(uuid "3f326d13-dbf1-5d1e-ac96-0102c9d7642d")
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/8749cfd6-e66f-59fa-961a-8aa97d408460"
 					(reference "U1")
 					(unit 1)
@@ -2158,7 +2158,7 @@
 			(uuid "bb003482-738c-537d-82fc-4e771d651e8e")
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/8749cfd6-e66f-59fa-961a-8aa97d408460"
 					(reference "R3")
 					(unit 1)
@@ -2253,7 +2253,7 @@
 			(uuid "b547f5d1-3a8e-5da9-8476-b91941fddccf")
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/8749cfd6-e66f-59fa-961a-8aa97d408460"
 					(reference "R1")
 					(unit 1)
@@ -2346,7 +2346,7 @@
 			(uuid "46ed317d-d723-5e28-b3fd-6cba4763eac4")
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/8749cfd6-e66f-59fa-961a-8aa97d408460"
 					(reference "R2")
 					(unit 1)

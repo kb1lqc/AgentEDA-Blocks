@@ -1,18 +1,16 @@
 [workspace]
-repository = "github.com/kb1lqc/ina229"
+repository = "github.com/kb1lqc/circuit-blocks"
 pcb-version = "0.4"
 vendor = ["code.diode.computer/**"]
 
-[board]
-name = "ina229"
-path = "ina229.zen"
-description = "INA229-based 85 V power, energy and charge monitor with SPI."
-
 [dependencies]
-"github.com/kb1lqc/zener-library/components/Murata/GCM188" = "0.2.0"
-"github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF" = "0.3.0"
-"github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS" = "0.1.0"
-"github.com/kb1lqc/zener-library/components/Vishay/WSK2512" = "0.2.0"
+"github.com/kb1lqc/circuit-blocks/blocks/INA229HighSideMonitor" = "0.1.0"
+
+[dependencies.indirect]
+"github.com/kb1lqc/zener-library/components/Murata/GCM188@0.2" = "0.2.0"
+"github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF@0.3" = "0.3.0"
+"github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS@0.1" = "0.1.0"
+"github.com/kb1lqc/zener-library/components/Vishay/WSK2512@0.2" = "0.2.0"
 
 [access]
 allow = ["*"]

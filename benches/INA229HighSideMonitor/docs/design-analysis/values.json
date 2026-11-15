@@ -1,4 +1,6 @@
 {
+  "instance": "INA",
+  "params_file": "benches/INA229HighSideMonitor/params.json",
   "i_fs_a": 6.0,
   "rshunt_mohm": 10.0,
   "tol_pct": 0.5,

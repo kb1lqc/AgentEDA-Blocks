@@ -1,20 +1,22 @@
-# ina229 Design Specification
+# INA229HighSideMonitor block specification
 
 ## Purpose
 
 A reusable **high-side** INA229 current, bus-voltage, power, energy and charge monitor block,
-`INA229HighSideMonitor` (`modules/INA229HighSideMonitor.zen`), with the current-sense shunt on the block, read over
-SPI. This board carries the first instance, on a 12-40 V high-side bus. Other boards drop the block onto a high-side
+`INA229HighSideMonitor` (`blocks/INA229HighSideMonitor/INA229HighSideMonitor.zen`), with the current-sense shunt on the block,
+read over SPI. The bench board (`benches/INA229HighSideMonitor/bench.zen`) carries the reference instance, on a 12-40 V
+high-side bus; its values are the defaults in `benches/INA229HighSideMonitor/params.json`. Other boards drop the block onto a high-side
 power path and change only its configs. Low-side sensing is out of scope (a separate block if ever needed).
 
 Phase: schematic only. No PCB layout work until it is explicitly started.
 
 ## Requirements
 
-Worst-case analysis: `analysis/ina229_block.py` -> `docs/design-analysis.md` and charts in `docs/design-analysis/` and `values.json` (all
+Worst-case analysis: `blocks/INA229HighSideMonitor/analysis.py` (per instance: `--params`, `--out`) -> for the bench,
+`benches/INA229HighSideMonitor/docs/design-analysis.md` and charts and `values.json` in `benches/INA229HighSideMonitor/docs/design-analysis/` (all
 min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
 
-**Operating conditions (first instance)**
+**Operating conditions (bench reference instance; a board sets its own per instance)**
 - Bus: 12 V to 40 V DC, high-side sensing. Shunt in the positive rail.
 - Current: 6 A full scale, bidirectional (designer choice 2026-11-15).
 - Ambient: 0 to 70 degC (board `ambient` config). Derating factor `derate` = 1.0 (none).
@@ -23,7 +25,7 @@ min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl
 - Accuracy: +/-1 % of reading at full scale, BOL, after one-point gain calibration at 6 A / 25 degC with a +/-0.1 %
   reference (designer requirement 2026-11-15), judged on the self-heated worst case.
   Result: -0.374 % to +0.375 % of reading (max 0.375 %). **PASS**, margin 0.625 % of reading (ESTIMATE: shunt
-  self-heating, `docs/design-analysis.md` section 5b).
+  self-heating, `benches/INA229HighSideMonitor/docs/design-analysis.md` section 5b).
 - Production: one-point gain calibration required (at 6 A, 25 degC ambient, reference +/-0.1 % of reading). Without it the
   BOL error is 6.44 % of reading at 6 A (FAIL vs +/-1 %).
 
@@ -55,7 +57,7 @@ min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl
 | Function | Part | Value / choice | Basis |
 |---|---|---|---|
 | Monitor | TI INA229AIDGS | ADCRANGE = 0 (+/-163.84 mV) | DS p.5 |
-| Shunt | Vishay WSK2512R0100DEA | 10 mohm, +/-0.5 % (code D), 1 W, 4-terminal Kelvin | designer choice 2026-11-15; meets +/-1 % at 6 A only after one-point calibration (calibrated 0.375 %, uncalibrated 6.44 %; `docs/design-analysis.md` section 5b) |
+| Shunt | Vishay WSK2512R0100DEA | 10 mohm, +/-0.5 % (code D), 1 W, 4-terminal Kelvin | designer choice 2026-11-15; meets +/-1 % at 6 A only after one-point calibration (calibrated 0.375 %, uncalibrated 6.44 %; `benches/INA229HighSideMonitor/docs/design-analysis.md` section 5b) |
 | VS bypass | Murata GCM188R71H104KA57 | 100 nF X7R 50 V 0603, at pin VS | DS section 9 |
 | MISO termination | Panasonic ERJ-3EKF | 33 ohm 0603, at the INA229 MISO pin | DESIGN CHOICE placeholder (see open items) |
 | ALERT_N pull-up | Panasonic ERJ-3EKF | 10 kohm 0603 to V3V3, DNP-able (`alert_pullup`) | DS Fig 8-2 |
@@ -63,7 +65,7 @@ min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl
 5 parts, 5 BOM lines, all 0603 or larger except the 2512 shunt. No input filter or input protection parts
 (decision; see open items).
 
-**Worst-case results (TA 0-70 degC, 6 A full scale; `docs/design-analysis.md`, numbers in `docs/design-analysis/values.json`)**
+**Worst-case results (TA 0-70 degC, 6 A full scale; `benches/INA229HighSideMonitor/docs/design-analysis.md`, numbers in `benches/INA229HighSideMonitor/docs/design-analysis/values.json`)**
 - Shunt voltage at 6 A, self-heated worst case (ESTIMATE, section 1): 60.47 mV vs 163.84 mV ADC range (ADCRANGE 0):
   103.4 mV headroom (63.1 %). Board `vsense_max` = 60.5 mV (rounded up to 0.1 mV).
 - Shunt power at 6 A, 70 degC: 0.362 W (0.3624 W) vs 1.0 W rating (63.8 % margin, section 2).
@@ -72,8 +74,8 @@ min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl
 - Current error at 6 A, BOL calibrated, self-heated worst case (judged, ESTIMATE): max 0.375 % of reading, PASS vs
   +/-1 %, margin 0.625 %. BOL uncalibrated at 6 A: max 6.44 % (FAIL, reported; the solder-heat test limit alone is
   +/-5.5 % of R). At 100 mA: calibrated max 0.590 %, uncalibrated max 6.46 % (report only, no limit set). Reference
-  (pre-solder, self-heated): 0.930 %; ambient only: 0.802 %. Stack-up and plots: `docs/design-analysis.md` section 5b,
-  `docs/design-analysis/error_stackup.png`, `docs/design-analysis/current_error.png`.
+  (pre-solder, self-heated): 0.930 %; ambient only: 0.802 %. Stack-up and plots: `benches/INA229HighSideMonitor/docs/design-analysis.md` section 5b,
+  `benches/INA229HighSideMonitor/docs/design-analysis/error_stackup.png`, `benches/INA229HighSideMonitor/docs/design-analysis/current_error.png`.
 - Power error at 6 A (V x I, ambient only, report only; section 8): -0.967 % to +0.973 % at 12 V, -0.946 % to +0.952 %
   at 40 V.
 - Bus voltage error (incl. 1 LSB): +/-20.4 mV at 12 V, +/-28.8 mV at 18 V, +/-42.8 mV at 28 V, +/-54.0 mV at 36 V,

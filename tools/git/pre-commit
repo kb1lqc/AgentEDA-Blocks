@@ -4,7 +4,7 @@
 # Runs only when the commit touches the design or the schematic. Bypassing (git commit --no-verify) is not allowed
 # by the repo rules in CLAUDE.md.
 staged=$(git diff --cached --name-only)
-if ! print -r -- "$staged" | grep -qE '\.zen$|^eda/.*\.kicad_(sch|pro)$|^pcb\.toml$'; then
+if ! print -r -- "$staged" | grep -qE '\.zen$|/eda/.*\.kicad_(sch|pro)$|pcb\.toml$|^benches/[^/]+/docs/[^/]+\.pdf$'; then
   exit 0
 fi
 # Check the staged content, not the working tree: stash unstaged changes for the duration.
@@ -14,6 +14,6 @@ tools/schematic/check_sync.sh; rc=$?
 (( stashed )) && git stash pop -q
 if (( rc != 0 )); then
   echo "pre-commit: schematic is out of sync with the .zen source of truth; commit refused."
-  echo "            Fix the .zen (not KiCad), run 'pcb apply schematic --no-open ina229.zen', review, retry."
+  echo "            Fix the .zen (not KiCad), run 'pcb apply schematic --no-open <bench.zen>', review, retry."
   exit 1
 fi

@@ -5,12 +5,12 @@
 	(uuid "513d9cc1-d27a-514d-a37c-2f1ca04dddfa")
 	(paper "A4")
 	(title_block
-		(title "INA229 Power Monitor")
+		(title "INA229HighSideMonitor bench")
 		(date "2026-11-15")
 		(rev "A")
 		(company "Bryce Salmi Consulting")
-		(comment 1 "github.com/kb1lqc/ina229 @ 6a0152a")
-		(comment 2 "Top level: 12-40 V, 6 A high-side power monitor (INA229HighSideMonitor), SPI")
+		(comment 1 "github.com/kb1lqc/circuit-blocks: benches/INA229HighSideMonitor")
+		(comment 2 "Bench: 12-40 V, 6 A high-side reference instance of INA229HighSideMonitor, SPI")
 		(comment 3 "Author: Bryce Salmi")
 	)
 	(lib_symbols
@@ -648,7 +648,7 @@
 			(uuid "5bb9140a-79fd-54bf-8edc-a7f99460feb8")
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa"
 					(reference "#PWR196d45d3b3e25d08a856c563530f2944")
 					(unit 1)
@@ -737,7 +737,7 @@
 			(uuid "8e3bfb76-947d-5afe-b121-943255d98206")
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa"
 					(reference "#PWR5564ae20204a5a5692396a22e4910036")
 					(unit 1)
@@ -873,7 +873,7 @@
 			)
 		)
 		(instances
-			(project "ina229"
+			(project "INA229HighSideMonitor_bench"
 				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa"
 					(page "2")
 				)

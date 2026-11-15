@@ -16,9 +16,11 @@ Instances: U (INA229), SHUNT (WSK2512), C_VS (100 nF decoupling at VS), R_MISO (
 R_ALERT (10 kohm ALERT_N pull-up, DNP when a host or shared wired-OR pull-up is used). Topology does not depend on
 configs: configs change values and dnp only.
 
-Schematic: a sub-sheet (its own page, child file named after the instance, eda/INA.kicad_sch on the board).
+Schematic: a sub-sheet (its own page, child file named after the instance in the board's eda/). The arranged
+reference sheet is benches/INA229HighSideMonitor/eda/INA.kicad_sch; boards stamp it per instance with
+tools/schematic/stamp_block.py.
 
-Values: rshunt comes from analysis/ina229_block.py (worst case over the zener-library limits). The 33 ohm MISO
+Values: rshunt comes from this block's analysis.py, run per instance (worst case over the zener-library limits). The 33 ohm MISO
 termination is a placeholder DESIGN CHOICE (R_out not yet known, see spec.md open items). The 10 kohm ALERT pull-up
 and 100 nF VS decoupling are from DS Fig 8-2 and DS section 9.
 """

@@ -1,17 +1,23 @@
 # %% [markdown]
-# # INA229 + WSK2512 shunt block: design-analysis generator
+# # INA229HighSideMonitor block: design-analysis generator
 #
-# This file is the SOURCE of `docs/design-analysis.md`, the PNG charts in `docs/design-analysis/` and
-# `docs/design-analysis/values.json`. Those outputs are generated: never edit them by hand. Run from the repo root:
+# This file is the SOURCE of `design-analysis.md`, the PNG charts in `design-analysis/` and `design-analysis/values.json`
+# in the output folder. Those outputs are generated: never edit them by hand. One run analyses one instance:
 #
-#     python3 -m analysis.ina229_block        (exit 0 = everything regenerated)
+#     python3 blocks/INA229HighSideMonitor/analysis.py --params <file.json> --out <dir> [--instance NAME]
+#
+# Defaults (resolved from the repo root, so the cwd does not matter): --params benches/INA229HighSideMonitor/params.json,
+# --out benches/INA229HighSideMonitor/docs, --instance INA (the bench reference instance). Exit 0 = everything regenerated.
+# A board runs the same script with its own params file and writes its own output folder per instance.
 #
 # It is a jupytext "percent" file (`# %%` code cells, `# %% [markdown]` text cells), so it opens as a notebook in
-# VS Code / Jupyter and stays a plain runnable module.
+# VS Code / Jupyter and stays a plain runnable module. In a notebook the kernel's own arguments are ignored and the
+# defaults are used (parse_known_args).
 #
-# Scope: the design as it stands. 6 A bidirectional full scale, WSK2512R0100DEA (10 mohm, code D, +/-0.5 %), ADCRANGE 0,
-# bus 12-40 V (high side), TA 0-70 degC, VS 3.3 V +/-3 %. Accuracy requirement: +/-1 % of reading at 6 A (ERR_LIMIT_PCT),
-# judged on the SELF-HEATED worst case. The report analyses this design only.
+# Scope: one instance as set by its params file. The bench reference instance is 6 A bidirectional full scale,
+# WSK2512R0100DEA (10 mohm, code D, +/-0.5 %), ADCRANGE 0, bus 12-40 V (high side), TA 0-70 degC, VS 3.3 V +/-3 %.
+# Accuracy requirement: +/-1 % of reading at 6 A (ERR_LIMIT_PCT), judged on the SELF-HEATED worst case. The report
+# analyses the instance it is given and nothing else.
 # Every datasheet number comes from the component library (`part.param`, `part.inputs`, calc functions). Design choices
 # are the constants in the DESIGN CHOICES cell. Worst case = `lib.wca` over every min/max corner. Where a function is not
 # multilinear in its inputs (the ambient current error is quadratic in TA), wca also samples interior points.
@@ -20,12 +26,31 @@
 # resistance and typical-only datasheet values; every such result is labelled ESTIMATE in the report.
 
 # %%
+import argparse
 import datetime
 import itertools
 import json
 import math
 import random
+import sys
 from pathlib import Path
+
+
+def find_repo_root():
+    """The repo root: the nearest folder above this file (above the cwd in a notebook, which has no __file__) that holds
+    analysis/_zl.py and blocks/. Found this way, the script works from any cwd."""
+    try:
+        start = Path(__file__).resolve().parent
+    except NameError:
+        start = Path.cwd().resolve()
+    for folder in [start, *start.parents]:
+        if (folder / "analysis" / "_zl.py").is_file() and (folder / "blocks").is_dir():
+            return folder
+    raise SystemExit("repo root not found: no analysis/_zl.py and blocks/ above this file or the cwd")
+
+
+REPO = find_repo_root()
+sys.path.insert(0, str(REPO))  # first, so `analysis` is the repo package and not this script's own folder
 
 from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.path)
 from analysis._zl import ZL_VERSION
@@ -34,48 +59,91 @@ from lib import Param, load, wca
 import matplotlib.pyplot as plt  # imported after lib, which selects the Agg backend
 from matplotlib.lines import Line2D
 
-ANALYSIS = Path(__file__).resolve().parent
-DOCS = ANALYSIS.parent / "docs"
-FIG_DIR = DOCS / "design-analysis"  # generated charts (PNG)
+parser = argparse.ArgumentParser(description="INA229HighSideMonitor worst-case analysis for one instance.")
+parser.add_argument("--params", help="instance params JSON (default: benches/INA229HighSideMonitor/params.json)")
+parser.add_argument("--out", help="output folder for design-analysis.md and design-analysis/ "
+                                  "(default: benches/INA229HighSideMonitor/docs)")
+parser.add_argument("--instance", default="INA", help="instance name written to the report and values.json (default: INA)")
+ARGS, _ = parser.parse_known_args()  # known args only: a notebook's own kernel arguments are ignored
+
+PARAMS_PATH = Path(ARGS.params).resolve() if ARGS.params else REPO / "benches" / "INA229HighSideMonitor" / "params.json"
+OUT = Path(ARGS.out).resolve() if ARGS.out else REPO / "benches" / "INA229HighSideMonitor" / "docs"
+INSTANCE = ARGS.instance
+
+
+def rel_to_repo(path):
+    """Path text for the report: relative to the repo root when inside it, else absolute."""
+    try:
+        return str(Path(path).relative_to(REPO))
+    except ValueError:
+        return str(path)
+
+
+PARAMS_REL = rel_to_repo(PARAMS_PATH)
+DOCS = OUT  # output folder: design-analysis.md and design-analysis/ (charts and values.json) go here
+FIG_DIR = DOCS / "design-analysis"  # generated charts (PNG) and values.json
 MD_PATH = DOCS / "design-analysis.md"  # generated report
 RUN_DATE = datetime.date.today().isoformat()
+
+# The instance's design inputs. Every key is required; a missing or unknown key stops the run, so a typo can never fall
+# back to a default. "<key>_basis" entries carry the reason for each value and are not read.
+PARAM_KEYS = {
+    "i_fs_a", "i_low_a", "vbus_lo_v", "vbus_hi_v", "vbus_test_v", "ta_min_c", "ta_typ_c", "ta_max_c", "t_ref_c",
+    "vs_nom_v", "vs_tol_frac", "derate", "r_miso_ohm", "r_alert_pullup_ohm", "err_limit_pct", "cal_ref_pct", "cal_ta_c",
+    "t_elem_limit_c", "adcrange", "rshunt_tol_code", "rshunt_ohm", "vbus_mid_v",
+}
+OPTIONAL_KEYS = {"cal_i_a"}  # null or omitted: the calibration point defaults to i_fs_a (see below)
+
+
+def load_params(path):
+    raw = json.loads(Path(path).read_text())
+    keys = {k for k in raw if not k.endswith("_basis")}
+    missing, extra = (PARAM_KEYS - OPTIONAL_KEYS) - keys, keys - (PARAM_KEYS | OPTIONAL_KEYS)
+    if missing or extra:
+        raise SystemExit(f"{path}: missing keys {sorted(missing)}, unknown keys {sorted(extra)}")
+    return raw
+
+
+P = load_params(PARAMS_PATH)
+if P.get("cal_i_a") is None:
+    CAL_I_SRC = "not set in params (cal_i_a null or omitted): defaults to i_fs_a"
+    P["cal_i_a"] = P["i_fs_a"]
+else:
+    CAL_I_SRC = "set in params (cal_i_a)"
 
 # %% [markdown]
 # ## Design choices
 # Every constant here is a DESIGN CHOICE (not a datasheet value), with the reason beside it.
 
 # %%
-# Designer decision 2026-11-15: 6 A full scale. Basis: designer choice. The accuracy requirement below is judged at
-# this current.
-I_MAX = 6.0  # A, full-scale current, bidirectional
-I_LOW = 0.1  # A, low-current point for the error tables
-VBUS_LO, VBUS_HI = 12.0, 40.0  # V, high-side bus range
-VBUS_TEST = [12.0, 18.0, 28.0, 36.0, 40.0]  # V, bus voltages for the bus-error table (task spec)
-TA = Param(min=0.0, typ=25.0, max=70.0, unit="degC")  # ambient 0-70 degC; typ = 25 degC reference
-T_REF = 25.0  # degC, reference temperature for the shunt TCR (WSK2512 DS states none; assumed 25 degC)
-VS_NOM = 3.3  # V, INA229 supply (shared 3.3 V rail, spec.md)
-VS_TOL = 0.03  # fraction, +/-3 % (spec.md)
+# Instance design inputs, read from the params file P (see PARAM_KEYS above). The reason for each value is the
+# "<key>_basis" entry in that file. Derived values (supply limits) are computed here from the inputs.
+I_MAX = P["i_fs_a"]  # A, full-scale current, bidirectional
+I_LOW = P["i_low_a"]  # A, low-current point for the error tables
+VBUS_LO, VBUS_HI = P["vbus_lo_v"], P["vbus_hi_v"]  # V, high-side bus range
+VBUS_TEST = list(P["vbus_test_v"])  # V, bus voltages for the bus-error table
+TA = Param(min=P["ta_min_c"], typ=P["ta_typ_c"], max=P["ta_max_c"], unit="degC")  # ambient range; typ = 25 degC reference
+T_REF = P["t_ref_c"]  # degC, reference temperature for the shunt TCR
+VS_NOM = P["vs_nom_v"]  # V, INA229 supply
+VS_TOL = P["vs_tol_frac"]  # fraction, supply tolerance
 VS_MAX = VS_NOM * (1 + VS_TOL)  # V, worst supply for supply-side budgets
 VS_MIN = VS_NOM * (1 - VS_TOL)  # V, lowest supply (rating checks use it for the VIO high-level limit)
-DERATE = 1.0  # shunt rating derate (spec.md: no derating)
+DERATE = P["derate"]  # shunt rating derate
 SAMPLES = 2  # interior points per input for the ambient full-scale error (checked against samples = 0 in section 5)
 N_PLOT = 40  # log-spaced current points for the error chart
 I_PLOT_LO = 0.1  # A, error chart starts here
-R_MISO = 33.0  # ohm, MISO series resistor: PLACEHOLDER DESIGN CHOICE (open item, section 12)
-R_PULLUP = 10e3  # ohm, ALERT_N pull-up (spec.md block design, DS Fig 8-2); tolerance and TCR come from the library
-ERR_LIMIT_PCT = 1.0  # % of reading at I_MAX: designer requirement 2026-11-15 (+/-1 % of reading, 6 A full scale)
-CAL_REF_PCT = 0.1  # % of reading, one-point calibration reference accuracy (design input, designer 2026-11-15)
-CAL_TA = 25.0  # degC, ASSUMPTION: ambient at the calibration (designer decision 2026-11-15 states 25 degC)
-CAL_I = I_MAX  # A, calibration point: one-point gain calibration at full scale (designer decision 2026-11-15)
-T_ELEM_LIMIT = 170.0  # degC, ASSUMPTION: element limit read as the derating curve's zero point (derate_zero). NOT t_oper,
-# which the library records as an AMBIENT rating
+R_MISO = P["r_miso_ohm"]  # ohm, MISO series resistor (open item, section 12)
+R_PULLUP = P["r_alert_pullup_ohm"]  # ohm, ALERT_N pull-up; tolerance and TCR come from the library
+ERR_LIMIT_PCT = P["err_limit_pct"]  # % of reading at I_MAX, the accuracy requirement
+CAL_REF_PCT = P["cal_ref_pct"]  # % of reading, one-point calibration reference accuracy
+CAL_TA = P["cal_ta_c"]  # degC, ambient at the calibration
+CAL_I = P["cal_i_a"]  # A, one-point gain calibration point
+T_ELEM_LIMIT = P["t_elem_limit_c"]  # degC, assumed shunt element limit (not t_oper, which is an ambient rating)
 N_PLOT_PWR = 30  # log-spaced current points for the power-error chart
 T_SAMPLES_PWR = 2  # interior ambient points for the joint power error (checked against 9 in section 8)
-# THE design shunt (designer choice 2026-11-15): WSK2512R0100DEA, 10 mohm, tolerance code D (+/-0.5 %), ADCRANGE 0.
-# The board values (ina229.zen: rshunt, rshunt_tol, vsense_max) follow these constants.
-ADCRANGE = 0  # INA229 CONFIG ADCRANGE of the design: 0 = +/-163.84 mV, 1 = +/-40.96 mV
-code = "D"  # WSK2512 tolerance code of the design
-R_NOM = 10.0e-3  # ohm, nominal value of the design
+ADCRANGE = P["adcrange"]  # INA229 CONFIG ADCRANGE of the instance: 0 = +/-163.84 mV, 1 = +/-40.96 mV
+code = P["rshunt_tol_code"]  # WSK2512 tolerance code of the shunt
+R_NOM = P["rshunt_ohm"]  # ohm, nominal value of the shunt
 
 # %% [markdown]
 # ## Library
@@ -358,12 +426,12 @@ md += [
 md += mdtable(["Check", "Vsense at I_MAX (mV)", "Limit (mV)", "Headroom (mV)", "Headroom (% of limit)", "Result"], [
     [f"Self-heated worst case, ESTIMATE (judged)", mv(VS_SH), mv(ADC_LIM[ADCRANGE]), mv(VS_MARGIN),
      pct(VS_MARGIN / ADC_LIM[ADCRANGE]), status(VS_MARGIN)],
-    ["Ambient resistance at TA 70 degC (reference)", mv(VS_AMB), mv(ADC_LIM[ADCRANGE]), mv(ADC_LIM[ADCRANGE] - VS_AMB),
+    [f"Ambient resistance at TA {TA.max:g} degC (reference)", mv(VS_AMB), mv(ADC_LIM[ADCRANGE]), mv(ADC_LIM[ADCRANGE] - VS_AMB),
      pct((ADC_LIM[ADCRANGE] - VS_AMB) / ADC_LIM[ADCRANGE]), status(ADC_LIM[ADCRANGE] - VS_AMB)],
 ])
 md += [
     "",
-    f"Board values (`ina229.zen`): `rshunt=\"{R_NOM * 1e3:g}mohm\"`, `rshunt_tol=\"{code}\"`, "
+    f"Instance configs (`{INSTANCE}`, bench: `benches/INA229HighSideMonitor/bench.zen`): `rshunt=\"{R_NOM * 1e3:g}mohm\"`, `rshunt_tol=\"{code}\"`, "
     f"`vsense_max=\"{VSENSE_MAX_MV:.1f}mV\"`. vsense_max is the self-heated worst Vsense {mv(VS_SH)} mV rounded up to "
     "0.1 mV.",
     "",
@@ -382,7 +450,7 @@ md += [
     "",
 ]
 md += mdtable(["Check", "Worst-case (W)", "Rated (W)", "Margin (W)", "Margin (% of rating)", "Result", "Cite"], [[
-    f"Shunt dissipation at {I_MAX:g} A, 70 degC (ambient rating)", f"{PW.max:.4g}", f"{RATED:.4g}", f"{PW_MARGIN:.4g}",
+    f"Shunt dissipation at {I_MAX:g} A, {TA.max:g} degC (ambient rating)", f"{PW.max:.4g}", f"{RATED:.4g}", f"{PW_MARGIN:.4g}",
     pct(PW_MARGIN / RATED), status(PW_MARGIN), cite(shunt.param("p70")),
 ]])
 md += [
@@ -432,7 +500,7 @@ md += [
     "",
     "![Shunt rated power vs ambient](design-analysis/shunt_rated_power.png)",
     "",
-    f"Figure 1. Derating curve with the {I_MAX:g} A, 70 degC operating point (dissipation at worst R, from section 2).",
+    f"Figure 1. Derating curve with the {I_MAX:g} A, {TA.max:g} degC operating point (dissipation at worst R, from section 2).",
     "",
 ]
 
@@ -451,16 +519,16 @@ md += [
 
 md += ["### 3.3 Shunt temperature vs current (estimate)", ""]
 t_rows = []
-for i_pt in [0.1] + [float(k) for k in range(1, int(I_MAX) + 1)]:
+for i_pt in [I_LOW] + [float(k) for k in range(1, int(I_MAX) + 1)]:
     t70 = t_shunt(i_pt, TA.max)
     t0 = t_shunt(i_pt, TA.min)
     t_rows.append([
         f"{i_pt:g}", f"{p_at(i_pt, TA.min):.4g}", f"{p_at(i_pt, TA.max):.4g}",
         f"{t0 - TA.min:.4g}", f"{t70 - TA.max:.4g}", f"{t0:.4g}", f"{t70:.4g}", f"{T_ELEM_LIMIT - t70:.4g}",
     ])
-md += mdtable(["Current (A)", "Worst P at TA 0 (W)", "Worst P at TA 70 (W)", "Rise at TA 0 (degC)",
-               "Rise at TA 70 (degC)", "T_shunt at TA 0 (estimate, degC)", "T_shunt at TA 70 (estimate, degC)",
-               f"Margin to {T_ELEM_LIMIT:g} degC at TA 70 (degC, assumed limit)"], t_rows)
+md += mdtable(["Current (A)", f"Worst P at TA {TA.min:g} (W)", f"Worst P at TA {TA.max:g} (W)", f"Rise at TA {TA.min:g} (degC)",
+               f"Rise at TA {TA.max:g} (degC)", f"T_shunt at TA {TA.min:g} (estimate, degC)", f"T_shunt at TA {TA.max:g} (estimate, degC)",
+               f"Margin to {T_ELEM_LIMIT:g} degC at TA {TA.max:g} (degC, assumed limit)"], t_rows)
 md += [
     "",
     "Reproduce a row: T_shunt = TA + rise, rise = theta_est x I^2 x R_worst(T_shunt); the 'Worst P' columns are at "
@@ -468,20 +536,20 @@ md += [
     "",
     f"Limits: the element limit used here is **{T_ELEM_LIMIT:g} degC, an ASSUMPTION** (the derating curve's zero point, "
     f"`derate_zero`, read as the element limit). It is NOT `t_oper`: the library records `t_oper` (max {T_OPER_MAX:g} degC, "
-    f"DS p.2) as an AMBIENT operating range, so it is not cited as the element limit. At {I_MAX:g} A and TA 70 degC: "
+    f"DS p.2) as an AMBIENT operating range, so it is not cited as the element limit. At {I_MAX:g} A and TA {TA.max:g} degC: "
     f"T_shunt = {T_HOT_5:.4g} degC (ESTIMATE), margin {T_MARGIN_5:.4g} degC: **{elem_status(T_MARGIN_5)}**. The "
     "estimate depends on theta_est; the copper, the layout and the true element limit are open items.",
     "",
     "![Shunt temperature vs current](design-analysis/shunt_temperature.png)",
     "",
-    "Figure 2. Estimated shunt element temperature vs current at TA 0 and 70 degC (self-consistent, worst-case R), against "
+    f"Figure 2. Estimated shunt element temperature vs current at TA {TA.min:g} and {TA.max:g} degC (self-consistent, worst-case R), against "
     f"the assumed {T_ELEM_LIMIT:g} degC element limit.",
     "",
 ]
 
 md += ["### 3.4 Dissipation vs current and the derated limit at each ambient", ""]
 d_rows = []
-for ta in (0.0, 25.0, 50.0, 70.0):
+for ta in (TA.min, TA.typ, 50.0, TA.max):
     p5 = p_at(I_MAX, ta)
     d_rows.append([f"{ta:g}", f"{rated_at(ta):.4g}", f"{p5:.4g}", f"{rated_at(ta) - p5:.4g}",
                    pct((rated_at(ta) - p5) / rated_at(ta)), status(rated_at(ta) - p5)])
@@ -489,13 +557,13 @@ md += mdtable(["TA (degC)", "Derated limit (W)", "Worst dissipation at full scal
               d_rows)
 md += [
     "",
-    "The limit is flat at p70 x derate below the knee (70 degC), so the 70 degC row is the tightest. Dissipation is "
+    f"The limit is flat at p70 x derate below the knee ({KNEE:g} degC), so the {TA.max:g} degC row is the tightest. Dissipation is "
     "I^2 x R_worst (ambient resistance, rating against ambient, as the DS states).",
     "",
     "![Shunt dissipation vs current](design-analysis/shunt_dissipation.png)",
     "",
-    "Figure 3. Worst-case dissipation vs current at TA 0, 25, 50 and 70 degC, with the derated limit at each ambient. The "
-    "four dissipation curves overlap: the shunt TCR changes R by under 0.3 % across 0-70 degC, far below the scale of the "
+    f"Figure 3. Worst-case dissipation vs current at TA {TA.min:g}, {TA.typ:g}, 50 and {TA.max:g} degC, with the derated limit at each ambient. The "
+    f"four dissipation curves overlap: the shunt TCR changes R by at most {max(abs(TCR.min), abs(TCR.max)) * (TA.max - TA.min) * 100:.2f} % across {TA.min:g}-{TA.max:g} degC, far below the scale of the "
     "chart.",
     "",
 ]
@@ -508,19 +576,19 @@ md += [
 AMB_GRID = [ZERO * k / 170 for k in range(171)]
 fig, ax = plt.subplots(figsize=(7.5, 4.4))
 ax.plot(AMB_GRID, [rated_at(ta) for ta in AMB_GRID], color=BLUE, lw=1.4,
-        label="derated rating (DS p.3 curve; above 70 degC a curve-based estimate)")
+        label=f"derated rating (DS p.3 curve; above {TA.max:g} degC a curve-based estimate)")
 ax.axvline(KNEE, color=MUTED, lw=0.8, ls=":")
 ax.axvline(ZERO, color=MUTED, lw=0.8, ls=":")
 ax.text(KNEE + 2, P70 * 0.04, f"knee {KNEE:g} degC", color=MUTED, fontsize=8)
 ax.text(ZERO - 2, P70 * 0.04, f"0 W at {ZERO:g} degC", color=MUTED, fontsize=8, ha="right")
 ax.scatter([TA.max], [rated_at(TA.max)], color=INK, s=22, zorder=5,
-           label=f"rating at 70 degC: {rated_at(TA.max):.3g} W")
+           label=f"rating at {TA.max:g} degC: {rated_at(TA.max):.3g} W")
 ax.scatter([TA.max], [p_at(I_MAX, TA.max)], color=ORANGE, s=34, zorder=6,
-           label=f"operating point: {I_MAX:g} A dissipation at 70 degC, {p_at(I_MAX, TA.max):.3g} W")
+           label=f"operating point: {I_MAX:g} A dissipation at {TA.max:g} degC, {p_at(I_MAX, TA.max):.3g} W")
 style_axes(ax, "Ambient temperature (degC)", "Rated power (W)")
 ax.set_xlim(0, ZERO + 5)
 ax.set_ylim(0, P70 * 1.2)
-ax.set_title("WSK2512 rated power vs ambient (derate 1.0)", color=INK, fontsize=10.5)
+ax.set_title(f"WSK2512 rated power vs ambient (derate {DERATE:g})", color=INK, fontsize=10.5)
 ax.legend(frameon=False, loc="upper right", fontsize=8, labelcolor=INK)
 fig.tight_layout()
 save(fig, "shunt_rated_power.png")
@@ -536,7 +604,7 @@ ax.plot(I_GRID, [t_shunt(i, TA.max) for i in I_GRID], color=BLUE_RAMP[3], lw=1.4
 ax.axhline(T_ELEM_LIMIT, color=INK, lw=1.0, ls="--",
            label=f"assumed element limit {T_ELEM_LIMIT:g} degC (assumption, not t_oper)")
 ax.scatter([I_MAX], [T_HOT_5], color=ORANGE, s=34, zorder=6)
-ax.annotate(f"{I_MAX:g} A, 70 degC: {T_HOT_5:.1f} degC", xy=(I_MAX, T_HOT_5), xytext=(-10, 10),
+ax.annotate(f"{I_MAX:g} A, {TA.max:g} degC: {T_HOT_5:.1f} degC", xy=(I_MAX, T_HOT_5), xytext=(-10, 10),
             textcoords="offset points", ha="right", fontsize=8, color=INK)
 style_axes(ax, "Load current (A)", "Shunt element temperature (degC)")
 ax.set_xlim(0, I_MAX)
@@ -550,15 +618,15 @@ save(fig, "shunt_temperature.png")
 # %%
 # Figure 3: worst-case dissipation vs current at four ambients, each with its derated limit.
 fig, ax = plt.subplots(figsize=(7.5, 4.6))
-for j, ta in enumerate((0.0, 25.0, 50.0, 70.0)):
+for j, ta in enumerate((TA.min, TA.typ, 50.0, TA.max)):
     col = BLUE_RAMP[j]
     ax.plot(I_GRID, [p_at(i, ta) for i in I_GRID], color=col, lw=1.4, label=f"dissipation, TA {ta:g} degC")
     ax.axhline(rated_at(ta), color=col, lw=1.0, ls="--")
 ax.text(0.1, rated_at(TA.max) * 1.03,
-        "derated limits at TA 0, 25, 50, 70 degC: all 1.00 W (dashed, flat below the 70 degC knee)",
+        f"derated limits at TA {TA.min:g}, {TA.typ:g}, 50, {TA.max:g} degC: all {rated_at(TA.max):.2f} W (dashed, flat below the {KNEE:g} degC knee)",
         color=INK, fontsize=8)
 ax.scatter([I_MAX], [p_at(I_MAX, TA.max)], color=ORANGE, s=34, zorder=6)
-ax.annotate(f"{I_MAX:g} A, 70 degC: {p_at(I_MAX, TA.max):.3f} W, margin {rated_at(TA.max) - p_at(I_MAX, TA.max):.3f} W",
+ax.annotate(f"{I_MAX:g} A, {TA.max:g} degC: {p_at(I_MAX, TA.max):.3f} W, margin {rated_at(TA.max) - p_at(I_MAX, TA.max):.3f} W",
             xy=(I_MAX, p_at(I_MAX, TA.max)), xytext=(-10, 44), textcoords="offset points", ha="right", fontsize=8,
             color=INK)
 style_axes(ax, "Load current (A)", "Power (W)")
@@ -628,7 +696,7 @@ ZERO_KW = dict(r_nom=R_NOM, r_tol=0.0, r_tcr=0.0, t_c=25.0, gserr=0.0, gs_drift=
                cal_gain=1.0)
 term_specs = [
     ("Shunt tolerance (code " + code + ")", dict(r_tol=TOL_W)),
-    ("Shunt TCR (TA 0-70 degC)", dict(r_tcr=TCR_W, t_c=TA)),
+    (f"Shunt TCR (TA {TA.min:g}-{TA.max:g} degC)", dict(r_tcr=TCR_W, t_c=TA)),
     ("VOS + drift", dict(vos25=ina.param(VOS_KEY_AMB), vos_drift=VOS_DRIFT, t_c=TA)),
     ("Gain error + drift", dict(gserr=GSERR, gs_drift=GS_DRIFT, t_c=TA)),
     ("SHUNT_CAL integer rounding", dict(cal_gain=CAL_GAIN)),
@@ -646,7 +714,7 @@ CROSS_TOL_TCR = I_MAX * TOL_W.max * TCR_W.max * (TA.max - T_REF)  # tolerance x 
 CROSS_GAIN = I_MAX * (TOL_W.max + TCR_W.max * (TA.max - T_REF)) * (GSERR.max + GS_DRIFT.max * (TA.max - T_REF))
 EXCESS = FS.max - term_max_sum
 
-md += [f"## 5. Full-scale current error at {I_MAX:g} A (TA 0 to 70 degC)", ""]
+md += [f"## 5. Full-scale current error at {I_MAX:g} A (TA {TA.min:g} to {TA.max:g} degC)", ""]
 md += [
     f"Design shunt: {R_NOM * 1e3:g} mohm, code {code}, `{MPN}`, ADCRANGE {ADCRANGE}. Inputs (INA229 INPUTS map for "
     "`current_error`, plus the shunt):",
@@ -667,7 +735,7 @@ md += mdtable(["Term", "Min", "Max", "Source"], [
 md += [
     "",
     f"**Vos row.** The larger-magnitude of the two DS rows (`vos_vcm48_25c`, `vos_vcm0_25c`, +/-1 uV max at 25 degC) "
-    f"is used: `{VOS_KEY_AMB}`. Neither row is at the 12-40 V bus voltage; the offset is specified at VCM 48 V and 0 V "
+    f"is used: `{VOS_KEY_AMB}`. Neither row is at the {VBUS_LO:g}-{VBUS_HI:g} V bus voltage; the offset is specified at VCM 48 V and 0 V "
     "only (open item).",
     "",
 ]
@@ -703,15 +771,15 @@ md += [
     f"interior samples min {FS.min:.6g} A, max {FS.max:.6g} A. Difference: {abs(FS.min - FS_CORNERS.min):.2e} A low side, "
     f"{abs(FS.max - FS_CORNERS.max):.2e} A high side.",
     "",
-    f"**Self-heated ESTIMATE, pre-solder (reference, not judged).** The shunt element runs from TA 0 degC plus its lowest-R rise to TA 70 "
-    f"degC plus its worst-R rise (self-consistent, section 3). At {I_MAX:g} A the element reaches {T_HOT_5:.4g} degC at TA 70 degC "
+    f"**Self-heated ESTIMATE, pre-solder (reference, not judged).** The shunt element runs from TA {TA.min:g} degC plus its lowest-R rise to TA {TA.max:g} "
+    f"degC plus its worst-R rise (self-consistent, section 3). At {I_MAX:g} A the element reaches {T_HOT_5:.4g} degC at TA {TA.max:g} degC "
     f"(rise {T_RISE_5:.4g} degC), so the shunt TCR is evaluated up to {T_HOT_5:.4g} degC. The INA229 drift stays at the "
-    "ambient 0 to 70 degC.",
+    f"ambient {TA.min:g} to {TA.max:g} degC.",
     "",
 ]
 md += mdtable([f"Case ({I_MAX:g} A)", "Min error (A)", "Max error (A)", "Min (% of reading)", "Max (% of reading)",
-               "Max magnitude (% of reading)", "1 % check"], [
-    ["Ambient only (TA 0-70 degC), reference", f"{FS_MIN:.4g}", f"{FS_MAX:.4g}", pct(FS_MIN / I_MAX),
+               "Max magnitude (% of reading)", f"{ERR_LIMIT_PCT:g} % check"], [
+    [f"Ambient only (TA {TA.min:g}-{TA.max:g} degC), reference", f"{FS_MIN:.4g}", f"{FS_MAX:.4g}", pct(FS_MIN / I_MAX),
      pct(FS_MAX / I_MAX), f"{FS_AMB_PCT:.4g}", "REFERENCE, not judged"],
     ["With self-heating, pre-solder (ESTIMATE), reference", f"{FS_SH_MIN:.4g}", f"{FS_SH_MAX:.4g}", pct(FS_SH_MIN / I_MAX),
      pct(FS_SH_MAX / I_MAX), f"{FS_SH_PCT:.4g}", "REFERENCE, not judged (BOL: section 5b)"],
@@ -846,10 +914,10 @@ def uncal_specs(i):
         ("Shunt TCR, element T", "Shunt TCR over the self-heated element temperature", cite(TCR),
          dict(alpha=TCR_W, t_sh=t_sh_band(i))),
         ("INA229 gain error", "INA229 gain error GSERR (25 degC)", cite(GSERR), dict(gserr=GSERR)),
-        ("INA229 gain drift", "INA229 gain drift over TA 0-70 degC (vs 25 degC)", cite(GS_DRIFT),
+        ("INA229 gain drift", f"INA229 gain drift over TA {TA.min:g}-{TA.max:g} degC (vs 25 degC)", cite(GS_DRIFT),
          dict(gs_drift=GS_DRIFT, t_amb=TA)),
         ("INA229 offset", "INA229 offset Vos (larger DS row)", cite(VOS_P), dict(vos25=VOS_P)),
-        ("INA229 offset drift", "INA229 offset drift over TA 0-70 degC (vs 25 degC), referred to the shunt", cite(VOS_DRIFT),
+        ("INA229 offset drift", f"INA229 offset drift over TA {TA.min:g}-{TA.max:g} degC (vs 25 degC), referred to the shunt", cite(VOS_DRIFT),
          dict(vos_drift=VOS_DRIFT, t_amb=TA)),
         ("SHUNT_CAL rounding", f"SHUNT_CAL integer rounding (register {SHUNT_CAL})", "`calc.shunt_cal`, DS p.30 Eq. 2",
          dict()),
@@ -879,7 +947,7 @@ LBL = {
     "tau": ("tol -", "tol +"), "alpha": ("TCR -", "TCR +"), "s_abs": ("solder -", "solder +"),
     "gserr": ("GSERR -", "GSERR +"), "gs_drift": ("GS drift -", "GS drift +"), "vos25": ("Vos -", "Vos +"),
     "vos_drift": ("dVos -", "dVos +"), "t_sh": ("element cold", "element hot"), "t_cal": ("cal element cold", "cal element hot"),
-    "t_amb": ("TA 0", "TA 70"), "e_ref": ("ref -", "ref +"), "q_cal": ("cal quant -", "cal quant +"),
+    "t_amb": (f"TA {TA.min:g}", f"TA {TA.max:g}"), "e_ref": ("ref -", "ref +"), "q_cal": ("cal quant -", "cal quant +"),
 }
 
 
@@ -975,11 +1043,11 @@ FS_CAL_MARGIN = ERR_LIMIT_PCT - FS_CAL_PCT
 
 md += ["## 5b. BOL accuracy, uncalibrated and calibrated (judged)", ""]
 md += [
-    "Beginning of life (BOL), self-heated, TA 0 to 70 degC, at 6 A and 100 mA. Every contributor is a library datasheet "
+    f"Beginning of life (BOL), self-heated, TA {TA.min:g} to {TA.max:g} degC, at {I_MAX:g} A and {I_LOW * 1e3:g} mA. Every contributor is a library datasheet "
     "row (cited) or a design input; the judged total is the worst case over the corners of all inputs together.",
     "",
     "**Uncalibrated.** The shunt initial tolerance and the solder-heat shift are worst-case bounds. The solder-heat shift is "
-    "the qualification TEST LIMIT +/-(0.5 % of R + 0.0005 ohm) (`perf_solder_heat`, `perf_offset_ohm`): for 10 mohm the "
+    f"the qualification TEST LIMIT +/-(0.5 % of R + 0.0005 ohm) (`perf_solder_heat`, `perf_offset_ohm`): for {R_NOM * 1e3:g} mohm the "
     f"0.0005 ohm term alone is 5 %, so the limit is +/-{S_MAX / R_NOM * 100:.2f} % of R (+/-{S_MAX * 1e3:.3g} mohm). It is a "
     "bound, not a typical value: typical shifts are usually much smaller but are not specified, so they are not used. The "
     "element temperature band includes the shift.",
@@ -993,7 +1061,7 @@ md += [
     "`fs_cal_error`.",
     "",
     f"A zero-current offset-only calibration would remove only the offset, which is {OFF_FS_PCT:.4f} % of reading at "
-    f"{I_MAX:g} A (1 uV / (10 mohm x 6 A)). It is not what is modelled: the gain calibration at {CAL_I:g} A is.",
+    f"{I_MAX:g} A (1 uV / ({R_NOM * 1e3:g} mohm x {I_MAX:g} A)). It is not what is modelled: the gain calibration at {CAL_I:g} A is.",
     "",
 ]
 md += stack_md(f"Stack-up, BOL UNCALIBRATED, {I_MAX:g} A, self-heated", R_UN_FS, UN_FS, I_MAX)
@@ -1013,8 +1081,8 @@ md += [
     f"**{err_pf(FS_UNCAL_PCT)}** against {ERR_LIMIT_PCT:g} %, reported and not judged. The uncalibrated error is set by the "
     f"solder-heat test limit ({SOLDER_CITE}). Top contributors: {', '.join(TOP_UN_FS)}.",
     "",
-    f"At 100 mA (REPORT ONLY, no limit set): calibrated max {LO_CAL_PCT:.3f} % (min {LO_CAL_LO:.3f} %, max "
-    f"+{LO_CAL_HI:.3f} %); uncalibrated max {LO_UNCAL_PCT:.3f} %. The calibrated 100 mA error is set by the shunt TCR "
+    f"At {I_LOW * 1e3:g} mA (REPORT ONLY, no limit set): calibrated max {LO_CAL_PCT:.3f} % (min {LO_CAL_LO:.3f} %, max "
+    f"+{LO_CAL_HI:.3f} %); uncalibrated max {LO_UNCAL_PCT:.3f} %. The calibrated {I_LOW * 1e3:g} mA error is set by the shunt TCR "
     "relative to the cal element temperature and by the offset away from the cal point.",
     "",
     f"Sampling check (uniform random draws of every input inside its limits, {20000} points, at {I_MAX:g} A): calibrated "
@@ -1025,8 +1093,8 @@ md += [
     "",
     "![Error stack-up](design-analysis/error_stackup.png)",
     "",
-    "Figure 4a. Contributors, largest first, for uncalibrated and calibrated BOL error at 6 A (top) and 100 mA (bottom). "
-    "Magnitudes in % of reading; the dotted line is the 1 % requirement (6 A only). Each panel has its own x scale.",
+    f"Figure 4a. Contributors, largest first, for uncalibrated and calibrated BOL error at {I_MAX:g} A (top) and {I_LOW * 1e3:g} mA (bottom). "
+    f"Magnitudes in % of reading; the dotted line is the {ERR_LIMIT_PCT:g} % requirement ({I_MAX:g} A only). Each panel has its own x scale.",
     "",
 ]
 
@@ -1046,12 +1114,12 @@ for ax, rows, col, title, jm, is_judged in panels:
     for y, v in enumerate(vals):
         ax.text(v + top * 0.012, y, f"{v:.3g}", va="center", fontsize=8, color=INK)
     ax.axvline(ERR_LIMIT_PCT, color=INK, lw=0.9, ls=(0, (1, 2)))
-    ax.text(ERR_LIMIT_PCT, len(vals) - 0.45, " 1 % requirement", fontsize=7.5, color=INK, va="bottom")
+    ax.text(ERR_LIMIT_PCT, len(vals) - 0.45, f" {ERR_LIMIT_PCT:g} % requirement", fontsize=7.5, color=INK, va="bottom")
     ax.set_xlim(0, max(top, ERR_LIMIT_PCT) * 1.32)
     style_axes(ax, "Magnitude (% of reading)", "")
     ax.tick_params(axis="y", labelsize=8.5, colors=INK)
     ax.set_title(f"{title}: worst case {jm:.3g} %" + ("" if is_judged else " (report only)"), color=INK, fontsize=9.5)
-fig.suptitle("INA229 + 10 mohm WSK2512, BOL error stack-up, self-heated, TA 0-70 degC (largest contributor first)",
+fig.suptitle(f"INA229 + {R_NOM * 1e3:g} mohm WSK2512, BOL error stack-up, self-heated, TA {TA.min:g}-{TA.max:g} degC (largest contributor first)",
              color=INK, fontsize=10.5)
 fig.tight_layout()
 save(fig, "error_stackup.png")
@@ -1088,34 +1156,34 @@ ax2.set_ylim(-1.3 * ERR_LIMIT_PCT, 1.3 * ERR_LIMIT_PCT)
 handles = [
     Line2D([], [], color=ORANGE, lw=1.3, label="BOL uncalibrated, self-heated: max (min dashed)"),
     Line2D([], [], color=BLUE, lw=1.3, label="BOL calibrated, self-heated (judged): max (min dashed)"),
-    Line2D([], [], color=INK, lw=0.9, ls=(0, (1, 2)), label=f"+/-{ERR_LIMIT_PCT:g} % requirement (6 A)"),
+    Line2D([], [], color=INK, lw=0.9, ls=(0, (1, 2)), label=f"+/-{ERR_LIMIT_PCT:g} % requirement ({I_MAX:g} A)"),
 ]
 ax1.legend(handles=handles, frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1.0), fontsize=8.5, labelcolor=INK)
-ax1.set_title(f"INA229 + {R_NOM * 1e3:g} mohm WSK2512: BOL error vs load current, TA 0-70 degC", color=INK, fontsize=10.5)
+ax1.set_title(f"INA229 + {R_NOM * 1e3:g} mohm WSK2512: BOL error vs load current, TA {TA.min:g}-{TA.max:g} degC", color=INK, fontsize=10.5)
 ax2.set_title("Zoom on the calibrated band (uncalibrated is off this scale)", color=INK, fontsize=9.5)
-ax2.text(CURRENTS[-1], ca_hi_p[-1], f" 6 A: {FS_CAL_LO:.2f} to +{FS_CAL_HI:.2f} %", fontsize=8, color=INK, va="bottom",
+ax2.text(CURRENTS[-1], ca_hi_p[-1], f" {I_MAX:g} A: {FS_CAL_LO:.2f} to +{FS_CAL_HI:.2f} %", fontsize=8, color=INK, va="bottom",
          ha="right")
 ax2.set_xlabel("Load current (A), log scale", color=MUTED)
 fig.tight_layout()
 save(fig, "current_error.png")
 
-md += [f"## 6. Error vs current (100 mA to {I_MAX:g} A, BOL)", ""]
+md += [f"## 6. Error vs current ({I_PLOT_LO * 1e3:g} mA to {I_MAX:g} A, BOL)", ""]
 md += [
     f"{N_PLOT} log-spaced points, each the worst case over all corners of section 5b with 1 LSB added. Blue: BOL calibrated, "
     "self-heated (judged). Orange: BOL uncalibrated, self-heated. Top: the full range, with the uncalibrated band. Bottom: "
-    "zoom on the calibrated band against the 1 % requirement.",
+    f"zoom on the calibrated band against the {ERR_LIMIT_PCT:g} % requirement.",
     "",
     "![INA229 current error](design-analysis/current_error.png)",
     "",
     "Figure 4. BOL error vs load current: uncalibrated and calibrated, self-heated.",
     "",
-    f"Calibrated: at 0.1 A min {ca_lo_p[0]:.3g} %, max {ca_hi_p[0]:.3g} %; at {I_MAX:g} A min {ca_lo_p[-1]:.3g} %, max "
-    f"{ca_hi_p[-1]:.3g} %. Uncalibrated: at 0.1 A min {un_lo_p[0]:.3g} %, max {un_hi_p[0]:.3g} %; at {I_MAX:g} A min "
+    f"Calibrated: at {I_PLOT_LO:g} A min {ca_lo_p[0]:.3g} %, max {ca_hi_p[0]:.3g} %; at {I_MAX:g} A min {ca_lo_p[-1]:.3g} %, max "
+    f"{ca_hi_p[-1]:.3g} %. Uncalibrated: at {I_PLOT_LO:g} A min {un_lo_p[0]:.3g} %, max {un_hi_p[0]:.3g} %; at {I_MAX:g} A min "
     f"{un_lo_p[-1]:.3g} %, max {un_hi_p[-1]:.3g} %.",
     "",
     f"**Judged: BOL calibrated, self-heated, {I_MAX:g} A: {FS_CAL_PCT:.3f} % of reading (vs {ERR_LIMIT_PCT:g} %: "
-    f"{err_pf(FS_CAL_PCT)}); 100 mA: {LO_CAL_PCT:.3f} % (REPORT ONLY, no limit set at 100 mA).** Uncalibrated: "
-    f"{FS_UNCAL_PCT:.3f} % at {I_MAX:g} A, {LO_UNCAL_PCT:.3f} % at 100 mA (reported, not judged).",
+    f"{err_pf(FS_CAL_PCT)}); {I_LOW * 1e3:g} mA: {LO_CAL_PCT:.3f} % (REPORT ONLY, no limit set at {I_LOW * 1e3:g} mA).** Uncalibrated: "
+    f"{FS_UNCAL_PCT:.3f} % at {I_MAX:g} A, {LO_UNCAL_PCT:.3f} % at {I_LOW * 1e3:g} mA (reported, not judged).",
     "",
 ]
 
@@ -1170,7 +1238,7 @@ ax.plot(V_SWEEP, [v * 1e3 for v in bus_lo], color=BLUE, lw=1.3, ls="--", label="
 ax.axhline(0, color=INK, lw=1.0, label="typ (nominal): 0")
 ax.set_xlim(VBUS_LO, VBUS_HI)
 style_axes(ax, "Bus voltage, VBUS (V)", "Bus-voltage error (mV)")
-ax.set_title("INA229 bus-voltage error vs bus voltage, TA 0-70 degC", color=INK, fontsize=10.5)
+ax.set_title(f"INA229 bus-voltage error vs bus voltage, TA {TA.min:g}-{TA.max:g} degC", color=INK, fontsize=10.5)
 ax.legend(frameon=False, loc="upper left", fontsize=8.5, labelcolor=INK)
 ax.text(VBUS_HI, bus_hi[-1] * 1e3, f" {bus_hi[-1] * 1e3:.3g} mV ({pct(bus_hi[-1] / VBUS_HI)} %)", color=INK,
         fontsize=8, va="bottom", ha="right")
@@ -1184,7 +1252,7 @@ md += [
     "",
     f"`vos_bus_psrr_25c` ({cite(PSRR_P)}) prints only a typ, +/-0.25 mV/V in the TYP column and no MIN or MAX. "
     f"It is not a bound and is excluded from min and max (typ-only row). Its typical size is shown in the last column with "
-    f"dVS = +/-{mv(DVS.max)} mV (3.3 V +/-3 %). The PSRR row's test condition is VS = 2.7 to 5.5 V, so the dVS reference "
+    f"dVS = +/-{mv(DVS.max)} mV ({VS_NOM:g} V +/-{VS_TOL * 100:g} %). The PSRR row's test condition is VS = 2.7 to 5.5 V, so the dVS reference "
     f"is an assumption (open item).",
     "",
 ]
@@ -1194,13 +1262,13 @@ md += [
     "",
     "![Bus-voltage error vs bus voltage](design-analysis/bus_error.png)",
     "",
-    "Figure 5. Bus-voltage error vs bus voltage 12 to 40 V (band: min to max incl. 1 LSB; the typ-only PSRR is not in the band).",
+    f"Figure 5. Bus-voltage error vs bus voltage {VBUS_LO:g} to {VBUS_HI:g} V (band: min to max incl. 1 LSB; the typ-only PSRR is not in the band).",
     "",
     f"1 LSB = {LSB_VBUS * 1e6:.4f} uV (`lsb_vbus_25c`), added to min and max. Typ = nominal part at 25 degC with all bound "
     "rows centred (their DS typical spread is not added).",
     "",
     "The bus offset (`vos_bus_25c`) is specified only at VBUS = 20 mV, and the bus gain error at the table header "
-    "condition. Their use at 12-40 V assumes the errors are flat with bus voltage (open item).",
+    f"condition. Their use at {VBUS_LO:g}-{VBUS_HI:g} V assumes the errors are flat with bus voltage (open item).",
     "",
 ]
 
@@ -1245,14 +1313,14 @@ def power_band(i, v, t_points=None):
     return lo, hi
 
 
-P_VOLTS = (12.0, 24.0, 40.0)
+P_VOLTS = (VBUS_LO, P["vbus_mid_v"], VBUS_HI)  # V, bus voltages for the power-error table and chart
 PW_CURRENTS = [I_PLOT_LO * (I_MAX / I_PLOT_LO) ** (k / (N_PLOT_PWR - 1)) for k in range(N_PLOT_PWR)]
 PW_BAND = {v: [power_band(i_pt, v) for i_pt in PW_CURRENTS] for v in P_VOLTS}
 
 # sampling check: finer ambient grid at the two summary points
 PW_CHK = {}
 T_FINE = [TA.min + k * (TA.max - TA.min) / 8 for k in range(9)]
-for v in (12.0, 40.0):
+for v in (VBUS_LO, VBUS_HI):
     lo_c, hi_c = power_band(I_MAX, v)
     lo_f, hi_f = power_band(I_MAX, v, T_FINE)
     PW_CHK[v] = (abs(lo_f - lo_c), abs(hi_f - hi_c))
@@ -1276,13 +1344,13 @@ for i_pt in (I_LOW, I_MAX):
         lo_v, hi_v = power_band(i_pt, v)
         row += [pct(lo_v), pct(hi_v)]
     pw_rows.append(row)
-md += mdtable(["Current (A)", "12 V min (%)", "12 V max (%)", "24 V min (%)", "24 V max (%)", "40 V min (%)",
-               "40 V max (%)"], pw_rows)
+md += mdtable(["Current (A)", f"{P_VOLTS[0]:g} V min (%)", f"{P_VOLTS[0]:g} V max (%)", f"{P_VOLTS[1]:g} V min (%)", f"{P_VOLTS[1]:g} V max (%)", f"{P_VOLTS[2]:g} V min (%)",
+               f"{P_VOLTS[2]:g} V max (%)"], pw_rows)
 md += [
     "",
-    f"Sampling check (9 ambient points vs the {len(T_POWER)} used, at {I_MAX:g} A): difference at 12 V "
-    f"{PW_CHK[12.0][0]:.2e} low, {PW_CHK[12.0][1]:.2e} high; at 40 V {PW_CHK[40.0][0]:.2e} low, "
-    f"{PW_CHK[40.0][1]:.2e} high (fraction).",
+    f"Sampling check (9 ambient points vs the {len(T_POWER)} used, at {I_MAX:g} A): difference at {VBUS_LO:g} V "
+    f"{PW_CHK[VBUS_LO][0]:.2e} low, {PW_CHK[VBUS_LO][1]:.2e} high; at {VBUS_HI:g} V {PW_CHK[VBUS_HI][0]:.2e} low, "
+    f"{PW_CHK[VBUS_HI][1]:.2e} high (fraction).",
     "",
     f"Cross-check: the INA229 device spec `ptme_full` ({cite(PTME)}) is {PTME.min * 100:g} to +{PTME.max * 100:g} % at full "
     "scale over -40 to 125 degC. It is a device figure with an ideal shunt and does not include the external shunt's "
@@ -1290,13 +1358,13 @@ md += [
     "",
     "![Power error vs current](design-analysis/power_error.png)",
     "",
-    "Figure 6. Worst-case power measurement error vs current at 12, 24 and 40 V (min and max, ambient only).",
+    f"Figure 6. Worst-case power measurement error vs current at {P_VOLTS[0]:g}, {P_VOLTS[1]:g} and {P_VOLTS[2]:g} V (min and max, ambient only).",
     "",
 ]
 
 # %%
 fig, ax = plt.subplots(figsize=(9.4, 4.8))
-pw_cols = {12.0: BLUE, 24.0: GREEN, 40.0: RED}
+pw_cols = {P_VOLTS[0]: BLUE, P_VOLTS[1]: GREEN, P_VOLTS[2]: RED}
 ends = []
 for v in P_VOLTS:
     lo_p = [100 * b[0] for b in PW_BAND[v]]
@@ -1380,12 +1448,12 @@ md += mdtable(["Term", "Value", "Basis (library cite)"], [
     ["ALERT_N asserted: sink into the part (worst)", f"{P_ALERT_PART * 1e3:.4g} mW",
      f"VOL max {VOL_MAX:g} V x I_alert max {I_ALERT_MAX * 1e6:.4g} uA (section 10); {cite(VOL_P)}"],
     ["Dissipation from V3V3 (INA229)", f"**{P_V3_PART * 1e3:.4g} mW**", "iq + ALERT sink"],
-    ["VBUS divider at 40 V (V^2 / zvbus min)", f"{P_BUS_PART_40 * 1e3:.4g} mW (incl. IN bias)", cite(ZV)],
+    [f"VBUS divider at {VBUS_HI:g} V (V^2 / zvbus min)", f"{P_BUS_PART_40 * 1e3:.4g} mW (incl. IN bias)", cite(ZV)],
     ["rtheta_ja (typical)", f"{RTJA:g} degC/W", cite(RTJA_P)],
     [f"Junction temperature at TA {TA.max:g} degC, V3V3 only (ESTIMATE)", f"**{TJ_V3:.4g} degC**",
      "TA + P_V3 x rtheta_ja"],
     [f"Junction temperature at TA {TA.max:g} degC, all INA229 power (ESTIMATE)", f"**{TJ_ALL:.4g} degC**",
-     "adds the VBUS divider at 40 V"],
+     f"adds the VBUS divider at {VBUS_HI:g} V"],
     ["Absolute maximum junction temperature", f"{TJ_ABS:g} degC", cite(TJ_ABS_P)],
     ["Margin to tj_abs (all power)", f"{TJ_MARGIN:.4g} degC", est_status(TJ_MARGIN)],
 ])
@@ -1439,25 +1507,25 @@ md += mdtable(["Item", "Supply", "Min", "Typ", "Max", "Basis (library cite)"], [
     ["INA229 active current, -40 to 125 degC (`iq_full`)", "V3V3", "-", "-", f"{ma(IQ_FULL)} mA", cite(IQ_FULL_P)],
     ["INA229 shutdown current (`iqsd_25c`)", "V3V3", "-", f"{ua(IQSD.typ)} uA", f"{ua(IQSD.max)} uA", cite(IQSD)],
     ["ALERT_N pull-up current, asserted (VS / R)", "V3V3", "0 (not asserted)", f"{ua(I_ALERT_TYP)} uA",
-     f"{ua(I_ALERT_MAX)} uA", f"10 kohm {R_PU_MPN}: R min {R_PU_LIB.min / 1e3:.4g} kohm over tol, TCR, 0-70 degC "
+     f"{ua(I_ALERT_MAX)} uA", f"{R_PULLUP / 1e3:g} kohm {R_PU_MPN}: R min {R_PU_LIB.min / 1e3:.4g} kohm over tol, TCR, {TA.min:g}-{TA.max:g} degC "
      "(ERJ-3EKF tol at 20 degC, TCR at 25 degC)"],
     ["Power from V3V3: active, 25 degC", "V3V3", "-", f"{mw(P_IQ_25_TYP)} mW", f"{mw(P_IQ_25_MAX)} mW",
      f"`iq_25c` x VS (nom / max {VS_MAX:.3f} V)"],
     ["Power from V3V3: active, worst", "V3V3", "-", "-", f"{mw(P_IQ_FULL)} mW", "`iq_full` x VS max"],
     ["Power from V3V3: ALERT_N asserted (rail)", "V3V3", "0", f"{mw(VS_NOM * I_ALERT_TYP)} mW", f"{mw(P_ALERT_RAIL)} mW",
      "VS x I_alert"],
-    ["VBUS input current at 12 V (`zvbus_25c`)", "Bus", f"{ua(ZV_12[0])} uA", f"{ua(ZV_12[1])} uA", f"{ua(ZV_12[2])} uA",
+    [f"VBUS input current at {VBUS_LO:g} V (`zvbus_25c`)", "Bus", f"{ua(ZV_12[0])} uA", f"{ua(ZV_12[1])} uA", f"{ua(ZV_12[2])} uA",
      cite(ZV)],
-    ["VBUS input current at 40 V (`zvbus_25c`)", "Bus", f"{ua(ZV_40[0])} uA", f"{ua(ZV_40[1])} uA", f"{ua(ZV_40[2])} uA",
+    [f"VBUS input current at {VBUS_HI:g} V (`zvbus_25c`)", "Bus", f"{ua(ZV_40[0])} uA", f"{ua(ZV_40[1])} uA", f"{ua(ZV_40[2])} uA",
      "V / zvbus"],
-    ["Power in INA229 from VBUS at 12 V", "Bus", mw(P_ZV_12[0]) + " mW", mw(P_ZV_12[1]) + " mW", mw(P_ZV_12[2]) + " mW",
+    [f"Power in INA229 from VBUS at {VBUS_LO:g} V", "Bus", mw(P_ZV_12[0]) + " mW", mw(P_ZV_12[1]) + " mW", mw(P_ZV_12[2]) + " mW",
      "V x I"],
-    ["Power in INA229 from VBUS at 40 V", "Bus", mw(P_ZV_40[0]) + " mW", mw(P_ZV_40[1]) + " mW", mw(P_ZV_40[2]) + " mW",
+    [f"Power in INA229 from VBUS at {VBUS_HI:g} V", "Bus", mw(P_ZV_40[0]) + " mW", mw(P_ZV_40[1]) + " mW", mw(P_ZV_40[2]) + " mW",
      "V x I"],
     ["IN+ / IN- input bias (`ib_25c`)", "Bus", f"{IB.min * 1e9:.3g} nA", "0", f"{IB.max * 1e9:.3g} nA",
      cite(IB) + "; current, negligible power (< 1 uW)"],
     [f"Shunt insertion loss I^2 R at {I_MAX:g} A (outside the part)", "Bus", mw(P_SHUNT_5[0]) + " mW",
-     mw(P_SHUNT_5[1]) + " mW", mw(P_SHUNT_5[2]) + " mW", "`power_worst` at TA 0 and 70 degC (ambient R); typ = nominal 25 degC"],
+     mw(P_SHUNT_5[1]) + " mW", mw(P_SHUNT_5[2]) + " mW", f"`power_worst` at TA {TA.min:g} and {TA.max:g} degC (ambient R); typ = nominal 25 degC"],
     ["ALERT pull-up resistor power, asserted (ERJ-3EKF)", "V3V3", "-", "-", f"{mw(P_PU_RES)} mW",
      f"rating p70 {mw(P_PU_RATED)} mW ({cite(erj.param('p70'))}): {status(P_PU_RATED - P_PU_RES)}"],
 ])
@@ -1470,21 +1538,21 @@ md += mdtable(["Supply", "Case", "Total (mW)"], [
     ["V3V3", "Active, 25 degC, ALERT_N not asserted (typical)", mw(TOT_V3_ACTIVE_TYP)],
     ["V3V3", "Active, worst (`iq_full`, VS max), ALERT_N asserted", mw(TOT_V3_WORST)],
     ["V3V3", "Shutdown, worst (`iqsd_25c`), ALERT_N asserted (conservative)", mw(TOT_V3_SD_WORST)],
-    ["Bus 12 V", "INA229 pin power, worst (VBUS divider + IN bias)", mw(TOT_BUS_12)],
-    ["Bus 40 V", "INA229 pin power, worst (VBUS divider + IN bias)", mw(TOT_BUS_40)],
-    ["Bus 12 V", f"Shunt I^2 R at {I_MAX:g} A, worst (outside the INA229)", mw(BUS_SHUNT_5)],
-    ["Bus 40 V", f"Shunt I^2 R at {I_MAX:g} A, worst (outside the INA229)", mw(BUS_SHUNT_5)],
+    [f"Bus {VBUS_LO:g} V", "INA229 pin power, worst (VBUS divider + IN bias)", mw(TOT_BUS_12)],
+    [f"Bus {VBUS_HI:g} V", "INA229 pin power, worst (VBUS divider + IN bias)", mw(TOT_BUS_40)],
+    [f"Bus {VBUS_LO:g} V", f"Shunt I^2 R at {I_MAX:g} A, worst (outside the INA229)", mw(BUS_SHUNT_5)],
+    [f"Bus {VBUS_HI:g} V", f"Shunt I^2 R at {I_MAX:g} A, worst (outside the INA229)", mw(BUS_SHUNT_5)],
 ])
 md += [
     "",
-    "Assumptions: `iq_full` and `iq_25c` are printed without a VS condition; the worst case assumes VS = 3.399 V. "
+    f"Assumptions: `iq_full` and `iq_25c` are printed without a VS condition; the worst case assumes VS = {VS_MAX:.3f} V. "
     "`zvbus_25c` is a 25 degC row; the 800 kohm minimum is applied at all temperatures (open item). The ALERT_N pull-up "
     "is assumed asserted in shutdown (conservative).",
     "",
     "![Quiescent power budget](design-analysis/quiescent_budget.png)",
     "",
     "Figure 7. Worst-case power budget. Left: V3V3 rail (INA229 active plus ALERT_N pull-up asserted). Right: bus-pin power "
-    f"inside the INA229 at 12 and 40 V. The shunt I^2 R at {I_MAX:g} A ({BUS_SHUNT_5 * 1e3:.0f} mW, outside the part) is annotated, "
+    f"inside the INA229 at {VBUS_LO:g} and {VBUS_HI:g} V. The shunt I^2 R at {I_MAX:g} A ({BUS_SHUNT_5 * 1e3:.0f} mW, outside the part) is annotated, "
     "not drawn to scale.",
     "",
 ]
@@ -1506,7 +1574,7 @@ axl.set_ylim(0, bottom * 1e3 * 1.18)
 style_axes(axl, "", "Power (mW)")
 axl.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.14), fontsize=7.5, labelcolor=INK)
 
-bus_lbls = ["12 V", "40 V"]
+bus_lbls = [f"{VBUS_LO:g} V", f"{VBUS_HI:g} V"]
 vbus_div = [P_ZV_12[2], P_ZV_40[2]]
 ib_pw = [VBUS_LO * IB.max, VBUS_HI * IB.max]
 xs = [0, 1]
@@ -1549,28 +1617,28 @@ VOH_ROW = ina.param("voh_25c")
 LOGIC_HI = VS_MAX  # V, the high level on MOSI/MISO/SCLK/ALERT_N (the 3.3 V +/-3 % rail at its maximum)
 TJ_ROW_TXT = (f"{TJ_ALL:.4g} degC (ESTIMATE)", f"`tj_abs` {TJ_ABS:g} degC max", f"{TJ_MARGIN:.4g} degC",
               est_status(TJ_MARGIN))
-DIFF_ROW = rating_row("Differential, hard load short (IN+ = 40 V, IN- = 0 V)", VBUS_HI, VBUS_HI,
+DIFF_ROW = rating_row(f"Differential, hard load short (IN+ = {VBUS_HI:g} V, IN- = 0 V)", VBUS_HI, VBUS_HI,
                       ina.param("vin_diff_abs"), "vin_diff_abs", 1, "V")
 VDIFF_ROW = rating_row("Shunt sense voltage (worst, self-heated)", -VS_SH, VS_SH, VDIFF, "vdiff_adcr0_full", 1e3, "mV")
 ratings = [
-    rating_row("Bus voltage VBUS (applied 12 to 40 V)", VBUS_LO, VBUS_HI, ina.param("vbus_abs"), "vbus_abs", 1, "V"),
-    rating_row("Common mode VIN+/VIN- (abs, applied 12 to 40 V)", VBUS_LO, VBUS_HI, ina.param("vcm_abs"), "vcm_abs", 1, "V"),
-    rating_row("Common mode VIN+/VIN- (rec, applied 12 to 40 V)", VBUS_LO, VBUS_HI, ina.param("vcm_rec"), "vcm_rec", 1, "V"),
+    rating_row(f"Bus voltage VBUS (applied {VBUS_LO:g} to {VBUS_HI:g} V)", VBUS_LO, VBUS_HI, ina.param("vbus_abs"), "vbus_abs", 1, "V"),
+    rating_row(f"Common mode VIN+/VIN- (abs, applied {VBUS_LO:g} to {VBUS_HI:g} V)", VBUS_LO, VBUS_HI, ina.param("vcm_abs"), "vcm_abs", 1, "V"),
+    rating_row(f"Common mode VIN+/VIN- (rec, applied {VBUS_LO:g} to {VBUS_HI:g} V)", VBUS_LO, VBUS_HI, ina.param("vcm_rec"), "vcm_rec", 1, "V"),
     DIFF_ROW,
     rating_row("IIN into any pin (applied: input bias IB max)", 0.0, IB.max, ina.param("iin_abs"), "iin_abs", 1e3, "mA"),
     rating_row("IOUT, digital output (applied: ALERT_N sink I_alert max)", 0.0, I_ALERT_MAX, ina.param("iout_abs"),
                "iout_abs", 1e3, "mA"),
-    rating_row("VS supply, rec (applied 3.3 V +/-3 %)", VS_MIN, VS_MAX, ina.param("vs_rec"), "vs_rec", 1, "V"),
-    rating_row("VS supply, abs max (applied 3.3 V +/-3 %)", VS_MIN, VS_MAX, ina.param("vs_abs"), "vs_abs", 1, "V"),
+    rating_row(f"VS supply, rec (applied {VS_NOM:g} V +/-{VS_TOL * 100:g} %)", VS_MIN, VS_MAX, ina.param("vs_rec"), "vs_rec", 1, "V"),
+    rating_row(f"VS supply, abs max (applied {VS_NOM:g} V +/-{VS_TOL * 100:g} %)", VS_MIN, VS_MAX, ina.param("vs_abs"), "vs_abs", 1, "V"),
     rating_row("VIO, MOSI/MISO/SCLK/ALERT_N low level (applied 0 V; limit GND - 0.3 V)", 0.0, 0.0,
                VIO_ABS, "vio_abs", 1, "V"),
-    rating_row("VIO, MOSI/MISO/SCLK/ALERT_N high level (applied 3.3 V +/-3 % max; limit VS + 0.3 V, VS at its min)",
+    rating_row(f"VIO, MOSI/MISO/SCLK/ALERT_N high level (applied {VS_NOM:g} V +/-{VS_TOL * 100:g} % max; limit VS + 0.3 V, VS at its min)",
                LOGIC_HI, LOGIC_HI, VIO_ABS, "vio_abs", 1, "V"),
-    rating_row("TA ambient (rec, applied 0 to 70 degC)", TA.min, TA.max, ina.param("ta_rec"), "ta_rec", 1, "degC"),
+    rating_row(f"TA ambient (rec, applied {TA.min:g} to {TA.max:g} degC)", TA.min, TA.max, ina.param("ta_rec"), "ta_rec", 1, "degC"),
     ["Junction temperature (INA229, ESTIMATE)", TJ_ROW_TXT[0], TJ_ROW_TXT[1], TJ_ROW_TXT[2], TJ_ROW_TXT[3],
      cite(TJ_ABS_P)],
     VDIFF_ROW,
-    ["Shunt dissipation vs rating (70 degC)", f"0 to {PW.max:.4g} W", f"p70 x derate: {RATED:.4g} W",
+    [f"Shunt dissipation vs rating ({TA.max:g} degC)", f"0 to {PW.max:.4g} W", f"p70 x derate: {RATED:.4g} W",
      f"{PW_MARGIN:.4g} W", status(PW_MARGIN), cite(shunt.param("p70"))],
     ["Shunt sense vs (P x R)^1/2", f"{VS_SH * 1e3:.4g} mV", f"(P x R)^1/2 = {MWV * 1e3:.4g} mV",
      f"{(MWV - VS_SH) * 1e3:.4g} mV", status(MWV - VS_SH), cite(shunt.param("max_working_voltage"))],
@@ -1585,13 +1653,13 @@ md += [
     "",
     "VIO (`vio_abs`, DS p.3): the printed limits are GND - 0.3 V and VS + 0.3 V, referenced to GND and VS. The supply "
     "is taken at its MINIMUM for the upper limit, as the library's `resolve` does: VS + 0.3 V = "
-    f"{VS_MIN + 0.3:.3f} V. The applied high level is the 3.3 V +/-3 % maximum, {VS_MAX:.3f} V, so the margin is "
+    f"{VS_MIN + 0.3:.3f} V. The applied high level is the {VS_NOM:g} V +/-{VS_TOL * 100:g} % maximum, {VS_MAX:.3f} V, so the margin is "
     f"{(VS_MIN + 0.3 - VS_MAX) * 1e3:.0f} mV. CS is not in the DS row (DS omission, library note): not checked.",
     "",
-    "Differential check: the hard-short differential equals the 40 V bus across the shunt (zero drop at the short). "
-    "It sits exactly at the `vin_diff_abs` max of 40 V (DS p.3). Zero margin: OPEN ITEM.",
+    f"Differential check: the hard-short differential equals the {VBUS_HI:g} V bus across the shunt (zero drop at the short). "
+    f"It sits exactly at the `vin_diff_abs` max of {VBUS_HI:g} V (DS p.3). Zero margin: OPEN ITEM.",
     "",
-    "The VS row checks 3.3 V +/-3 % (3.201 to 3.399 V) against `vs_rec` (2.7 to 5.5 V, DS p.4); the "
+    f"The VS row checks {VS_NOM:g} V +/-{VS_TOL * 100:g} % ({VS_MIN:.3f} to {VS_MAX:.3f} V) against `vs_rec` (2.7 to 5.5 V, DS p.4); the "
     "`vs_abs` max is 6 V (DS p.3).",
     "",
     "The ESD rows (DS p.4 ESD ratings) and the storage temperature are rating-only: this board's assembly and handling "
@@ -1630,32 +1698,32 @@ vio_hi_row = [r for r in ratings if r[0].startswith("VIO, MOSI/MISO/SCLK/ALERT_N
 SUMMARY = [
     [f"Sense voltage headroom (self-heated worst Vsense at {I_MAX:g} A)", f"{mv(VS_SH)} mV", f"{mv(ADC_LIM[ADCRANGE])} mV "
      f"(ADCRANGE {ADCRANGE})", f"{mv(VS_MARGIN)} mV ({pct(VS_MARGIN / ADC_LIM[ADCRANGE])} %)", status(VS_MARGIN)],
-    [f"Shunt dissipation at {I_MAX:g} A, 70 degC (ambient rating)", f"{PW.max:.4g} W", f"{RATED:.4g} W (p70 x derate)",
+    [f"Shunt dissipation at {I_MAX:g} A, {TA.max:g} degC (ambient rating)", f"{PW.max:.4g} W", f"{RATED:.4g} W (p70 x derate)",
      f"{PW_MARGIN:.4g} W ({pct(PW_MARGIN / RATED)} %)", status(PW_MARGIN)],
-    [f"Shunt element temperature at {I_MAX:g} A, 70 degC (theta_est " f"{THETA:g} degC/W, self-consistent)",
+    [f"Shunt element temperature at {I_MAX:g} A, {TA.max:g} degC (theta_est " f"{THETA:g} degC/W, self-consistent)",
      f"{T_HOT_5:.4g} degC", f"{T_ELEM_LIMIT:g} degC (ASSUMED element limit)", f"{T_MARGIN_5:.4g} degC",
      elem_status(T_MARGIN_5)],
     [f"BOL calibrated error at {I_MAX:g} A (REQUIREMENT, judged)", f"{FS_CAL_LO:.3f} to +{FS_CAL_HI:.3f} % (max {FS_CAL_PCT:.3f} %)",
      f"+/-{ERR_LIMIT_PCT:g} % of reading", f"{FS_CAL_MARGIN:+.3f} % of reading",
-     f"{err_pf(FS_CAL_PCT)}, BOL, self-heated, one-point cal at {I_MAX:g} A / {CAL_TA:g} degC"],
+     f"{err_pf(FS_CAL_PCT)}, BOL, self-heated, one-point cal at {CAL_I:g} A / {CAL_TA:g} degC"],
     [f"BOL uncalibrated error at {I_MAX:g} A (self-heated, solder-heat limit)", f"{FS_UN_LO:.3f} to +{FS_UN_HI:.3f} % (max {FS_UNCAL_PCT:.3f} %)",
      f"+/-{ERR_LIMIT_PCT:g} % (not the judged case)", f"{ERR_LIMIT_PCT - FS_UNCAL_PCT:+.3f} % of reading",
      f"{err_pf(FS_UNCAL_PCT)} (reported; the judged case is calibrated)"],
     [f"Full-scale current error at {I_MAX:g} A, ambient only (reference)", err_row_val(FS_MIN, FS_MAX, I_MAX)
      + f" (max {FS_AMB_PCT:.3f} %)", "reference only", "n/a", "REFERENCE (not judged)"],
     [f"BOL calibrated error at {I_LOW * 1e3:g} mA (report)", f"{LO_CAL_LO:.3f} to +{LO_CAL_HI:.3f} % (max {LO_CAL_PCT:.3f} %)",
-     "none set at 100 mA", "n/a", "REPORT ONLY (no limit set)"],
+     f"none set at {I_LOW * 1e3:g} mA", "n/a", "REPORT ONLY (no limit set)"],
     [f"BOL uncalibrated error at {I_LOW * 1e3:g} mA (report)", f"{LO_UN_LO:.3f} to +{LO_UN_HI:.3f} % (max {LO_UNCAL_PCT:.3f} %)",
-     "none set at 100 mA", "n/a", "REPORT ONLY (no limit set)"],
-    ["Bus-voltage error at 12 V (incl. 1 LSB)", f"+/-{mv(BUS_12)} mV (+/-{pct(BUS_12 / VBUS_LO)} %)",
+     f"none set at {I_LOW * 1e3:g} mA", "n/a", "REPORT ONLY (no limit set)"],
+    [f"Bus-voltage error at {VBUS_LO:g} V (incl. 1 LSB)", f"+/-{mv(BUS_12)} mV (+/-{pct(BUS_12 / VBUS_LO)} %)",
      "none set", "n/a", "REPORT ONLY (no limit set)"],
-    ["Bus-voltage error at 40 V (incl. 1 LSB)", f"+/-{mv(BUS_40)} mV (+/-{pct(BUS_40 / VBUS_HI)} %)",
+    [f"Bus-voltage error at {VBUS_HI:g} V (incl. 1 LSB)", f"+/-{mv(BUS_40)} mV (+/-{pct(BUS_40 / VBUS_HI)} %)",
      "none set", "n/a", "REPORT ONLY (no limit set)"],
-    [f"Power error at {I_MAX:g} A, 12 V (ambient)", f"{pct(PW_5[12.0][0])} to +{pct(PW_5[12.0][1])} %",
+    [f"Power error at {I_MAX:g} A, {VBUS_LO:g} V (ambient)", f"{pct(PW_5[VBUS_LO][0])} to +{pct(PW_5[VBUS_LO][1])} %",
      "none set", "n/a", "REPORT ONLY (no limit set)"],
-    [f"Power error at {I_MAX:g} A, 40 V (ambient)", f"{pct(PW_5[40.0][0])} to +{pct(PW_5[40.0][1])} %",
+    [f"Power error at {I_MAX:g} A, {VBUS_HI:g} V (ambient)", f"{pct(PW_5[VBUS_HI][0])} to +{pct(PW_5[VBUS_HI][1])} %",
      "none set", "n/a", "REPORT ONLY (no limit set)"],
-    ["INA229 junction temperature at TA 70 degC (typical-based)", f"{TJ_ALL:.4g} degC (all power)",
+    [f"INA229 junction temperature at TA {TA.max:g} degC (typical-based)", f"{TJ_ALL:.4g} degC (all power)",
      f"{TJ_ABS:g} degC (tj_abs)", f"{TJ_MARGIN:.4g} degC", est_status(TJ_MARGIN)],
     ["INA229 quiescent current, active worst", f"{ma(IQ_FULL)} mA (iq_full); {ma(IQ_25.typ)} mA typ at 25 degC",
      "none set", "n/a", "REPORT ONLY"],
@@ -1667,7 +1735,7 @@ SUMMARY = [
      "CHECK (exact integer; no spec limit)" if CAL_EXACT else
      f"CHECK (rounded integer, {CAL_ERR * 100:+.3g} % gain term; no spec limit)"],
     [dif_name, dif_applied, dif_rating, dif_margin, dif_status],
-    ["VIO high level, MOSI/MISO/SCLK/ALERT_N (3.3 V +/-3 %)", vio_hi_row[1], vio_hi_row[2], vio_hi_row[3], vio_hi_row[4]],
+    [f"VIO high level, MOSI/MISO/SCLK/ALERT_N ({VS_NOM:g} V +/-{VS_TOL * 100:g} %)", vio_hi_row[1], vio_hi_row[2], vio_hi_row[3], vio_hi_row[4]],
     ["MISO output source resistance (design placeholder)", f"{R_MISO:g} ohm", f"<= {R_OUT_MAX:.0f} ohm (`voh_25c`)",
      f"{R_OUT_MAX - R_MISO:.0f} ohm", "PASS (placeholder, OPEN ITEM)"],
 ]
@@ -1676,9 +1744,9 @@ md_summary = ["## Summary of key results", ""]
 md_summary += mdtable(["Result", "Value (worst case)", "Limit", "Margin", "Status"], SUMMARY)
 md_summary += [
     "",
-    "Status: PASS / FAIL against a limit from spec.md or the datasheet. ESTIMATE: a curve-based or typical-based result "
-    "(theta_est, rtheta_ja, the self-heating band), not a datasheet bound. REPORT ONLY: no limit set in spec.md "
-    "(`ERR_LIMIT_PCT` is set to 1 % for the full-scale current error only). REFERENCE: shown for comparison, not judged. "
+    "Status: PASS / FAIL against a limit from blocks/INA229HighSideMonitor/spec.md or the datasheet. ESTIMATE: a curve-based or typical-based result "
+    "(theta_est, rtheta_ja, the self-heating band), not a datasheet bound. REPORT ONLY: no limit set in blocks/INA229HighSideMonitor/spec.md "
+    f"(`ERR_LIMIT_PCT` is set to {ERR_LIMIT_PCT:g} % for the full-scale current error only). REFERENCE: shown for comparison, not judged. "
     "OPEN ITEM: passes with zero or placeholder margin. CHECK: a value with no spec limit to judge against.",
     "",
 ]
@@ -1699,8 +1767,8 @@ md += [
     "`resistance_worst` at the element temperature, iterated to below 0.001 degC. theta_est is a derating-curve estimate of "
     "the shunt hot-spot thermal resistance, not a datasheet value. The result is ESTIMATE; the copper, the layout and the "
     "real element temperature are the open item.",
-    "- The element limit (170 degC) is an ASSUMPTION (derate_zero read as the element limit). `t_oper` is an ambient "
-    "rating in the library and is not used as the element limit. PASS on the element margin holds only if the limit is 170 degC.",
+    f"- The element limit ({T_ELEM_LIMIT:g} degC) is an ASSUMPTION (derate_zero read as the element limit). `t_oper` is an ambient "
+    f"rating in the library and is not used as the element limit. PASS on the element margin holds only if the limit is {T_ELEM_LIMIT:g} degC.",
     "- Copper and connector heating at full scale is not analysed (trace, connector and terminal resistance and their temperature "
     "rise are outside this model).",
     "- PCB thermal coupling between the shunt and the INA229 is ignored: the INA229 is assumed at ambient except for its own "
@@ -1710,15 +1778,15 @@ md += [
     "the ADC noise, and the 1 LSB term is conservative (a quantizer is +/-0.5 LSB; 1 LSB was requested). SHUNT_CAL rounding "
     "is included (section 5). The INA229 POWER register is not used: the power result here is V x I from the measured "
     "current and bus voltage.",
-    "- The gain error row (`gserr_25c`) is specified at VCM = 24 V; the bus is 12-40 V (open item).",
+    f"- The gain error row (`gserr_25c`) is specified at VCM = 24 V; the bus is {VBUS_LO:g}-{VBUS_HI:g} V (open item).",
     "- End-of-life (EOL) drift is OUT OF SCOPE for now (open item): load life, thermal shock, high-temperature exposure and "
     "bias humidity (test limits +/-(0.5-1 % + 0.0005 ohm), DS p.3) are not analysed. The INA229 has no long-term drift spec.",
-    "- Calibration: the cal ambient (25 degC) and the cal reference (+/-0.1 % of reading) are assumptions / design inputs. "
-    "A one-point gain calibration at 6 A is modelled; a zero-current offset-only calibration is not.",
+    f"- Calibration: the cal ambient ({CAL_TA:g} degC) and the cal reference (+/-{CAL_REF_PCT:g} % of reading) are assumptions / design inputs. "
+    f"A one-point gain calibration at {CAL_I:g} A is modelled; a zero-current offset-only calibration is not.",
     "- The solder-heat shift is a qualification test limit used as a worst-case bound; typical shifts are not specified and "
     "are not used.",
     "- The shunt rating is a DS rating against ambient at 70 degC; the element temperature is an estimate (section 3).",
-    f"- The board's `vsense_max` ({VSENSE_MAX_MV:.1f} mV, `ina229.zen`) is the self-heated worst Vsense ({mv(VS_SH)} mV) "
+    f"- The board's `vsense_max` ({VSENSE_MAX_MV:.1f} mV, instance configs) is the self-heated worst Vsense ({mv(VS_SH)} mV) "
     "rounded up to 0.1 mV. It is a declared value for the rating check, not a measured one.",
     "",
 ]
@@ -1728,14 +1796,14 @@ md += [
 
 # %%
 HEADER = [
-    "# INA229 + WSK2512 shunt block: design analysis",
+    "# INA229HighSideMonitor block: design analysis",
     "",
-    "> GENERATED by `python3 -m analysis.ina229_block` from `analysis/ina229_block.py`. Do not edit this file; "
+    "> GENERATED by `python3 blocks/INA229HighSideMonitor/analysis.py` (see its header for --params and --out). Do not edit this file; "
     "change the script and re-run.",
     "",
     f"- Library: zener-library {ZL_VERSION} (`analysis/_zl.py`, component data and calc functions).",
     f"- Run date: {RUN_DATE}.",
-    "- Board values and key results: `docs/design-analysis/values.json` (generated by the same run).",
+    f"- Instance `{INSTANCE}`, params `{PARAMS_REL}`. Key results: `design-analysis/values.json` (generated by the same run).",
     "",
     f"High-side current sense: {I_MAX:g} A bidirectional full scale, bus {VBUS_LO:g} to {VBUS_HI:g} V, "
     f"TA {TA.min:g} to {TA.max:g} degC, VS {VS_NOM:g} V +/-{VS_TOL * 100:g} %. Design: ADCRANGE {ADCRANGE}, "
@@ -1743,8 +1811,8 @@ HEADER = [
     "",
     "## Operating conditions and assumptions",
     "",
-    f"- Full scale: {I_MAX:g} A, bidirectional (designer choice 2026-11-15). Bus {VBUS_LO:g} to {VBUS_HI:g} V DC, high-side.",
-    f"- Accuracy requirement: +/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A full scale (designer requirement 2026-11-15), "
+    f"- Full scale: {I_MAX:g} A, bidirectional (basis: `i_fs_a_basis` in the params file). Bus {VBUS_LO:g} to {VBUS_HI:g} V DC, high-side.",
+    f"- Accuracy requirement: +/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A full scale (basis: `err_limit_pct_basis` in the params file), "
     "judged on the BOL CALIBRATED self-heated worst case (ESTIMATE). The uncalibrated BOL error is reported, not judged. "
     "The 100 mA error is REPORT ONLY.",
     f"- TA {TA.min:g} to {TA.max:g} degC (board ambient); nominal (typ) reference 25 degC.",
@@ -1756,9 +1824,9 @@ HEADER = [
     f"- Element temperature limit {T_ELEM_LIMIT:g} degC is an ASSUMPTION (`T_ELEM_LIMIT`), not t_oper.",
     f"- Ambient full-scale error uses {SAMPLES} interior samples per input (quadratic in TA); the self-heated band is "
     "multilinear in its two temperatures, so corners are exact (section 5).",
-    f"- MISO series resistor {R_MISO:g} ohm (placeholder), ALERT_N pull-up {R_PULLUP / 1e3:g} kohm (spec.md).",
+    f"- MISO series resistor {R_MISO:g} ohm (placeholder), ALERT_N pull-up {R_PULLUP / 1e3:g} kohm (blocks/INA229HighSideMonitor/spec.md).",
     "",
-    "Conventions: PASS / FAIL against a datasheet, spec.md or the designer's requirement; ESTIMATE for curve-based or "
+    "Conventions: PASS / FAIL against a datasheet, blocks/INA229HighSideMonitor/spec.md or the designer's requirement; ESTIMATE for curve-based or "
     "typical-based results; REPORT ONLY where no limit is set; REFERENCE for comparison only; OPEN ITEM for zero or "
     "placeholder margin; CHECK for a value with no spec limit.",
     "",
@@ -1782,6 +1850,8 @@ DESIGN_MD = ["## Design definition", ""] + mdtable(
          "design choice; section 12"],
         ["ALERT_N pull-up", f"`{erj.mpn(R_PULLUP)}` (Panasonic ERJ-3EKF)", f"{R_PULLUP / 1e3:g} kohm 0603 to V3V3, DNP-able",
          cite(erj.param("tol"))],
+        ["Calibration point (one-point gain)", "design input", f"{CAL_I:g} A at {CAL_TA:g} degC, reference +/-{CAL_REF_PCT:g} %; {CAL_I_SRC}",
+         "params `cal_i_a` (basis in the params file)"],
     ]) + [""]
 
 FINAL = HEADER + DESIGN_MD + md_summary + md
@@ -1790,7 +1860,7 @@ MD_PATH.write_text("\n".join(FINAL) + "\n")
 
 # %% [markdown]
 # ## values.json and console summary
-# Key results as numbers (top level) and as pre-formatted strings (under "text"), for the board and spec.md.
+# Key results as numbers (top level) and as pre-formatted strings (under "text"), for the board and the block spec.
 
 # %%
 VALUES = {
@@ -1833,12 +1903,12 @@ TEXT = {
     "vsense_round_up_mv": f"{VSENSE_MAX_MV:.1f} mV",
     "adc_range_mv": f"+/-{ADC_LIM[ADCRANGE] * 1e3:.2f} mV",
     "headroom_pct": f"{VS_MARGIN / ADC_LIM[ADCRANGE] * 100:.1f} %",
-    "p_shunt_w": f"{PW.max:.3f} W (70 degC)",
+    "p_shunt_w": f"{PW.max:.3f} W ({TA.max:g} degC)",
     "p_rating_w": f"{RATED:.3f} W",
     "t_element_c": f"{T_HOT_5:.1f} degC (ESTIMATE)",
     "err_fs_pct": f"{FS_CAL_PCT:.3f} % (BOL calibrated, self-heated, judged; same as err_fs_cal_pct)",
     "err_fs_ambient_pct": f"{FS_AMB_PCT:.3f} %",
-    "err_low_pct": f"{LO_CAL_PCT:.3f} % (100 mA, BOL calibrated, report only)",
+    "err_low_pct": f"{LO_CAL_PCT:.3f} % ({I_LOW * 1e3:g} mA, BOL calibrated, report only)",
     "current_lsb_ua": f"{CURRENT_LSB * 1e6:.4f} uA",
     "shunt_cal": f"{SHUNT_CAL}",
     "a_per_v": f"{1 / R_NOM:g} A/V",
@@ -1848,15 +1918,16 @@ TEXT = {
     "req_pct": f"+/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A",
     "req_status": err_pf(FS_CAL_PCT),
     "err_fs_cal_pct": f"{FS_CAL_PCT:.3f} % (BOL calibrated, judged)",
-    "err_low_cal_pct": f"{LO_CAL_PCT:.3f} % (100 mA, BOL calibrated, report only)",
-    "err_fs_uncal_pct": f"{FS_UNCAL_PCT:.3f} % (BOL uncalibrated, reported, FAIL vs 1 %)",
-    "err_low_uncal_pct": f"{LO_UNCAL_PCT:.3f} % (100 mA, BOL uncalibrated, report only)",
+    "err_low_cal_pct": f"{LO_CAL_PCT:.3f} % ({I_LOW * 1e3:g} mA, BOL calibrated, report only)",
+    "err_fs_uncal_pct": f"{FS_UNCAL_PCT:.3f} % (BOL uncalibrated, reported, {err_pf(FS_UNCAL_PCT)} vs {ERR_LIMIT_PCT:g} %)",
+    "err_low_uncal_pct": f"{LO_UNCAL_PCT:.3f} % ({I_LOW * 1e3:g} mA, BOL uncalibrated, report only)",
     "cal_ref_pct": f"+/-{CAL_REF_PCT:g} % of reading (design input)",
     "top_contrib_fs_cal": ", ".join(TOP_CA_FS),
     "top_contrib_fs_uncal": ", ".join(TOP_UN_FS),
 }
 FIG_DIR.mkdir(parents=True, exist_ok=True)
-(FIG_DIR / "values.json").write_text(json.dumps({**VALUES, "text": TEXT}, indent=2) + "\n")
+(FIG_DIR / "values.json").write_text(
+    json.dumps({"instance": INSTANCE, "params_file": PARAMS_REL, **VALUES, "text": TEXT}, indent=2) + "\n")
 
 print(f"Design: {R_NOM * 1e3:g} mohm, code {code}, ADCRANGE {ADCRANGE}, MPN {MPN}, full scale {I_MAX:g} A")
 print(f"Vsense worst (self-heated) {mv(VS_SH)} mV, headroom {mv(VS_MARGIN)} mV ({pct(VS_MARGIN / ADC_LIM[ADCRANGE])} % of limit); "
@@ -1868,8 +1939,8 @@ print(f"CURRENT_LSB {CURRENT_LSB:.10g} A/LSB, SHUNT_CAL raw {SHUNT_CAL_RAW:.6f} 
 print(f"BOL calibrated at {I_MAX:g} A (judged vs {ERR_LIMIT_PCT:g} %): max {FS_CAL_PCT:.3f} % -> {err_pf(FS_CAL_PCT)}; "
       f"uncalibrated max {FS_UNCAL_PCT:.3f} % (reported); pre-solder self-heated reference {FS_SH_PCT:.3f} %")
 print(f"BOL at {I_LOW:g} A (report only): calibrated max {LO_CAL_PCT:.3f} %, uncalibrated max {LO_UNCAL_PCT:.3f} %")
-print(f"Power error at {I_MAX:g} A: 12 V {pct(PW_5[12.0][0])} to +{pct(PW_5[12.0][1])} %, "
-      f"40 V {pct(PW_5[40.0][0])} to +{pct(PW_5[40.0][1])} %")
+print(f"Power error at {I_MAX:g} A: {VBUS_LO:g} V {pct(PW_5[VBUS_LO][0])} to +{pct(PW_5[VBUS_LO][1])} %, "
+      f"{VBUS_HI:g} V {pct(PW_5[VBUS_HI][0])} to +{pct(PW_5[VBUS_HI][1])} %")
 print(f"INA229 Tj at TA {TA.max:g}: V3V3 only {TJ_V3:.4g} degC, all power {TJ_ALL:.4g} degC (ESTIMATE, typ rtheta_ja)")
 print(f"Quiescent V3V3 worst {mw(TOT_V3_WORST)} mW; typ 25 degC {mw(TOT_V3_ACTIVE_TYP)} mW")
 print(f"Wrote {MD_PATH}, {FIG_DIR / 'values.json'} and charts in {FIG_DIR}")
