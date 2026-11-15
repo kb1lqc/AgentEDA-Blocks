@@ -8,5 +8,11 @@ name = "ina229"
 path = "ina229.zen"
 description = "INA229-based 85 V power, energy and charge monitor with SPI."
 
+[dependencies]
+"github.com/kb1lqc/zener-library/components/Murata/GCM188" = "0.2.0"
+"github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF" = "0.3.0"
+"github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS" = "0.1.0"
+"github.com/kb1lqc/zener-library/components/Vishay/WSK2512" = "0.2.0"
+
 [access]
 allow = ["*"]

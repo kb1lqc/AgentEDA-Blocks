@@ -4,7 +4,271 @@
 	(generator_version "0.4.102")
 	(uuid "513d9cc1-d27a-514d-a37c-2f1ca04dddfa")
 	(paper "A4")
+	(title_block
+		(title "INA229 Power Monitor")
+		(date "2026-11-15")
+		(rev "A")
+		(company "Bryce Salmi Consulting")
+		(comment 1 "github.com/kb1lqc/ina229 @ 6a0152a")
+		(comment 2 "Top level: 12-40 V, 5 A high-side power monitor (INA229HighSideMonitor), SPI")
+		(comment 3 "Author: Bryce Salmi")
+	)
 	(lib_symbols)
+	(wire
+		(pts
+			(xy 172.72 111.76) (xy 195.58 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "214c3fb9-6e1f-5f5d-87d7-3c3b7b2daaaa")
+	)
+	(wire
+		(pts
+			(xy 172.72 106.68) (xy 195.58 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6650b27f-a415-5ca6-beef-2abc7022af8d")
+	)
+	(wire
+		(pts
+			(xy 172.72 116.84) (xy 195.58 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "80c31760-eb6f-543f-a03a-fa9a3cd410ce")
+	)
+	(wire
+		(pts
+			(xy 172.72 101.6) (xy 195.58 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9e267696-fc7e-5546-9b84-d4579f0e2924")
+	)
+	(wire
+		(pts
+			(xy 101.6 104.14) (xy 121.92 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b1072196-06f7-5c3d-8f43-cfb9d57e7606")
+	)
+	(wire
+		(pts
+			(xy 172.72 96.52) (xy 195.58 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d8cb8aca-6957-5aaf-8c16-b6c1c3885b7a")
+	)
+	(wire
+		(pts
+			(xy 172.72 91.44) (xy 195.58 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fb1ea3d8-b10c-5186-9f14-35673435108d")
+	)
+	(label "ALERT_N"
+		(at 195.58 116.84 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "063bac3f-e343-5ee8-900e-467901e08e3e")
+	)
+	(label "VBUS_LOAD"
+		(at 195.58 91.44 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "3480a000-eacb-5c25-8ee8-a2e88c5972cc")
+	)
+	(label "SPI_MOSI"
+		(at 195.58 101.6 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "7b37adc4-ec93-5f10-9c8e-0c2bce056a95")
+	)
+	(label "SPI_CLK"
+		(at 195.58 106.68 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "b1c4f6b2-1a64-5dfd-9cd9-a03f4efb8e06")
+	)
+	(label "SPI_MISO"
+		(at 195.58 111.76 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "b566abd6-2cfb-5ea3-a6ce-8a0d7bc1696b")
+	)
+	(label "VBUS_IN"
+		(at 101.6 104.14 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ba6d45ac-78d4-5db7-850a-e10d09bb6c5e")
+	)
+	(label "SPI_CS"
+		(at 195.58 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "efd11601-0fbc-5a03-a140-2d8177f26e82")
+	)
+	(sheet
+		(at 121.92 81.28)
+		(size 50.8 45.72)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "8749cfd6-e66f-59fa-961a-8aa97d408460")
+		(property "Sheetname" "INA"
+			(at 121.92 79.375 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "INA.kicad_sch"
+			(at 121.92 129.54 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "ALERT_N" bidirectional
+			(at 172.72 116.84 0)
+			(uuid "983d200b-0332-5588-843e-e0b38c2d55b5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SPI.CLK" bidirectional
+			(at 172.72 106.68 0)
+			(uuid "3f44b2f7-8a3c-5d12-b7a5-fc2d38d56d76")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SPI.CS" bidirectional
+			(at 172.72 96.52 0)
+			(uuid "e3d4466a-8a5e-580a-9ba1-24ca19498ea5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SPI.MISO" bidirectional
+			(at 172.72 111.76 0)
+			(uuid "952612b0-6ee5-5d38-9382-766ae3a9d5b6")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SPI.MOSI" bidirectional
+			(at 172.72 101.6 0)
+			(uuid "649e4edb-89e8-5644-95ba-063fc51dd938")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "BUS_IN" bidirectional
+			(at 121.92 104.14 180)
+			(uuid "5e0956a5-83ea-5d10-ac6f-aede2bf0cfd8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "BUS_OUT" bidirectional
+			(at 172.72 91.44 0)
+			(uuid "c074c346-a5eb-5095-8465-4b9145a1e55d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "ina229"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa"
+					(page "2")
+				)
+			)
+		)
+	)
 	(sheet_instances
 		(path "/"
 			(page "1")

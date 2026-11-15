@@ -25,7 +25,7 @@ The Zener wrappers capture the circuit; the same parts' Python data drives the w
 # pcb toolchain 0.4.x: https://docs.pcb.new
 git clone https://github.com/kb1lqc/ina229.git
 # Python analyses need the library checked out next to this repo, at the version pinned in analysis/_zl.py:
-git clone --branch v0.1.0 https://github.com/kb1lqc/zener-library.git zener-library
+git clone --branch v0.3.0 https://github.com/kb1lqc/zener-library.git zener-library
 ```
 
 The library checkout must stay outside this repo: `pcb` rejects any nested `pcb.toml` with a `[workspace]` section,

@@ -6,9 +6,47 @@ wrapper; an unset ambient reports UNVERIFIED on each part's temperature check.
 """
 
 load("@stdlib/units.zen", "Temperature")
+load("@stdlib/interfaces.zen", "Spi")
 
-ambient = config(Temperature, optional=True, help="Board ambient temperature range (set in spec.md first)")
+INA229HighSideMonitor = Module("./modules/INA229HighSideMonitor.zen")
+
+# Board ambient range: 0 to 70 degC, the spec.md requirement (see spec.md, Requirements).
+ambient = config(
+    Temperature, default="273.15K to 343.15K", help="Board ambient temperature range (set in spec.md first)"
+)
 derate = config(float, default=1.0, help="Project derating factor in (0, 1]; shrinks abs-max limits only")
+
+# Bus source side (BUS_IN) and load side (BUS_OUT). BUS_OUT also feeds the block's INA229 VBUS sense (DS Fig 10-1
+# note 1: load power).
+VBUS_IN = Net(voltage="12V to 40V")
+VBUS_LOAD = Net(voltage="12V to 40V")
+V3V3 = Power("V3V3", voltage="3.3V 3%")  # shared by host and INA229 (spec.md); 3 % keeps logic within VS + 0.3 V
+GND = Ground("GND")
+ALERT_N = Net("ALERT_N", voltage="0V to 3.399V")
+SPI = Spi(
+    CS=Net("SPI_CS", voltage="0V to 3.399V"),
+    MOSI=Net("SPI_MOSI", voltage="0V to 3.399V"),
+    CLK=Net("SPI_CLK", voltage="0V to 3.399V"),
+    MISO=Net("SPI_MISO", voltage="0V to 3.399V"),
+)
+
+# rshunt, rshunt_tol: analysis/out/ina229_block.md section 1, stocked-part selection (stock snapshot 2026-11-15): 25 mohm
+# code D (+/-0.5 %), WSK2512R0250DEA. The +/-0.1 % 32 mohm optimum has no stock. Shunt power 0.63 W vs 1 W rating.
+# vsense_max: same section, worst-case Vsense 125.82 mV at 5 A, rounded up to 125.9 mV (23 % ADC headroom to 163.84 mV).
+INA = INA229HighSideMonitor(
+    name="INA",
+    BUS_IN=VBUS_IN,
+    BUS_OUT=VBUS_LOAD,
+    V3V3=V3V3,
+    GND=GND,
+    SPI=SPI,
+    ALERT_N=ALERT_N,
+    rshunt="25mohm",
+    rshunt_tol="D",
+    vsense_max="125.9mV",
+    ambient=ambient,
+    derate=derate,
+)
 
 Board(
     name="ina229",

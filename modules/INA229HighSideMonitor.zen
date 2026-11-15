@@ -1,0 +1,142 @@
+"""INA229HighSideMonitor: reusable high-side INA229 power/energy monitor with an on-block Kelvin shunt.
+
+Block: INA229AIDGS (85 V, 20-bit power/energy/charge monitor, SPI) sensing a WSK2512 4-terminal current-sense
+shunt between BUS_IN and BUS_OUT. Positive current flows BUS_IN -> BUS_OUT. The shunt voltage taps (E1, E2) feed
+IN+ and IN- directly, so the trace resistance outside the shunt is not measured. The INA229 VBUS (bus voltage)
+input is wired inside the block to BUS_OUT, the low side of the shunt (DS Fig 10-1 note 1, load power).
+High-side sensing only: with VBUS tied to BUS_OUT the block cannot be used as a low-side monitor.
+
+io: BUS_IN, BUS_OUT (shunt current path), V3V3 (2.7 V to 5.5 V accepted, per the INA229 rec-op; the board supplies
+the 3.3 V logic rail), GND, SPI (Spi: CS, MISO, MOSI, CLK; CS active low), ALERT_N (active low, open drain).
+
+config: rshunt (Resistance, no default, set by the board), rshunt_tol (shunt tolerance code, default "B"),
+alert_pullup (bool, default True), ambient (optional Temperature range), derate (float, default 1.0).
+
+Instances: U (INA229), SHUNT (WSK2512), C_VS (100 nF decoupling at VS), R_MISO (33 ohm source termination),
+R_ALERT (10 kohm ALERT_N pull-up, DNP when a host or shared wired-OR pull-up is used). Topology does not depend on
+configs: configs change values and dnp only.
+
+Schematic: a sub-sheet (its own page, child file named after the instance, eda/INA.kicad_sch on the board).
+
+Values: rshunt comes from analysis/ina229_block.py (worst case over the zener-library limits). The 33 ohm MISO
+termination is a placeholder DESIGN CHOICE (R_out not yet known, see spec.md open items). The 10 kohm ALERT pull-up
+and 100 nF VS decoupling are from DS Fig 8-2 and DS section 9.
+"""
+
+load("@stdlib/interfaces.zen", "Spi")
+load("@stdlib/units.zen", "Impedance", "Resistance", "Temperature", "Voltage")
+
+Project(name="INA229HighSideMonitor", path="INA229HighSideMonitor", layout=False)
+
+INA229 = Module("github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS/INA229AIDGS.zen")
+WSK2512 = Module("github.com/kb1lqc/zener-library/components/Vishay/WSK2512/WSK2512.zen")
+GCM188 = Module("github.com/kb1lqc/zener-library/components/Murata/GCM188/GCM188.zen")
+ERJ3EKF = Module("github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF/ERJ-3EKF.zen")
+
+BUS_IN = io(Net)
+BUS_OUT = io(Net)
+# Intended rail is 3.3 V (the name); the block accepts 2.7 V to 5.5 V per the INA229 recommended operating range.
+V3V3 = io(Power(voltage="2.7V to 5.5V"))
+GND = io(Ground)
+# CS is active low.
+SPI = io(Spi)
+# Active low, open drain.
+ALERT_N = io(Net)
+
+rshunt = config(Resistance, help="Shunt resistance, an orderable WSK2512 value for the chosen rshunt_tol")
+rshunt_tol = config(
+    str,
+    default="B",
+    help="WSK2512 tolerance code: B (+/-0.1 %, 0.01 to 0.2 ohm), D (+/-0.5 %, 0.001 to 0.2 ohm) or F (+/-1.0 %, 0.0005 to 0.2 ohm); B is the narrowest value range, D and F also reach lower values",
+)
+alert_pullup = config(bool, default=True, help="Fit the ALERT_N pull-up (R_ALERT); False when the host supplies one")
+ambient = config(Temperature, optional=True, help="Board ambient temperature range")
+derate = config(float, default=1.0, help="Project derating factor in (0, 1]; shrinks abs-max only")
+vsense_max = config(
+    Voltage, optional=True, help="Worst-case shunt voltage I_max x R_worst from the analysis; sets the shunt v_across"
+)
+
+# The wrappers' optional ambient config rejects None, so pass it only when the board sets it.
+_AMB = {"ambient": ambient} if ambient != None else {}
+# Shunt v_across from the module's analysis, passed only when the board sets vsense_max.
+_VSENSE = {"v_across": vsense_max} if vsense_max != None else {}
+
+# Kelvin sense nets from the shunt taps to the INA229 IN+/IN-. The taps sit on the I1/I2 terminals, so they carry the
+# bus voltage; the shunt drop (<= 0.16 V) is negligible versus the declared range. None when the block is built alone.
+SENSE_P = Net(voltage=BUS_IN.voltage)
+SENSE_N = Net(voltage=BUS_OUT.voltage)
+# INA229 MISO output, before the source series resistor: same logic levels as the SPI MISO line it drives.
+MISO_SRC = Net(voltage=SPI.MISO.voltage)
+
+U = INA229(
+    name="U",
+    CS=SPI.CS,
+    MOSI=SPI.MOSI,
+    SCLK=SPI.CLK,
+    MISO=MISO_SRC,
+    ALERT=ALERT_N,
+    VS=V3V3,
+    GND=GND,
+    # Bus-voltage sense from the low side of the shunt (BUS_OUT, the load-side current terminal I2), not the Kelvin
+    # tap E2. DS Fig 10-1 note 1: load power.
+    VBUS=BUS_OUT,
+    IN_P=SENSE_P,
+    IN_N=SENSE_N,
+    derate=derate,
+    **_AMB,
+)
+
+SHUNT = WSK2512(
+    name="SHUNT",
+    value=rshunt,
+    tolerance=rshunt_tol,
+    I1=BUS_IN,
+    I2=BUS_OUT,
+    E1=SENSE_P,
+    E2=SENSE_N,
+    derate=derate,
+    **dict(_AMB, **_VSENSE),
+)
+
+# Decoupling at the VS pin.
+C_VS = GCM188(
+    name="C_VS",
+    value="100nF",
+    rated_v="50V",
+    dielectric="X7R",
+    tolerance="+/-10%",
+    P1=V3V3,
+    P2=GND,
+    derate=derate,
+    **_AMB,
+)
+
+# SPI.MISO side of R_MISO: same electrical net as SPI.MISO, marked 50 ohm.
+MISO_LINE = Net(SPI.MISO, impedance=Impedance(50))
+
+# Source series termination at the INA229 MISO pin. DESIGN CHOICE: 33 ohm is a placeholder. The INA229 DS bounds
+# MISO output resistance only as <= 400 ohm (VOH at 1 mA). R_series + R_out ~= 50 ohm trace impedance; the trace after
+# this resistor (MISO_LINE) is 50 ohm controlled impedance.
+R_MISO = ERJ3EKF(
+    name="R_MISO",
+    value="33ohm",
+    P1=MISO_SRC,
+    P2=MISO_LINE,
+    # Voltage across the termination, conservative edge-peak bound: VS_max x R / (R + Z0) = 3.399 V x 33 / (33 + 50)
+    # = 1.35 V, assuming driver R_out >= 0 and a 50 ohm line. DC drop is ~0 (CMOS input load). The rated check uses
+    # this instead of the two nets' ranges.
+    v_across="1.35V",
+    derate=derate,
+    **_AMB,
+)
+
+# ALERT_N pull-up to V3V3 (DS Fig 8-2). DNP when the host or a shared wired-OR pull-up is used.
+R_ALERT = ERJ3EKF(
+    name="R_ALERT",
+    value="10kohm",
+    P1=ALERT_N,
+    P2=V3V3,
+    dnp=not alert_pullup,
+    derate=derate,
+    **_AMB,
+)
