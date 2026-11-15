@@ -36,8 +36,12 @@ ERJ3EKF = Module("github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF/
 BUS_IN = io(Net)
 BUS_OUT = io(Net)
 # Intended rail is 3.3 V (the name); the block accepts 2.7 V to 5.5 V per the INA229 recommended operating range.
-V3V3 = io(Power(voltage="2.7V to 5.5V"))
-GND = io(Ground)
+# A plain Net so the sub-sheet draws a local hierarchical label (not a global power symbol); the board's V3V3 Power
+# net carries the voltage.
+V3V3 = io(Net)
+# Plain Net for the same reason; the cast below re-types it for library pins that require Ground.
+GND = io(Net)
+_GND = Ground(GND)  # library parts type ground pins as Ground
 # CS is active low.
 SPI = io(Spi)
 # Active low, open drain.
@@ -76,7 +80,7 @@ U = INA229(
     MISO=MISO_SRC,
     ALERT=ALERT_N,
     VS=V3V3,
-    GND=GND,
+    GND=_GND,
     # Bus-voltage sense from the low side of the shunt (BUS_OUT, the load-side current terminal I2), not the Kelvin
     # tap E2. DS Fig 10-1 note 1: load power.
     VBUS=BUS_OUT,
@@ -106,7 +110,7 @@ C_VS = GCM188(
     dielectric="X7R",
     tolerance="+/-10%",
     P1=V3V3,
-    P2=GND,
+    P2=_GND,
     derate=derate,
     **_AMB,
 )

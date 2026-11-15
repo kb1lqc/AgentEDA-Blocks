@@ -32,8 +32,8 @@ datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
 |---|---|---|
 | `BUS_IN` | Net | High-side power path in (source side of the shunt) |
 | `BUS_OUT` | Net | High-side power path out (load side); positive current flows `BUS_IN` -> `BUS_OUT`; also the VBUS sense point |
-| `V3V3` | Power, 2.7-5.5 V accepted | Logic supply; the name carries the intended 3.3 V rail, the range is the INA229 rec-op |
-| `GND` | Ground | Ground |
+| `V3V3` | Net (local in block; board V3V3 Power net 3.3 V +/-3 %); block accepts 2.7-5.5 V | Logic supply; the name carries the intended 3.3 V rail, the range is the INA229 rec-op |
+| `GND` | Net (local in block, board GND) | Ground |
 | `SPI` | stdlib `Spi` (CS, MISO, MOSI, CLK) | SPI peripheral; CS active low |
 | `ALERT_N` | Net | Alert output, active low, open drain |
 

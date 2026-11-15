@@ -34,6 +34,12 @@ review; confirm before promoting it to a rule).
   parts: expected voltage range, rail voltage and tolerance, design max current, worst-case full-scale error,
   scaling (A per V, A per count), key limits. Every number comes from spec.md or the worst-case analysis report.
   Instance values sit on the parent sheet next to the block; the reusable sheet carries block notes. (stated, 2026-11-15)
+- On a parent sheet, a block's power-path ports sit at the same height on opposite edges (BUS_IN left, BUS_OUT
+  right) so the path reads as one straight wire flowing through the block; interface pins go above or below the
+  path on the right edge. (stated, 2026-11-15)
+- Rails and ground are local nets inside a reusable sheet, connected through ports (sheet pins); global power
+  symbols only at the top level. Verified possible in pcb 0.4.102 (module ports as plain nets + an internal
+  Ground cast, then swap the child's power symbols for hierarchical labels). (stated, 2026-11-15)
 - Organize notes and circuit areas with drawn rectangles (solid or dashed) carrying a short title, so a reader
   sees the groups at a glance (e.g. "POWER PATH IN", "CURRENT SENSE", "LOGIC SUPPLY", "SPI / ALERT", "DESIGN
   VALUES"). Notes sit inside or on the edge of the box they describe. (stated, 2026-11-15)

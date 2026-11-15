@@ -13,7 +13,262 @@
 		(comment 2 "Top level: 12-40 V, 5 A high-side power monitor (INA229HighSideMonitor), SPI")
 		(comment 3 "Author: Bryce Salmi")
 	)
-	(lib_symbols)
+	(lib_symbols
+		(symbol "GND"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "VCC"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "VCC"
+				(at 0 3.556 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"VCC\""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "VCC_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "VCC_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+	)
 	(rectangle
 		(start 175.26 81.28)
 		(end 238.76 127)
@@ -27,8 +282,8 @@
 		(uuid "2e7734e4-b5ef-4568-ad49-b40f9380e9ca")
 	)
 	(rectangle
-		(start 76.2 135.89)
-		(end 238.76 154.94)
+		(start 76.2 138.43)
+		(end 238.76 157.48)
 		(stroke
 			(width 0.1524)
 			(type dash)
@@ -52,7 +307,7 @@
 	)
 	(text "SPI: 50 ohm lines;\nMISO terminated on block,\nhost terminates CS/SCLK/MOSI"
 		(exclude_from_sim no)
-		(at 198.12 102.87 0)
+		(at 198.12 113.6 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -63,7 +318,7 @@
 	)
 	(text "I error +/-0.80 % (+/-40 mA) at 5 A; +/-0.87 % at 100 mA\nVBUS error +/-59.4 mV at 40 V, +/-20.2 mV at 12 V\nVBUS LSB 195.3 uV/count\nShunt power 0.63 W max of 1.0 W\nV3V3 3.3 V +/-3 %, shared with host"
 		(exclude_from_sim no)
-		(at 152.4 141 0)
+		(at 152.4 143.54 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -98,7 +353,7 @@
 	)
 	(text "VBUS_LOAD: to load\nVBUS sensed here (shunt low side)"
 		(exclude_from_sim no)
-		(at 198.12 89.54 0)
+		(at 198.12 101.9 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -109,7 +364,7 @@
 	)
 	(text "DESIGN VALUES (TA 0-70 C)"
 		(exclude_from_sim no)
-		(at 77.47 137.16 0)
+		(at 77.47 139.7 0)
 		(effects
 			(font
 				(size 1.524 1.524)
@@ -132,7 +387,7 @@
 	)
 	(text "ALERT_N: open drain, active low"
 		(exclude_from_sim no)
-		(at 198.12 116.84 0)
+		(at 198.12 99.06 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -143,7 +398,7 @@
 	)
 	(text "Bus 12-40 V DC, 5 A FS bidirectional\nRshunt 25 mohm +/-0.5 % (WSK2512R0250DEA), Kelvin\n5 A FS: Vshunt 125.8 mV max of 163.84 mV (ADCRANGE 0)\nScaling 40 A/V of Vshunt (=1/25 mohm), 9.537 uA/count\nSHUNT_CAL 3125"
 		(exclude_from_sim no)
-		(at 78.74 141 0)
+		(at 78.74 143.54 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -154,7 +409,7 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 111.76) (xy 195.58 111.76)
+			(xy 172.72 124.46) (xy 195.58 124.46)
 		)
 		(stroke
 			(width 0)
@@ -164,7 +419,7 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 106.68) (xy 195.58 106.68)
+			(xy 172.72 119.38) (xy 195.58 119.38)
 		)
 		(stroke
 			(width 0)
@@ -174,7 +429,7 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 116.84) (xy 195.58 116.84)
+			(xy 172.72 99.06) (xy 195.58 99.06)
 		)
 		(stroke
 			(width 0)
@@ -184,7 +439,17 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 101.6) (xy 195.58 101.6)
+			(xy 147.32 81.28) (xy 147.32 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8fd87dd0-ef90-4555-b6b3-cc2506d2807e")
+	)
+	(wire
+		(pts
+			(xy 172.72 114.3) (xy 195.58 114.3)
 		)
 		(stroke
 			(width 0)
@@ -204,7 +469,7 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 96.52) (xy 195.58 96.52)
+			(xy 172.72 109.22) (xy 195.58 109.22)
 		)
 		(stroke
 			(width 0)
@@ -214,7 +479,17 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 91.44) (xy 195.58 91.44)
+			(xy 147.32 127) (xy 147.32 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f560cf59-795c-4836-921d-2c3e957d90f7")
+	)
+	(wire
+		(pts
+			(xy 172.72 104.14) (xy 195.58 104.14)
 		)
 		(stroke
 			(width 0)
@@ -223,7 +498,7 @@
 		(uuid "fb1ea3d8-b10c-5186-9f14-35673435108d")
 	)
 	(label "ALERT_N"
-		(at 195.58 116.84 180)
+		(at 195.58 99.06 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -233,7 +508,7 @@
 		(uuid "063bac3f-e343-5ee8-900e-467901e08e3e")
 	)
 	(label "VBUS_LOAD"
-		(at 195.58 91.44 180)
+		(at 195.58 104.14 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -243,7 +518,7 @@
 		(uuid "3480a000-eacb-5c25-8ee8-a2e88c5972cc")
 	)
 	(label "SPI_MOSI"
-		(at 195.58 101.6 180)
+		(at 195.58 114.3 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -253,7 +528,7 @@
 		(uuid "7b37adc4-ec93-5f10-9c8e-0c2bce056a95")
 	)
 	(label "SPI_CLK"
-		(at 195.58 106.68 180)
+		(at 195.58 119.38 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -263,7 +538,7 @@
 		(uuid "b1c4f6b2-1a64-5dfd-9cd9-a03f4efb8e06")
 	)
 	(label "SPI_MISO"
-		(at 195.58 111.76 180)
+		(at 195.58 124.46 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -283,7 +558,7 @@
 		(uuid "ba6d45ac-78d4-5db7-850a-e10d09bb6c5e")
 	)
 	(label "SPI_CS"
-		(at 195.58 96.52 180)
+		(at 195.58 109.22 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -291,6 +566,184 @@
 			(justify right bottom)
 		)
 		(uuid "efd11601-0fbc-5a03-a140-2d8177f26e82")
+	)
+	(symbol
+		(lib_id "GND")
+		(at 147.32 130.81 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "196d45d3-b3e2-5d08-a856-c563530f2944")
+		(property "Reference" "#PWR196d45d3b3e25d08a856c563530f2944"
+			(at 147.32 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 147.32 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 147.32 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 147.32 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 147.32 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "global power"
+			(at 147.32 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5bb9140a-79fd-54bf-8edc-a7f99460feb8")
+		)
+		(instances
+			(project "ina229"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa"
+					(reference "#PWR196d45d3b3e25d08a856c563530f2944")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "VCC")
+		(at 147.32 73.66 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5564ae20-204a-5a56-9239-6a22e4910036")
+		(property "Reference" "#PWR5564ae20204a5a5692396a22e4910036"
+			(at 147.32 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "V3V3"
+			(at 147.32 69.85 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 147.32 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 147.32 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 147.32 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "global power"
+			(at 147.32 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8e3bfb76-947d-5afe-b121-943255d98206")
+		)
+		(instances
+			(project "ina229"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa"
+					(reference "#PWR5564ae20204a5a5692396a22e4910036")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(sheet
 		(at 121.92 81.28)
@@ -330,7 +783,7 @@
 			)
 		)
 		(pin "ALERT_N" bidirectional
-			(at 172.72 116.84 0)
+			(at 172.72 99.06 0)
 			(uuid "983d200b-0332-5588-843e-e0b38c2d55b5")
 			(effects
 				(font
@@ -340,7 +793,7 @@
 			)
 		)
 		(pin "SPI.CLK" bidirectional
-			(at 172.72 106.68 0)
+			(at 172.72 119.38 0)
 			(uuid "3f44b2f7-8a3c-5d12-b7a5-fc2d38d56d76")
 			(effects
 				(font
@@ -350,7 +803,7 @@
 			)
 		)
 		(pin "SPI.CS" bidirectional
-			(at 172.72 96.52 0)
+			(at 172.72 109.22 0)
 			(uuid "e3d4466a-8a5e-580a-9ba1-24ca19498ea5")
 			(effects
 				(font
@@ -360,7 +813,7 @@
 			)
 		)
 		(pin "SPI.MISO" bidirectional
-			(at 172.72 111.76 0)
+			(at 172.72 124.46 0)
 			(uuid "952612b0-6ee5-5d38-9382-766ae3a9d5b6")
 			(effects
 				(font
@@ -370,7 +823,7 @@
 			)
 		)
 		(pin "SPI.MOSI" bidirectional
-			(at 172.72 101.6 0)
+			(at 172.72 114.3 0)
 			(uuid "649e4edb-89e8-5644-95ba-063fc51dd938")
 			(effects
 				(font
@@ -390,13 +843,33 @@
 			)
 		)
 		(pin "BUS_OUT" bidirectional
-			(at 172.72 91.44 0)
+			(at 172.72 104.14 0)
 			(uuid "c074c346-a5eb-5095-8465-4b9145a1e55d")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+		(pin "V3V3" bidirectional
+			(at 147.32 81.28 90)
+			(uuid "f0503e7f-c3f8-4d03-9d50-5549afdd5edd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "GND" bidirectional
+			(at 147.32 127 270)
+			(uuid "e40b9a27-5a21-4651-ae7a-32c6f61210ec")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 		(instances
