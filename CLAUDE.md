@@ -53,3 +53,6 @@ here). Correctness beats speed. Never guess a number. I review every diff; do no
 From the repo root, judging by exit code:
 `pcb fmt` -> `pcb sync` (if imports changed) -> `pcb build -Dwarnings ina229.zen` -> any affected
 `python3 -m analysis.<name>`. Delete `__pycache__/` afterwards. Report every UNVERIFIED, waiver and open item.
+For a design-value change: edit the analysis/.zen, run `python3 -m analysis.ina229_block` (regenerates the datasheet
+and `docs/design-analysis/values.json`), then `python3 tools/schematic/update_notes.py` (schematic notes from the
+values, no hand typing), then `pcb apply schematic --no-open ina229.zen` twice, netlist diff, build, ERC.

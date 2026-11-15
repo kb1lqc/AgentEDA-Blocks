@@ -1,4 +1,9 @@
-# INA sheet arrangement scripts (reference)
+# Schematic tools
+
+- `update_notes.py`: rewrites the engineering notes on both sheets from `docs/design-analysis/values.json`
+  (pattern-matched, each must match once). Run after the analysis; then gate with apply/netlist/build/ERC.
+
+## INA sheet arrangement scripts (reference)
 
 One-shot scripts the drafting agents used to arrange `eda/INA.kicad_sch` (2026-11-15), kept as worked examples
 for the placement generator described in the zener-library `schematic-capture` skill. They are not meant to be

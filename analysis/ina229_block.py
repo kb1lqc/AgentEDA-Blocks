@@ -1,17 +1,17 @@
 # %% [markdown]
 # # INA229 + WSK2512 shunt block: design-analysis generator
 #
-# This file is the SOURCE of `docs/design-analysis.md` and the PNG charts in `docs/design-analysis/`. The Markdown is
-# generated: never edit it by hand. Run from the repo root:
+# This file is the SOURCE of `docs/design-analysis.md`, the PNG charts in `docs/design-analysis/` and
+# `docs/design-analysis/values.json`. Those outputs are generated: never edit them by hand. Run from the repo root:
 #
 #     python3 -m analysis.ina229_block        (exit 0 = everything regenerated)
 #
 # It is a jupytext "percent" file (`# %%` code cells, `# %% [markdown]` text cells), so it opens as a notebook in
 # VS Code / Jupyter and stays a plain runnable module.
 #
-# Scope: 8 A bidirectional full scale, bus 12-40 V (high side), TA 0-70 degC, VS 3.3 V +/-3 %. Accuracy requirement:
-# +/-1 % of reading at 8 A (ERR_LIMIT_PCT), judged on the SELF-HEATED worst case. ADCRANGE is a design variable (section
-# 1); the design is ADCRANGE 0 (designer choice 2026-11-15).
+# Scope: the design as it stands. 6 A bidirectional full scale, WSK2512R0100DEA (10 mohm, code D, +/-0.5 %), ADCRANGE 0,
+# bus 12-40 V (high side), TA 0-70 degC, VS 3.3 V +/-3 %. Accuracy requirement: +/-1 % of reading at 6 A (ERR_LIMIT_PCT),
+# judged on the SELF-HEATED worst case. The report analyses this design only.
 # Every datasheet number comes from the component library (`part.param`, `part.inputs`, calc functions). Design choices
 # are the constants in the DESIGN CHOICES cell. Worst case = `lib.wca` over every min/max corner. Where a function is not
 # multilinear in its inputs (the ambient current error is quadratic in TA), wca also samples interior points.
@@ -23,7 +23,6 @@
 import datetime
 import json
 import math
-from functools import partial
 from pathlib import Path
 
 from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.path)
@@ -34,11 +33,9 @@ import matplotlib.pyplot as plt  # imported after lib, which selects the Agg bac
 from matplotlib.lines import Line2D
 
 ANALYSIS = Path(__file__).resolve().parent
-DATA = ANALYSIS / "data"  # committed inputs
 DOCS = ANALYSIS.parent / "docs"
 FIG_DIR = DOCS / "design-analysis"  # generated charts (PNG)
 MD_PATH = DOCS / "design-analysis.md"  # generated report
-STOCK_JSON = DATA / "shunt_stock_2026-11-15_rerank.json"  # second stock check (ADCRANGE re-rank); the first is kept
 RUN_DATE = datetime.date.today().isoformat()
 
 # %% [markdown]
@@ -46,9 +43,9 @@ RUN_DATE = datetime.date.today().isoformat()
 # Every constant here is a DESIGN CHOICE (not a datasheet value), with the reason beside it.
 
 # %%
-# Designer decision 2026-11-15: 8 A full scale (was 5 A). Basis: the balanced rating from the maximum full-scale study
-# (MF.0 to MF.9). For the WSK2512 10 mohm code B the study's maximum is 9 A, with thin power and temperature margins.
-I_MAX = 8.0  # A, full-scale current, bidirectional
+# Designer decision 2026-11-15: 6 A full scale. Basis: designer choice. The accuracy requirement below is judged at
+# this current.
+I_MAX = 6.0  # A, full-scale current, bidirectional
 I_LOW = 0.1  # A, low-current point for the error tables
 VBUS_LO, VBUS_HI = 12.0, 40.0  # V, high-side bus range
 VBUS_TEST = [12.0, 18.0, 28.0, 36.0, 40.0]  # V, bus voltages for the bus-error table (task spec)
@@ -62,49 +59,18 @@ DERATE = 1.0  # shunt rating derate (spec.md: no derating)
 SAMPLES = 2  # interior points per input for the ambient full-scale error (checked against samples = 0 in section 5)
 N_PLOT = 40  # log-spaced current points for the error chart
 I_PLOT_LO = 0.1  # A, error chart starts here
-HEADROOM_MIN = 0.02  # fraction of the ADC range: ranking tie-break threshold (section 1)
 R_MISO = 33.0  # ohm, MISO series resistor: PLACEHOLDER DESIGN CHOICE (open item, section 12)
 R_PULLUP = 10e3  # ohm, ALERT_N pull-up (spec.md block design, DS Fig 8-2); tolerance and TCR come from the library
-ERR_LIMIT_PCT = 1.0  # % of reading at I_MAX: designer requirement 2026-11-15 (+/-1 % of reading, 8 A full scale)
+ERR_LIMIT_PCT = 1.0  # % of reading at I_MAX: designer requirement 2026-11-15 (+/-1 % of reading, 6 A full scale)
 T_ELEM_LIMIT = 170.0  # degC, ASSUMPTION: element limit read as the derating curve's zero point (derate_zero). NOT t_oper,
 # which the library records as an AMBIENT rating
 N_PLOT_PWR = 30  # log-spaced current points for the power-error chart
 T_SAMPLES_PWR = 2  # interior ambient points for the joint power error (checked against 9 in section 8)
-# THE design shunt: (ADCRANGE, WSK2512 tolerance code, value in mohm). Designer choice 2026-11-15: 10 mohm code B
-# (WSK2512R0100BEA) at ADCRANGE 0, the lowest self-heated error at I_MAX of the candidates that pass 1 % (section 1.4; its FAIR
-# availability is an open item). Switching the design is a change of this ONE tuple; the board's rshunt / rshunt_tol /
-# vsense_max then follow (ina229.zen, spec.md).
-SHUNT_SELECTED = (0, "B", 10.0)
-ADCRANGE = SHUNT_SELECTED[0]  # INA229 CONFIG ADCRANGE of the design: 0 = +/-163.84 mV, 1 = +/-40.96 mV
-code = SHUNT_SELECTED[1]  # WSK2512 tolerance code of the design
-R_NOM = SHUNT_SELECTED[2] * 1e-3  # ohm, nominal value of the design
-
-# %% [markdown]
-# ## Stock snapshot (committed input)
-# `analysis/data/shunt_stock_2026-11-15_rerank.json` is the recorded `pcb bom -f json` sourcing result for every WSK2512
-# (value, code) that fits the 5 A full scale (the snapshot's fit set; the I_MAX fit set is a subset of it) with self-heated worst-case Vsense at ADCRANGE 0 (169 pairs; 63 of them also fit
-# ADCRANGE 1). It is a sourcing result, not a datasheet value. A MATCH_EXACT row's stock is the sum of its offers' stock
-# (None when the BOM returned no offer). Snapshot only: stock changes, so re-run the stock check before ordering. The
-# earlier snapshot `analysis/data/shunt_stock_2026-11-15.json` (ambient-only fit) is kept unchanged and is not read here.
-
-# %%
-def load_stock(path):
-    """Return (raw record, {(code, value_mohm): {match, offers, adc_fit}}) for every queried candidate. Offers are the
-    BOM distributor listings (distributor, region, stock), kept even at zero stock."""
-    raw = json.loads(path.read_text())
-    table = {}
-    for row in raw["rows"]:
-        offers = (row.get("availability") or {}).get("offers") or []
-        table[(row["code"], round(float(row["value_mohm"]), 6))] = dict(
-            match=row["bom_match"],
-            offers=[(o["distributor"], o["region"], o["stock"]) for o in offers],
-            adc_fit=row["adc_fit"],
-        )
-    return raw, table
-
-
-STOCK_RAW, STOCK_TABLE = load_stock(STOCK_JSON)
-STOCK_DATE = STOCK_RAW["date"]
+# THE design shunt (designer choice 2026-11-15): WSK2512R0100DEA, 10 mohm, tolerance code D (+/-0.5 %), ADCRANGE 0.
+# The board values (ina229.zen: rshunt, rshunt_tol, vsense_max) follow these constants.
+ADCRANGE = 0  # INA229 CONFIG ADCRANGE of the design: 0 = +/-163.84 mV, 1 = +/-40.96 mV
+code = "D"  # WSK2512 tolerance code of the design
+R_NOM = 10.0e-3  # ohm, nominal value of the design
 
 # %% [markdown]
 # ## Library
@@ -123,10 +89,7 @@ def cite(p):
 
 
 VDIFF = ina.param("vdiff_adcr0_full")  # shunt voltage input range, ADCRANGE 0 (signed, symmetric)
-VDIFF1 = ina.param("vdiff_adcr1_full")  # shunt voltage input range, ADCRANGE 1 (signed, symmetric)
-ADC_LIM = {0: VDIFF.max, 1: VDIFF1.max}  # V, full scale per ADCRANGE
-VDIFF_LIM = ADC_LIM[0]  # V, 163.84 mV (ADCRANGE 0)
-LSB_VSH = {0: ina.param("lsb_vshunt_adcr0_25c").typ, 1: ina.param("lsb_vshunt_adcr1_25c").typ}  # V per count
+ADC_LIM = {0: VDIFF.max}  # V, full scale of the design's ADCRANGE (0 = 163.84 mV)
 CURRENT_LSB = ina.calc.current_lsb(I_MAX)  # DS p.30 Equation 3 (the same for both ADCRANGE settings)
 LSB = CURRENT_LSB  # 1 LSB term, A
 P70 = shunt.param("p70").max  # W, rating at 70 degC ambient (DS p.1)
@@ -245,10 +208,6 @@ def t_band(i, r0, tol, tcr):
     return Param(min=lo, max=hi, unit="degC")
 
 
-def t_hot(i, r0, tol, tcr):
-    """ESTIMATE: element temperature (degC) at TA max with the worst-case R (the point value used in tables)."""
-    return TA.max + rise(i, r0, tol, tcr, TA.max, "hi")[0]
-
 
 def power_worst(i, r0, tol, tcr, t_c):
     """Not a DS equation: dissipation P = I^2 x R_worst at ambient t_c (WSK2512 calc.dissipation, DS p.1 and p.3 rate
@@ -317,153 +276,25 @@ def fs_sh_worst(r_nom, tol_row, tcr_row, cal_gain, i):
     return key, res[key]
 
 
-def fs_mag(p):
-    """Worst-case magnitude (A) of a bare error Param plus the 1 LSB term."""
-    return max(abs(p.min - LSB), abs(p.max + LSB))
 
-
-def offer_info(code_, value):
-    """Availability record of a (code, value) pair from the snapshot. n_dist counts distinct distributors that list the
-    part, whatever the stock (a listing at zero stock still counts). stock is today's total, INFORMATIONAL only."""
-    rec = STOCK_TABLE[(code_, round(value * 1e3, 6))]
-    offers = rec["offers"]
-    dists = sorted({d for d, _, _ in offers})
-    regions = sorted({g for _, g, _ in offers})
-    total = sum(s for _, _, s in offers) if offers else None
-    return dict(match=rec["match"], n_dist=len(dists), dists=dists, regions=regions, stock=total)
-
-
-def standard_value(code_, value):
-    """True when the value is a standard value of the library's series for that tolerance code (library value table)."""
-    return any(abs(value - v) <= 1e-9 * v for v in shunt.values(tol=code_))
-
-
-def avail_rating(info, standard=True):
-    """Long-term availability rating (proxy, see the report). GOOD: recognized (MATCH_EXACT), listed by at least 2
-    distributors, standard value. FAIR: recognized, listed by 1 distributor, or a non-standard value. POOR/UNKNOWN:
-    not recognized by the Diode BOM sources (MATCH_FAILED) or recognized with no distributor listing."""
-    if info["match"] != "MATCH_EXACT" or info["n_dist"] == 0:
-        return "POOR/UNKNOWN"
-    if info["n_dist"] >= 2 and standard:
-        return "GOOD"
-    return "FAIR"
-
-
-def stock_label(info):
-    """Informational stock text (snapshot): not used for ranking."""
-    if info["match"] != "MATCH_EXACT":
-        return "not found in Diode BOM sources"
-    if info["stock"] is None:
-        return "no offer returned"
-    return f"{info['stock']:,} units (snapshot)"
-
-
-# Fitting values: every WSK2512 (value, code) whose self-heated worst-case Vsense at I_MAX fits ADCRANGE 0; the subset
-# that also fits ADCRANGE 1 is marked. Full scan of the library values.
-FIT = {0: {}, 1: {}}
-for code_ in shunt.tolerances():
-    tol_ = shunt.tolerance(code_)
-    for v in shunt.values(tol=code_):
-        tcr_ = shunt.tcr(v)
-        x_, _ = rise(I_MAX, v, tol_, tcr_, TA.max, "hi")
-        vs_ = I_MAX * r_bound(v, tol_, tcr_, TA.max + x_, "hi")
-        for adc in (0, 1):
-            if vs_ <= ADC_LIM[adc]:
-                FIT[adc][(code_, round(v * 1e3, 6))] = vs_
-
-# The stock snapshot (taken at 5 A) must cover the ADCRANGE 0 fit set at I_MAX, with its ADCRANGE 1 marks. Vsense rises with
-# I, so the fit set at I_MAX is a subset of the 5 A set. A set that is not covered means
-# the stock check must be run again (analysis/data snapshot).
-assert set(FIT[0]) <= set(STOCK_TABLE), "fit set at I_MAX is not covered by the stock snapshot; re-run the stock check"
-assert set(FIT[1]) <= {k for k, v in STOCK_TABLE.items() if 1 in v["adc_fit"]}, "ADCRANGE 1 fit set at I_MAX not covered; re-run the stock check"
-CAND_N = len(FIT[0])
-CAND_N_ADC1 = len(FIT[1])
-ADC1_MAX_MOHM = max(k[1] for k in FIT[1])  # largest ADCRANGE 1 candidate, mohm (series values only)
-
-
-def evaluate(adc, code_, value):
-    """One candidate row at ADCRANGE adc. Self-heated worst case at I_MAX and I_LOW (ESTIMATE, the judged result), the
-    ambient-only full-scale error (reference), Vsense with the self-heated R, headroom, dissipation, element temperature,
-    SHUNT_CAL and its rounding, the number of ADC counts at I_MAX, and the stock status from the snapshot."""
-    tol_p = shunt.tolerance(code_)  # Param (min, max)
-    tcr_p = shunt.tcr(value)  # Param (min, max)
-    tol_b = tol_p.with_typ(0.0)  # bound-only, nominal part at value (caller assumption)
-    tcr_b = tcr_p.with_typ(0.0)  # bound-only, nominal TCR 0
-    raw = ina.calc.shunt_cal(CURRENT_LSB, value, adcrange=adc)  # DS p.30 Equation 2, x4 for ADCRANGE 1
-    cal = round(raw)
-    gain = cal / raw
-    x5, res5 = rise(I_MAX, value, tol_b, tcr_b, TA.max, "hi")
-    t_el = TA.max + x5
-    r_el = r_bound(value, tol_p, tcr_p, t_el, "hi")
-    vs_sh = I_MAX * r_el
-    margin = ADC_LIM[adc] - vs_sh
-    _, fs5 = fs_sh_worst(value, tol_b, tcr_b, gain, I_MAX)
-    _, fs1 = fs_sh_worst(value, tol_b, tcr_b, gain, I_LOW)
-    _, amb5 = worst_fs(value, code_, gain, I_MAX)
-    pw = wca(power_worst, unit="W", i=I_MAX, r0=value, tol=tol_p, tcr=tcr_p, t_c=TA)
-    r_amb = r_bound(value, tol_p, tcr_p, TA.max, "hi")
-    mwv = shunt.calc.max_working_voltage(RATED, r_amb)
-    info = offer_info(code_, value)
-    match = info["match"]
-    row = dict(
-        adc=adc, code=code_, value=value, mpn=shunt.mpn(value, tol=code_), match=match,
-        avail=avail_rating(info, standard_value(code_, value)), n_dist=info["n_dist"], dists=info["dists"],
-        regions=info["regions"], stock=info["stock"], stock_text=stock_label(info),
-        standard=standard_value(code_, value),
-        vs_sh=vs_sh, vs_margin=margin, headroom=margin / ADC_LIM[adc], vs_lsb_counts=vs_sh / LSB_VSH[adc],
-        x5=x5, res5=res5, t_el=t_el, p_el=I_MAX ** 2 * r_el, pw_max=pw.max, pw_margin=RATED - pw.max,
-        mwv=mwv, raw=raw, cal=cal, cal_gain=gain, cal_round_pct=(cal / raw - 1.0) * 100,
-        fs5=fs5, fs5_mag=fs_mag(fs5), fs5_pct=fs_mag(fs5) / I_MAX * 100,
-        fs1_pct=fs_mag(fs1) / I_LOW * 100, amb5_pct=fs_mag(amb5) / I_MAX * 100, tol_b=tol_b, tcr_b=tcr_b,
-    )
-    row["fs5_pass"] = row["fs5_pct"] <= ERR_LIMIT_PCT + 1e-12
-    # Ranked = recognized by the BOM sources (MATCH_EXACT), passes the 1 % check, fits the ADC range, is inside the rating
-    # and the (P x R)^1/2 limit. Today's stock is NOT a condition.
-    row["ranked"] = (match == "MATCH_EXACT" and row["fs5_pass"] and margin >= 0 and row["pw_margin"] >= 0
-                     and mwv >= vs_sh)
-    return row
-
-
-# Candidate rows: every fitting (code, value) at ADCRANGE 0, and at ADCRANGE 1 where it also fits.
-ROWS = []
-for (code_, mohm) in sorted(FIT[0], key=lambda k: (k[0], k[1])):
-    for adc in (0, 1):
-        if (code_, mohm) in FIT[adc]:
-            ROWS.append(evaluate(adc, code_, mohm / 1e3))
-
-DESIGN = [r for r in ROWS if r["adc"] == ADCRANGE and r["code"] == code and abs(r["value"] - R_NOM) < 1e-12]
-assert len(DESIGN) == 1, "the design shunt is not in the candidate set"
-DESIGN = DESIGN[0]
-
-RECOGNIZED_ROWS = [r for r in ROWS if r["match"] == "MATCH_EXACT"]
-AVAIL_ORDER = {"GOOD": 0, "FAIR": 1, "POOR/UNKNOWN": 2}
-# Ranking order: must pass 1 % (self-heated) -> availability (GOOD before FAIR) -> lowest self-heated error ->
-# headroom at or above HEADROOM_MIN -> lower dissipation.
-RANKED = sorted([r for r in ROWS if r["ranked"]],
-                key=lambda r: (AVAIL_ORDER[r["avail"]], round(r["fs5_pct"], 2), r["headroom"] < HEADROOM_MIN,
-                               r["pw_max"]))
-REC = RANKED[0] if RANKED else None
-TOP3 = RANKED[:3]
-NOT_RANKED_PASS = sorted([r for r in ROWS if r["fs5_pass"] and not r["ranked"]], key=lambda r: r["fs5_pct"])
-
-
-def sk(r):
-    """Informational stock text for a row (snapshot), never used for ranking."""
-    return "no offer returned" if r["stock"] is None else f"{r['stock']:,}"
 
 # %% [markdown]
-# ## Design shunt (current design, from SHUNT_SELECTED)
-# Every later section uses these names. The design shunt is 10 mohm code B at ADCRANGE 0 (designer choice 2026-11-15).
+# ## Design shunt (from R_NOM, code and ADCRANGE)
+# Every later section uses these names: the WSK2512 tolerance and TCR rows, the self-heated worst-case Vsense and the
+# SHUNT_CAL gain of the design.
 
 # %%
 TOL = shunt.tolerance(code)  # Param: fraction, min and max of the code's tolerance row
 TCR = shunt.tcr(R_NOM)  # Param: TCR row (1/degC)
 TOL_W = TOL.with_typ(0.0)  # bound-only row: nominal part at R_NOM (caller assumption, as in lib examples)
 TCR_W = TCR.with_typ(0.0)  # bound-only row: nominal TCR 0
-MPN = DESIGN["mpn"]
-CAL_GAIN = DESIGN["cal_gain"]  # SHUNT_CAL integer / exact value (1.0 when exact)
-RSHUNT_STRICT = ina.calc.rshunt_max(vsense_max=ADC_LIM[ADCRANGE], i_max=I_MAX)  # DS p.35 Equation 8, strict upper bound
-VS_SH = DESIGN["vs_sh"]  # Param-free float, V: self-heated worst-case Vsense at I_MAX
+MPN = shunt.mpn(R_NOM, tol=code)  # orderable part number of the design
+SHUNT_CAL_RAW_DESIGN = ina.calc.shunt_cal(CURRENT_LSB, R_NOM, adcrange=ADCRANGE)  # DS p.30 Equation 2
+CAL_GAIN = round(SHUNT_CAL_RAW_DESIGN) / SHUNT_CAL_RAW_DESIGN  # register integer / exact value (1.0 when exact)
+# ESTIMATE: self-heated worst-case Vsense at I_MAX. The element rise is solved at TA max (rise(), section 3), and R is
+# the worst tolerance and TCR at the element temperature.
+X_SH, _ = rise(I_MAX, R_NOM, TOL_W, TCR_W, TA.max, "hi")
+VS_SH = I_MAX * r_bound(R_NOM, TOL, TCR, TA.max + X_SH, "hi")  # V
 VS_MARGIN = ADC_LIM[ADCRANGE] - VS_SH
 PW = wca(power_worst, unit="W", i=I_MAX, r0=R_NOM, tol=TOL, tcr=TCR, t_c=TA)  # ambient worst dissipation (rating basis)
 PW_MARGIN = RATED - PW.max
@@ -503,260 +334,40 @@ def save(fig, name):
 
 
 # %% [markdown]
-# ## 1. Shunt selection and re-rank (ADCRANGE as a design variable)
-#
-# Sense limits: ADCRANGE 0 = +/-163.84 mV (`vdiff_adcr0_full`), ADCRANGE 1 = +/-40.96 mV (`vdiff_adcr1_full`). The
-# candidate is judged on its SELF-HEATED worst case: the element temperature is TA max plus the self-consistent rise
-# (section 3), and the shunt resistance is the worst tolerance and TCR at that temperature. The ranking uses the same
-# numbers as section 5.
+# ## 1. Shunt operating point (self-heated Vsense vs ADC range)
+# Vsense = I_MAX x R_element. R_element is the worst tolerance and TCR at the self-heated element temperature (TA 70 degC
+# plus the self-consistent rise, section 3). The limit is the INA229 shunt-voltage full scale for the design's ADCRANGE
+# (`vdiff_adcr0_full`, DS p.5).
 
 # %%
-md += ["## 1. Shunt selection and re-rank", ""]
+VSENSE_MAX_MV = math.ceil(round(VS_SH * 1e4, 6)) / 10  # mV: self-heated worst Vsense rounded UP to 0.1 mV (vsense_max)
+VS_AMB = I_MAX * R_WORST  # V, reference: ambient resistance at TA 70 degC
+
+md += ["## 1. Shunt operating point", ""]
 md += [
-    f"Sense limits: `vdiff_adcr0_full` max = {mv(ADC_LIM[0])} mV (ADCRANGE 0, DS p.5, {cite(VDIFF)}); "
-    f"`vdiff_adcr1_full` max = {mv(ADC_LIM[1])} mV (ADCRANGE 1, DS p.5). Vsense (worst) = I_MAX x R_element, with "
-    f"R_element = `resistance_worst` at the self-heated element temperature (TA {TA.max:g} degC + rise, rise from "
-    f"section 3, theta_est {THETA:g} degC/W), worst tolerance and TCR.",
-    "",
-    f"**Candidate set.** Every WSK2512 (value, code) in the library whose self-heated worst Vsense fits ADCRANGE 0: "
-    f"{CAND_N} pairs (B, D and F codes). {CAND_N_ADC1} of them also fit ADCRANGE 1, i.e. R_element <= "
-    f"{mv(ADC_LIM[1] / I_MAX)} mohm at {I_MAX:g} A, which is the series values up to {ADC1_MAX_MOHM:g} mohm. ADCRANGE 1 is "
-    "therefore a design choice for the small shunts only. Each candidate is evaluated at the ADCRANGE it fits "
-    "(ADCRANGE 0 always; ADCRANGE 1 where it fits).",
-    "",
-    f"**Availability sources.** `pcb bom -f json` re-run on {STOCK_DATE} for every candidate (scratch copy of the board, "
-    "shunt `rshunt`/`rshunt_tol`/`vsense_max` set per candidate): `analysis/data/shunt_stock_2026-11-15_rerank.json`. "
-    "Per candidate: whether the Diode BOM sources recognize the part (MATCH_EXACT or MATCH_FAILED), the distributors "
-    "and regions listing it (offer count, kept even at zero stock), and today's total stock (informational only).",
-    "",
-    "**Availability rating (proxy, not a lifecycle check).** GOOD = recognized, listed by at least 2 distributors, "
-    "standard series value. FAIR = recognized, listed by 1 distributor (or a non-standard value). POOR/UNKNOWN = not "
-    "found in the Diode BOM sources (MATCH_FAILED), or recognized with no distributor listing. Lifecycle status is "
-    "**not checked**: the WSK2512 library directory carries no lifecycle field and the snapshot has none.",
-    "",
-    "Stock today is a snapshot; long-term availability (lifecycle, multi-distributor listing, standard values) decides. "
-    "Verify lifecycle/PCN with the manufacturer before release (open item).",
-    "",
-    f"**Judgement.** Ranked = recognized (MATCH_EXACT), self-heated {I_MAX:g} A error within {ERR_LIMIT_PCT:g} % of reading (the "
-    "requirement), Vsense inside the ADC range, shunt rating at 70 degC (p70 x derate) met, and (P x R)^1/2 at or above "
-    f"the worst Vsense. Order: must pass 1 %, then availability rating (GOOD before FAIR), then lowest self-heated {I_MAX:g} A error "
-    f"(compared at 0.01 %), then headroom at or above {HEADROOM_MIN * 100:g} % of the range, then lower dissipation. "
-    "The designer's selection (2026-11-15) uses accuracy first among the 1 % passers (section 1.4). Today's stock never "
-    "decides the ranking. POOR/UNKNOWN rows are shown but sit below every rated row. BOM reuse: not "
-    "applicable (one shunt).",
+    f"Sense limit, ADCRANGE {ADCRANGE}: `vdiff_adcr0_full` max = {mv(ADC_LIM[ADCRANGE])} mV ({cite(VDIFF)}). "
+    f"The shunt element runs at the self-heated temperature of section 3 (theta_est {THETA:g} degC/W, ESTIMATE); R_element "
+    "is the worst tolerance and TCR at that temperature.",
     "",
 ]
-
-RANK_HDR = ["Rank", "ADCRANGE", "Code", "Value (mohm)", "MPN", "Availability", "Distributors (regions)",
-            "Stock today (informational)", "Full-scale self-heated error (%)", "1 % check (self-heated)",
-            "100 mA self-heated (%)", "Full-scale ambient, ref. (%)", "Headroom (%)", "Dissipation at full scale, 70 degC (W)",
-            "Element T at full scale, 70 degC (degC, ESTIMATE)", "SHUNT_CAL raw -> reg", "Note"]
-
-
-def rank_row(n, r):
-    if r["match"] != "MATCH_EXACT":
-        note = "not found in Diode BOM sources (may still be orderable by quote)"
-    elif not r["fs5_pass"]:
-        note = "fails 1 % (not ranked)"
-    elif not r["ranked"]:
-        note = "fails a rating or ADC check (not ranked)"
-    else:
-        note = ""
-    dist = f"{r['n_dist']} ({', '.join(r['regions']) or 'none'})" if r["n_dist"] else "0"
-    return [n, r["adc"], r["code"], f"{r['value'] * 1e3:g}", r["mpn"], r["avail"], dist, sk(r),
-            f"{r['fs5_pct']:.3f}", "PASS" if r["fs5_pass"] else "FAIL", f"{r['fs1_pct']:.3f}",
-            f"{r['amb5_pct']:.3f}", pct(r["headroom"]), f"{r['pw_max']:.3f}", f"{r['t_el']:.1f}",
-            f"{r['raw']:.3f} -> {r['cal']}", note]
-
-
-order = RANKED + sorted([r for r in RECOGNIZED_ROWS if not r["ranked"]], key=lambda r: r["fs5_pct"]) + \
-    sorted([r for r in ROWS if r["match"] != "MATCH_EXACT"], key=lambda r: r["fs5_pct"])
-rank_rows = []
-for n, r in enumerate(order, start=1):
-    label = str(RANKED.index(r) + 1) if r in RANKED else "-"
-    rank_rows.append(rank_row(label, r))
-md += ["**Table 1.1. All candidates (ADCRANGE 0 fit set, plus ADCRANGE 1 where it fits), ranked. Unranked rows are shown "
-       "for reference.**", ""]
-md += mdtable(RANK_HDR, rank_rows)
+md += mdtable(["Check", "Vsense at I_MAX (mV)", "Limit (mV)", "Headroom (mV)", "Headroom (% of limit)", "Result"], [
+    [f"Self-heated worst case, ESTIMATE (judged)", mv(VS_SH), mv(ADC_LIM[ADCRANGE]), mv(VS_MARGIN),
+     pct(VS_MARGIN / ADC_LIM[ADCRANGE]), status(VS_MARGIN)],
+    ["Ambient resistance at TA 70 degC (reference)", mv(VS_AMB), mv(ADC_LIM[ADCRANGE]), mv(ADC_LIM[ADCRANGE] - VS_AMB),
+     pct((ADC_LIM[ADCRANGE] - VS_AMB) / ADC_LIM[ADCRANGE]), status(ADC_LIM[ADCRANGE] - VS_AMB)],
+])
 md += [
     "",
-    "Ranked rows are recognized (MATCH_EXACT), pass the 1 % check, and sit in rank order (availability first, then "
-    "error). POOR/UNKNOWN rows (no distributor listing) are ranked below every FAIR and GOOD row only if they pass; the "
-    "'Stock today' column is informational and never orders a row.",
-    "",
-]
-
-DETAIL_HDR = ["ADCRANGE", "Code", "Value (mohm)", "Vsense worst, self-heated (mV)", "Headroom (mV)",
-              "ADC counts at full scale (x 1e3)", "Shunt-voltage LSB (nV)", "CURRENT_LSB (uA)",
-              "SHUNT_CAL rounding (% of reading)", "MWV (V)", "Rated P at 70 degC (W)"]
-md += ["**Table 1.2. Stocked candidates: sense, resolution and calibration.**", ""]
-md += mdtable(DETAIL_HDR, [[
-    r["adc"], r["code"], f"{r['value'] * 1e3:g}", mv(r["vs_sh"]), mv(r["vs_margin"]),
-    f"{r['vs_lsb_counts'] / 1e3:.1f}", f"{LSB_VSH[r['adc']] * 1e9:.4g}", f"{CURRENT_LSB * 1e6:.6g}",
-    f"{r['cal_round_pct']:+.4f}", f"{r['mwv']:.3g}", f"{RATED:.3g}",
-] for r in order])
-md += [
-    "",
-    "The current register LSB (CURRENT_LSB, DS p.30 Equation 3) is set by I_MAX and is the same for both ADCRANGE "
-    "settings. ADCRANGE changes the shunt-voltage LSB (`lsb_vshunt_adcr0/1`, DS p.5), the ADC counts used at full scale, and "
-    "SHUNT_CAL (x4 for ADCRANGE 1, DS p.30), so the SHUNT_CAL rounding term is ADCRANGE-dependent.",
-    "",
-]
-
-md += ["### 1.3 Top three (recognized, passing the 1 % check, ranked by availability first)", ""]
-if TOP3:
-    for n, r in enumerate(TOP3, start=1):
-        md += [
-            f"{n}. **{r['value'] * 1e3:g} mohm, code {r['code']}, ADCRANGE {r['adc']}, `{r['mpn']}`**: {I_MAX:g} A self-heated "
-            f"error {r['fs5_pct']:.3f} % (ambient reference {r['amb5_pct']:.3f} %), 100 mA self-heated "
-            f"{r['fs1_pct']:.3f} %, headroom {pct(r['headroom'])} %, dissipation {r['pw_max']:.3f} W at 70 degC "
-            f"(element {r['t_el']:.1f} degC, ESTIMATE), availability {r['avail']} ({r['n_dist']} distributor(s), "
-            f"{', '.join(r['dists']) or 'none'}), stock today {sk(r)} (informational). Vsense (self-heated) "
-            f"{mv(r['vs_sh'])} mV.",
-        ]
-else:
-    md += ["No recognized candidate passes the 1 % check."]
-md += [""]
-
-# %% [markdown]
-# ### 1.4 Selected design shunt and selection basis
-# `SHUNT_SELECTED` is the designer's choice of 2026-11-15. This cell states its basis and the fallback, and checks the
-# basis against the candidate rows. It does not change the design.
-
-# %%
-PASSING = [r for r in ROWS if r["fs5_pass"]]
-BEST_PASS = min(PASSING, key=lambda r: r["fs5_pct"])
-FALLBACK = next((r for r in ROWS if r["adc"] == ADCRANGE and r["code"] == "D"
-                 and abs(r["value"] - R_NOM) < 1e-12), None)
-VSENSE_MAX_MV = math.ceil(round(VS_SH * 1e4, 6)) / 10  # mV: self-heated worst Vsense rounded UP to 0.1 mV
-
-md += ["### 1.4 Selected design shunt and selection basis", ""]
-md += [
-    f"**Designer choice, 2026-11-15:** `{DESIGN['mpn']}`, {DESIGN['value'] * 1e3:g} mohm, tolerance code {code} "
-    f"(+/-{pct(TOL.max)} %), ADCRANGE {ADCRANGE} (`SHUNT_SELECTED`). Basis: best accuracy among the parts that pass "
-    f"+/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A (self-heated worst case); availability FAIR, carried as an open item.",
-    "",
-    (f"**Basis check.** Self-heated {I_MAX:g} A error {DESIGN['fs5_pct']:.3f} % ({err_pf(DESIGN['fs5_pct'])} against "
-     f"{ERR_LIMIT_PCT:g} %). "
-     + (f"It is the lowest of the {len(PASSING)} candidates that pass, so the accuracy basis holds."
-        if BEST_PASS is DESIGN else
-        f"It is NOT the lowest: `{BEST_PASS['mpn']}` ({BEST_PASS['value'] * 1e3:g} mohm, code {BEST_PASS['code']}) is "
-        f"{BEST_PASS['fs5_pct']:.3f} % and passes; the designer must confirm the basis.")),
-    "",
-    f"**Availability (proxy, snapshot {STOCK_DATE}): {DESIGN['avail']}.** Listed by {DESIGN['n_dist']} distributor(s): "
-    f"{', '.join(DESIGN['dists']) or 'none'}; stock today {sk(DESIGN)} (informational only; zero stock is accepted for this "
-    "choice). Lifecycle, PCN and lead time are not checked. **OPEN ITEM:** confirm long-term availability and lead time "
-    "with Vishay or the distributors before release.",
-    "",
-]
-if FALLBACK is not None:
-    md += [
-        f"**Fallback (same value and footprint):** `{FALLBACK['mpn']}`, {FALLBACK['value'] * 1e3:g} mohm, tolerance code "
-        f"{FALLBACK['code']} (+/-{pct(shunt.tolerance(FALLBACK['code']).max)} %): availability {FALLBACK['avail']} "
-        f"({FALLBACK['n_dist']} distributor(s): {', '.join(FALLBACK['dists'])}; stock today {sk(FALLBACK)}, informational). "
-        f"Self-heated {I_MAX:g} A error {FALLBACK['fs5_pct']:.3f} % ({err_pf(FALLBACK['fs5_pct'])} against {ERR_LIMIT_PCT:g} %). "
-        f"Vsense (self-heated) {mv(FALLBACK['vs_sh'])} mV, headroom {pct(FALLBACK['headroom'])} %.",
-        "",
-    ]
-if REC is not None and REC is not DESIGN:
-    md += [
-        f"Table 1.1 ranks availability first, so rank 1 is `{REC['mpn']}` ({REC['avail']}, self-heated "
-        f"{REC['fs5_pct']:.3f} %) and the design is rank {RANKED.index(DESIGN) + 1 if DESIGN in RANKED else '-'}. The "
-        "designer's basis is accuracy first; that trade-off is the designer's, recorded here.",
-        "",
-    ]
-md += [
-    f"**Board values (ina229.zen):** `rshunt=\"{R_NOM * 1e3:g}mohm\"`, `rshunt_tol=\"{code}\"`, "
+    f"Board values (`ina229.zen`): `rshunt=\"{R_NOM * 1e3:g}mohm\"`, `rshunt_tol=\"{code}\"`, "
     f"`vsense_max=\"{VSENSE_MAX_MV:.1f}mV\"`. vsense_max is the self-heated worst Vsense {mv(VS_SH)} mV rounded up to "
-    f"0.1 mV; headroom to the {mv(ADC_LIM[ADCRANGE])} mV ADCRANGE {ADCRANGE} limit is {mv(VS_MARGIN)} mV "
-    f"({pct(VS_MARGIN / ADC_LIM[ADCRANGE])} %). SHUNT_CAL raw {DESIGN['raw']:.6g}, register {DESIGN['cal']}. To change the "
-    "design, change `SHUNT_SELECTED` first; the board values follow.",
+    "0.1 mV.",
     "",
 ]
-md += [
-    "Passing the 1 % check but not ranked (for information): "
-    + ("; ".join(f"{r['value'] * 1e3:g} mohm {r['code']} ADCRANGE {r['adc']} ({r['fs5_pct']:.3f} %, "
-                 f"{r['avail']}, {r['match']})" for r in NOT_RANKED_PASS[:4]) or "none") + ".",
-    "",
-]
-
-# %% [markdown]
-# ### 1.5 ADCRANGE, offset and gain rows: what the datasheet says per ADCRANGE
-# The DS p.5 electrical table (rendered and read) has ADCRANGE in the test condition only for the VDIFF range row.
-# The offset rows (VCM = 48 V and VCM = 0 V), dVos/dT, GSERR and GS_DRFT carry no ADCRANGE condition, so they are the
-# same for ADCRANGE 1. No ADCRANGE-1 offset row is missing, so no open item and no larger-magnitude substitution is needed.
-
-# %%
-md += ["### 1.5 ADCRANGE-dependent datasheet rows", ""]
-md += mdtable(["DS row (library key)", "ADCRANGE 0", "ADCRANGE 1", "Used in this analysis"], [
-    ["Shunt voltage input range, VDIFF (`vdiff_adcr0_full` / `vdiff_adcr1_full`, DS p.5)",
-     "+/-163.84 mV", "+/-40.96 mV", "Sense limit for the candidate fit (section 1)"],
-    ["1 LSB, shunt voltage (`lsb_vshunt_adcr0_25c` / `lsb_vshunt_adcr1_25c`, DS p.5)",
-     f"{LSB_VSH[0] * 1e9:.4g} nV", f"{LSB_VSH[1] * 1e9:.4g} nV", "Counts at full scale (Table 1.2); not in the error budget"],
-    ["SHUNT_CAL (DS p.30 Equation 2 and its bullet: x4 for ADCRANGE 1)",
-     "13107.2e6 x CURRENT_LSB x R", "x 4", "Integer register and its rounding error (`calc.shunt_cal`, `adcrange`)"],
-    ["CURRENT_LSB (DS p.30 Equation 3)", f"{CURRENT_LSB * 1e6:.6g} uA", "same", "1 LSB term and the current resolution"],
-    ["Offset Vos, VCM = 48 V / 0 V, dVos/dT (`vos_vcm48_25c`, `vos_vcm0_25c`, `vos_drift_full`, DS p.5)",
-     "+/-1 uV", "same (no ADCRANGE condition)", "Both rows used; larger magnitude kept"],
-    ["Gain error GSERR and GS_DRFT (`gserr_25c`, `gs_drift_25c`, DS p.5)", "+/-0.05 %, +/-20 ppm/degC",
-     "same (no ADCRANGE condition)", "Gain term (section 5)"],
-], )
-md += [
-    "",
-    "The ADCRANGE-1 effect on the error comes from the smaller shunt it forces (Vos / R grows) and from the SHUNT_CAL "
-    "rounding (x4 larger integer). It does not come from a different offset.",
-    "",
-]
-
-# %% [markdown]
-# ### 1.6 Why INA229 SHUNT_TEMPCO does not reduce the bound
-# (Analysis, DS p.16, section 7.3.5, and DS p.23, Table 7-8.)
-
-# %%
-md += ["### 1.6 SHUNT_TEMPCO", ""]
-md += [
-    "The INA229 SHUNT_TEMPCO register (DS p.16, Equation 1; register DS p.23, Table 7-8, 1 ppm/degC per LSB) rescales "
-    "the shunt resistance in the device by RADJ = RNOM x (1 + TEMPCO x (DIETEMP - 25)). It compensates a KNOWN shunt "
-    "tempco, using the die temperature as the measure of the shunt temperature. The WSK2512 TCR is only bounded here "
-    "(+/-35 ppm/degC, either sign; WSK2512 DS p.2 and `tcr_5m_200m`), so no single TEMPCO setting makes the error smaller "
-    "for every unit: a setting that helps one sign of TCR hurts the other. The die also does not track the shunt element "
-    "temperature: the shunt is at its element temperature (the element rise at full scale, section 3), while "
-    "the die sits near ambient plus its own dissipation (section 9). Both the TCR sign and the die-to-element offset are "
-    "unknown, so SHUNT_TEMPCO cannot reduce the worst-case bound in section 5. It can only remove a known, matched TCR "
-    "after the part is measured. Analysis, not a datasheet bound; the element-to-die offset is an open item.",
-    "",
-]
-
-# %% [markdown]
-# ## Availability of the design shunt
-
-# %%
-md += ["**Design shunt availability (snapshot).** "
-       f"{DESIGN['value'] * 1e3:g} mohm code {DESIGN['code']}: {DESIGN['avail']} ({DESIGN['n_dist']} distributor(s)), "
-       f"stock today {sk(DESIGN)} (informational), `{DESIGN['mpn']}`. The snapshot is the sourcing record for section 1.",
-       ""]
 
 # %% [markdown]
 # ## 2. Shunt power and rating (ambient, the DS rating basis)
 
 # %%
-def max_current_sh(rated, hi=20.0):
-    """ESTIMATE: largest continuous current (A) with I^2 x R_element = rated at TA max (bisection). The element rise is
-    rise() (theta_est, section 3). hi = 20 A is below the runaway current of the fixed point (about 53 A)."""
-    lo = 0.0
-    for _ in range(80):
-        mid = 0.5 * (lo + hi)
-        t_el = TA.max + rise(mid, R_NOM, TOL_W, TCR_W, TA.max, "hi")[0]
-        if mid * mid * r_bound(R_NOM, TOL, TCR, t_el, "hi") > rated:
-            hi = mid
-        else:
-            lo = mid
-    return lo
-
-
-MAXI_AMB = shunt.calc.max_current(RATED, R_WORST)  # A, ambient-resistance rating basis (DS p.2 (P x R)^1/2)
-MAXI_SH = max_current_sh(RATED)  # A, ESTIMATE: self-heated element resistance
-
 md += ["## 2. Shunt power and rating", ""]
 md += [
     f"Worst-case dissipation at I_MAX = {I_MAX:g} A and R_worst (TA {TA.max:g} degC, ambient resistance; the worst "
@@ -768,12 +379,6 @@ md += [
 md += mdtable(["Check", "Worst-case (W)", "Rated (W)", "Margin (W)", "Margin (% of rating)", "Result", "Cite"], [[
     f"Shunt dissipation at {I_MAX:g} A, 70 degC (ambient rating)", f"{PW.max:.4g}", f"{RATED:.4g}", f"{PW_MARGIN:.4g}",
     pct(PW_MARGIN / RATED), status(PW_MARGIN), cite(shunt.param("p70")),
-], [
-    "Continuous current at 70 degC, rating basis (ambient R, `calc.max_current`), A", f"{MAXI_AMB:.4g}", f"{I_MAX:g}",
-    f"{MAXI_AMB - I_MAX:+.3g}", pct((MAXI_AMB - I_MAX) / MAXI_AMB), status(MAXI_AMB - I_MAX), "DS p.1 P70, DS p.2 (P x R)^1/2",
-], [
-    "Continuous current at 70 degC, self-heated (element R, bisection), A", f"{MAXI_SH:.4g}", f"{I_MAX:g}",
-    f"{MAXI_SH - I_MAX:+.3g}", pct((MAXI_SH - I_MAX) / MAXI_SH), est_status(MAXI_SH - I_MAX), "section 3.2 theta_est (ESTIMATE)",
 ]])
 md += [
     "",
@@ -811,7 +416,6 @@ def rise_at(i, ta):
 
 T_HOT_5 = t_shunt(I_MAX, TA.max)  # degC, ESTIMATE
 T_MARGIN_5 = T_ELEM_LIMIT - T_HOT_5
-T_COLD_5 = t_shunt(I_MAX, TA.min)  # degC, ESTIMATE
 T_RISE_5 = rise_at(I_MAX, TA.max)  # degC, self-consistent
 T_RISE_LOW = rise_at(I_LOW, TA.max)  # degC
 _, T_RESID_5 = rise(I_MAX, R_NOM, TOL_W, TCR_W, TA.max, "hi")  # degC, fixed-point residual at I_MAX
@@ -968,20 +572,16 @@ save(fig, "shunt_dissipation.png")
 # %%
 SHUNT_CAL_RAW = ina.calc.shunt_cal(CURRENT_LSB, R_NOM, adcrange=ADCRANGE)  # DS p.30 Equation 2
 SHUNT_CAL = round(SHUNT_CAL_RAW)
-assert abs(SHUNT_CAL / SHUNT_CAL_RAW - CAL_GAIN) < 1e-12, "design and candidate SHUNT_CAL disagree"
 CAL_ERR = SHUNT_CAL / SHUNT_CAL_RAW - 1.0  # fraction, reading gain error from the integer register
 CAL_EXACT = abs(SHUNT_CAL_RAW - SHUNT_CAL) < 1e-9
-SHUNT_CAL_OTHER = ina.calc.shunt_cal(CURRENT_LSB, R_NOM, adcrange=1 - ADCRANGE)
 
 md += ["## 4. Firmware constants", ""]
 md += mdtable(["Constant", "Value", "Equation / cite"], [
     ["CURRENT_LSB", f"{CURRENT_LSB:.10g} A/LSB ({CURRENT_LSB * 1e6:.6g} uA)",
-     f"I_MAX / 2^19, {cite(ina.param('lsb_vbus_25c'))[:0]}DS p.30 Equation 3 (`calc.current_lsb`); same for both ADCRANGE"],
+     f"I_MAX / 2^19, DS p.30 Equation 3 (`calc.current_lsb`); same for both ADCRANGE"],
     ["SHUNT_CAL (raw)", f"{SHUNT_CAL_RAW:.6f}", f"13107.2e6 x CURRENT_LSB x R_NOM, DS p.30 Equation 2 (`calc.shunt_cal`, "
                                                 f"ADCRANGE {ADCRANGE})"],
     ["SHUNT_CAL (register)", f"**{SHUNT_CAL}**", "rounded integer written to the register"],
-    [f"SHUNT_CAL if ADCRANGE {1 - ADCRANGE} were used (not selected)", f"{SHUNT_CAL_OTHER:.6f}",
-     "x4 for ADCRANGE 1 (DS p.30 bullet)"],
 ])
 md += [
     "",
@@ -997,7 +597,6 @@ md += [
 # at its element temperature), which is the one judged against the 1 % requirement.
 
 # %%
-VOS_KEY_AMB, FS = worst_fs(R_NOM, code, CAL_GAIN, I_MAX), None
 VOS_KEY_AMB = worst_fs(R_NOM, code, CAL_GAIN, I_MAX)[0]
 FS = fs_for(R_NOM, code, CAL_GAIN, VOS_KEY_AMB, SAMPLES)
 FS_CORNERS = fs_for(R_NOM, code, CAL_GAIN, VOS_KEY_AMB, 0)
@@ -1019,7 +618,6 @@ FS_SH_PCT = max(abs(FS_SH_MIN), abs(FS_SH_MAX)) / I_MAX * 100
 FS_AMB_PCT = max(abs(FS_MIN), abs(FS_MAX)) / I_MAX * 100
 FS_SH_LO01_PCT = max(abs(FS_SH_LO01_MIN), abs(FS_SH_LO01_MAX)) / I_LOW * 100
 FS_AMB_LO01_PCT = max(abs(FS_AMB_LO01_MIN), abs(FS_AMB_LO01_MAX)) / I_LOW * 100
-assert abs(fs_mag(FS_SH) - DESIGN["fs5_mag"]) < 1e-12, "section 5 and the candidate row disagree"
 
 ZERO_KW = dict(r_nom=R_NOM, r_tol=0.0, r_tcr=0.0, t_c=25.0, gserr=0.0, gs_drift=0.0, vos25=0.0, vos_drift=0.0,
                cal_gain=1.0)
@@ -1063,12 +661,9 @@ md += mdtable(["Term", "Min", "Max", "Source"], [
 ])
 md += [
     "",
-    f"**Vos row choice.** Both rows give +/-1 uV max at 25 degC (`vos_vcm48_25c` and `vos_vcm0_25c`). "
-    f"Worst-case full-scale error magnitude: VCM = 48 V row {fs_mag(fs_for(R_NOM, code, CAL_GAIN, 'vos_vcm48_25c', SAMPLES)):.6g} A, "
-    f"VCM = 0 V row {fs_mag(fs_for(R_NOM, code, CAL_GAIN, 'vos_vcm0_25c', SAMPLES)):.6g} A. Chosen: `{VOS_KEY_AMB}` "
-    "(the two rows give the same worst-case magnitude, so the INPUTS map entry is kept). Neither row is at the 12-40 V "
-    "bus voltage; the offset is specified at VCM 48 V and 0 V only (open item). The offset rows carry no ADCRANGE "
-    "condition (section 1.5).",
+    f"**Vos row.** The larger-magnitude of the two DS rows (`vos_vcm48_25c`, `vos_vcm0_25c`, +/-1 uV max at 25 degC) "
+    f"is used: `{VOS_KEY_AMB}`. Neither row is at the 12-40 V bus voltage; the offset is specified at VCM 48 V and 0 V "
+    "only (open item).",
     "",
 ]
 rows = []
@@ -1184,8 +779,9 @@ handles = [
 ]
 ax1.legend(handles=handles, frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1.0), fontsize=8.5,
            labelcolor=INK)
-ax1.text(0.01, 0.99, f"at {I_MAX:g} A, max: {FS_AMB_PCT:.3f} % ambient, {FS_SH_PCT:.3f} % self-heated (est.)",
-         transform=ax1.transAxes, fontsize=8, color=INK, va="top")
+ax1.set_ylim(-1.15 * ERR_LIMIT_PCT, 1.15 * ERR_LIMIT_PCT)  # headroom so the +/-1 % lines are not on the frame
+ax1.text(1.01, 0.62, f"at {I_MAX:g} A, max:\n{FS_AMB_PCT:.3f} % ambient\n{FS_SH_PCT:.3f} % self-heated (est.)",
+         transform=ax1.transAxes, fontsize=8.5, color=INK, va="top", ha="left")
 ax2.set_xlabel("Load current (A), log scale", color=MUTED)
 fig.tight_layout()
 save(fig, "current_error.png")
@@ -1461,7 +1057,6 @@ P_PU_RATED = erj.param("p70").max
 
 P_V3_PART = VS_MAX * IQ_FULL + P_ALERT_PART  # W, INA229 dissipation from V3V3 (worst)
 P_BUS_PART_40 = VBUS_HI ** 2 / ZV.min + VBUS_HI * IB.max  # W, VBUS divider at 40 V (min impedance) + IN bias
-P_BUS_PART_12 = VBUS_LO ** 2 / ZV.min + VBUS_LO * IB.max
 TJ_V3 = TA.max + P_V3_PART * RTJA  # degC, ESTIMATE, V3V3 only (the requested path)
 TJ_ALL = TA.max + (P_V3_PART + P_BUS_PART_40) * RTJA  # degC, ESTIMATE, plus the VBUS divider at 40 V
 TJ_MARGIN = TJ_ABS - TJ_ALL
@@ -1667,7 +1262,7 @@ ratings = [
      f"{PW_MARGIN:.4g} W", status(PW_MARGIN), cite(shunt.param("p70"))],
     ["Shunt sense vs (P x R)^1/2", f"{VS_SH * 1e3:.4g} mV", f"(P x R)^1/2 = {MWV * 1e3:.4g} mV",
      f"{(MWV - VS_SH) * 1e3:.4g} mV", status(MWV - VS_SH), cite(shunt.param("max_working_voltage"))],
-    ["Storage temperature Tstg (abs)", "-", f"{cite(ina.param('tstg_abs'))[:0]}`tstg_abs` -65 to 150 degC", "-",
+    ["Storage temperature Tstg (abs)", "-", f"`tstg_abs` -65 to 150 degC", "-",
      "rating only / owner: assembly", cite(ina.param("tstg_abs"))],
     ["ESD HBM (abs)", "-", "`esd_hbm` +/-2000 V", "-", "rating only / owner: assembly", cite(ina.param("esd_hbm"))],
     ["ESD CDM (abs)", "-", "`esd_cdm` +/-1000 V", "-", "rating only / owner: assembly", cite(ina.param("esd_cdm"))],
@@ -1679,13 +1274,10 @@ md += [
     "VIO (`vio_abs`, DS p.3): the printed limits are GND - 0.3 V and VS + 0.3 V, referenced to GND and VS. The supply "
     "is taken at its MINIMUM for the upper limit, as the library's `resolve` does: VS + 0.3 V = "
     f"{VS_MIN + 0.3:.3f} V. The applied high level is the 3.3 V +/-3 % maximum, {VS_MAX:.3f} V, so the margin is "
-    f"{(VS_MIN + 0.3 - VS_MAX) * 1e3:.0f} mV. This is the basis of the +/-3 % rail in spec.md: a 3.3 V +/-5 % rail "
-    f"(3.465 V maximum) would fail by {(VS_NOM * 1.05 - (VS_NOM * 0.95 + 0.3)) * 1e3:.0f} mV "
-    f"(3.465 V against {VS_NOM * 0.95 + 0.3:.3f} V). CS is not in the DS row (DS omission, library note): not checked.",
+    f"{(VS_MIN + 0.3 - VS_MAX) * 1e3:.0f} mV. CS is not in the DS row (DS omission, library note): not checked.",
     "",
     "Differential check: the hard-short differential equals the 40 V bus across the shunt (zero drop at the short). "
-    "It sits exactly at the `vin_diff_abs` max of 40 V (DS p.3). Zero margin: OPEN ITEM (needs a clamp, a "
-    "lower bus maximum, or a DS-approved exception).",
+    "It sits exactly at the `vin_diff_abs` max of 40 V (DS p.3). Zero margin: OPEN ITEM.",
     "",
     "The VS row checks 3.3 V +/-3 % (3.201 to 3.399 V) against `vs_rec` (2.7 to 5.5 V, DS p.4); the "
     "`vs_abs` max is 6 V (DS p.3).",
@@ -1724,10 +1316,6 @@ dif_name, dif_applied, dif_rating, dif_margin, dif_status = DIFF_ROW[0], DIFF_RO
 vio_hi_row = [r for r in ratings if r[0].startswith("VIO, MOSI/MISO/SCLK/ALERT_N high")][0]
 
 SUMMARY = [
-    ["Design shunt (designer choice 2026-11-15, judged)", f"{DESIGN['value'] * 1e3:g} mohm, code {code} (+/-{pct(TOL.max)} %), "
-     f"ADCRANGE {ADCRANGE}, `{MPN}`", "availability (GOOD: 2+ distributors)",
-     f"{DESIGN['avail']}, {DESIGN['n_dist']} distributor(s); stock today {sk(DESIGN)} (informational)",
-     "PASS (availability GOOD)" if DESIGN["avail"] == "GOOD" else f"{DESIGN['avail']} (open item: lifecycle not checked)"],
     [f"Sense voltage headroom (self-heated worst Vsense at {I_MAX:g} A)", f"{mv(VS_SH)} mV", f"{mv(ADC_LIM[ADCRANGE])} mV "
      f"(ADCRANGE {ADCRANGE})", f"{mv(VS_MARGIN)} mV ({pct(VS_MARGIN / ADC_LIM[ADCRANGE])} %)", status(VS_MARGIN)],
     [f"Shunt dissipation at {I_MAX:g} A, 70 degC (ambient rating)", f"{PW.max:.4g} W", f"{RATED:.4g} W (p70 x derate)",
@@ -1767,11 +1355,6 @@ SUMMARY = [
     ["VIO high level, MOSI/MISO/SCLK/ALERT_N (3.3 V +/-3 %)", vio_hi_row[1], vio_hi_row[2], vio_hi_row[3], vio_hi_row[4]],
     ["MISO output source resistance (design placeholder)", f"{R_MISO:g} ohm", f"<= {R_OUT_MAX:.0f} ohm (`voh_25c`)",
      f"{R_OUT_MAX - R_MISO:.0f} ohm", "PASS (placeholder, OPEN ITEM)"],
-    ["FALLBACK shunt (same value, GOOD availability, section 1.4)",
-     (f"`{FALLBACK['mpn']}`, {FALLBACK['value'] * 1e3:g} mohm code {FALLBACK['code']}" if FALLBACK is not None else "-"),
-     "1 % self-heated (full scale)",
-     (f"{ERR_LIMIT_PCT - FALLBACK['fs5_pct']:+.3f} % of reading" if FALLBACK is not None else "-"),
-     (f"{err_pf(FALLBACK['fs5_pct'])}, ESTIMATE; alternate, not selected" if FALLBACK is not None else "-")],
 ]
 
 md_summary = ["## Summary of key results", ""]
@@ -1808,12 +1391,6 @@ md += [
     "- PCB thermal coupling between the shunt and the INA229 is ignored: the INA229 is assumed at ambient except for its own "
     "dissipation (section 9).",
     "- The shunt TCR reference temperature (25 degC) and the TCR validity span are not stated in the WSK2512 DS.",
-    "- Availability is a proxy from the `pcb bom` snapshot (2026-11-15): distributor listings and regions, with today's stock "
-    "informational only. Lifecycle status is NOT checked (no lifecycle data in the WSK2512 library or the snapshot). Verify "
-    "lifecycle and PCN with the manufacturer before release (open item).",
-    "- ADCRANGE 1 rows use the same Vos rows as ADCRANGE 0: the DS gives no ADCRANGE condition for them (section 1.5). The "
-    f"ADCRANGE 1 candidates are the series values up to {ADC1_MAX_MOHM:g} mohm (the 40.96 mV limit at {I_MAX:g} A, "
-    "self-heated).",
     "- Excluded terms: CMRR (`cmrr_full`), INL, DNL, INA229 internal die-temperature effects, PCB and Kelvin trace resistance, "
     "the ADC noise, and the 1 LSB term is conservative (a quantizer is +/-0.5 LSB; 1 LSB was requested). SHUNT_CAL rounding "
     "is included (section 5). The INA229 POWER register is not used: the power result here is V x I from the measured "
@@ -1823,898 +1400,6 @@ md += [
     f"- The board's `vsense_max` ({VSENSE_MAX_MV:.1f} mV, `ina229.zen`) is the self-heated worst Vsense ({mv(VS_SH)} mV) "
     "rounded up to 0.1 mV. It is a declared value for the rating check, not a measured one.",
     "",
-]
-
-# %% [markdown]
-# ## Judgement calls (section 14)
-
-# %%
-md += ["## 14. Judgement calls", ""]
-md += [
-    f"- Shunt: designer choice 2026-11-15, {R_NOM * 1e3:g} mohm, code {code}, ADCRANGE {ADCRANGE} (`SHUNT_SELECTED`). Basis: "
-    f"best self-heated {I_MAX:g} A accuracy among the 1 % passers ({FS_SH_PCT:.3f} %). Availability is FAIR (one distributor listing) "
-    "and is an open item (section 1.4). Fallback: the GOOD-availability 10 mohm code D part (section 1.4).",
-    "- Availability: the snapshot is `analysis/data/shunt_stock_2026-11-15_rerank.json` (second check, all 169 candidates). "
-    "Ranking uses the availability rating (distributor count, recognition, standard value), not today's stock. The first "
-    "snapshot `analysis/data/shunt_stock_2026-11-15.json` is kept unchanged.",
-    "- Shunt tolerance and TCR are bound-only rows; their typ is set to zero in the FS and bus analyses (caller choice).",
-    "- `gs_drift_25c` and `gb_drift_25c` have no typ in the library and are centred at zero with `with_typ(0.0)`.",
-    "- The dVS reference for the PSRR row is assumed to be the 3.3 V nominal (the row prints a VS range, not a "
-    "single deviation).",
-    "- Self-heating (section 3.2): theta_est = (zero - knee) / p70 from the derating curve; the rise is the "
-    "self-consistent fixed point with the worst-case R at the element temperature. The self-heated band is the lowest-R "
-    "rise at TA 0 degC up to the worst-R rise at TA 70 degC. The INA229 drift stays at ambient.",
-    "- Power error (section 8) combines the ambient current error only. The self-heated power error is not computed; the "
-    "The full-scale self-heated current error is in section 5 and is the judged result.",
-    "- ALERT_N: the pull-up is 10 kohm (DESIGN CHOICE, spec.md); the sink into the INA229 uses VOL max (0.4 V at 1 mA) with "
-    "the asserted current, which is conservative. ALERT_N is assumed asserted in shutdown.",
-    "- The ERJ-3EKF pull-up tolerance is referenced to 20 degC (library note) and its TCR to 25 degC.",
-    "- Junction temperature includes the VBUS divider at 40 V in the total (the requested path is V3V3 only; both shown).",
-    f"- Error limit: +/-1 % of reading at {I_MAX:g} A (designer requirement, 2026-11-15), judged on the self-heated worst case "
-    "(`ERR_LIMIT_PCT = 1.0`). The 100 mA error is REPORT ONLY.",
-    "- Element temperature limit: 170 degC is an ASSUMPTION (`T_ELEM_LIMIT`). The element margin is ESTIMATE and PASS only "
-    "under that assumption.",
-    "",
-]
-
-# %% [markdown]
-# ## Maximum full-scale current study (WSK2512 and WSK2512-LOW)
-# Question (designer, 2026-11-15): the highest integer full-scale current the block can support. Requirement: +/-1 % of
-# reading at full scale, self-heated worst case, TA 0 to 70 degC, bus 12 to 40 V, V3V3 3.3 V +/-3 %, derate 1.0, no
-# fault-headroom requirement. Every integer I_FS from I_START is evaluated for every (series, tolerance code, value,
-# ADCRANGE) in the library. A design passes only when all six criteria (a) to (f) hold at the 70 degC worst case. This
-# study does not change the design: `SHUNT_SELECTED` (I_MAX, 8 A) stays the current design.
-
-# %%
-MAXFS_JSON = DATA / "shunt_stock_2026-11-15_maxfs.json"  # study stock snapshot: WSK2512 rows reused, WSK2512-LOW new
-I_START = 5  # A, first integer full-scale current of the study (the scan starts below the current design, I_MAX = 8 A)
-I_CAP = 60  # A, search guard; the scan stops on its own (CONFIRM_MORE)
-CONFIRM_MORE = 3  # integers above the first empty one that must also be empty before the scan stops
-SHUNT_CAL_MAX = 2 ** 15 - 1  # 32767: SHUNT_CAL is a 15-bit field, bits 14-0 (INA229 DS p.23, Table 7-7); bit 15 reserved
-RUNAWAY_DEGC = 1000.0  # degC: a self-heating fixed point above this has no steady state (treated as a fail)
-LOW = load("Vishay/WSK2512-LOW")
-CRIT = ("a", "b", "c", "d", "e", "f")
-CRIT_TEXT = {
-    "a": "(a) Vsense inside the ADCRANGE VDIFF range",
-    "b": "(b) shunt dissipation <= rated x derate at 70 degC",
-    "c": "(c) (P x R)^1/2 >= Vsense",
-    "d": "(d) self-heated worst-case error <= 1 % of reading",
-    "e": "(e) element temperature <= derate_zero (ASSUMED element limit)",
-    "f": "(f) SHUNT_CAL integer in the register range 1 to 32767",
-}
-CRIT_SHORT = {"a": "Vsense range", "b": "dissipation", "c": "(P x R)^1/2", "d": "error 1 %", "e": "element T",
-              "f": "SHUNT_CAL"}
-CRIT_CHART = {"a": "Vsense", "b": "dissip.", "c": "(PR)^1/2", "d": "error", "e": "elem. T", "f": "SHUNT_CAL"}  # chart labels
-
-# %%
-# Series constants, each read from its own library rows (value table, tolerance, TCR, power, derating curve).
-MF = {}
-for _name, _part in (("WSK2512", shunt), ("WSK2512-LOW", LOW)):
-    _p70 = _part.param("p70").max  # W, P70 degC (DS p.1)
-    _knee = _part.param("derate_knee").typ  # degC, DS p.3 curve
-    _zero = _part.param("derate_zero").typ  # degC, DS p.3 curve
-    _kw = _part.inputs("rated_power")  # {p70, knee_c, zero_c} as floats
-    MF[_name] = dict(
-        part=_part, p70=_p70, knee=_knee, zero=_zero,
-        theta=(_zero - _knee) / _p70,  # degC/W, ESTIMATE: this series' own derating curve (theta_est, section 3.2)
-        rated=_part.calc.rated_power(ta_c=TA.max, **_kw) * DERATE,  # W, rating at 70 degC x derate
-        pairs=_part.pairs(),  # [(value ohm, code)]: every orderable pair the library allows
-    )
-
-# %%
-def load_maxfs_stock(path):
-    """(raw record, {(series, code, value_mohm): {match, mpn, offers}}) from the study snapshot. Offers are the BOM
-    distributor listings (distributor, region, stock), kept even at zero stock."""
-    raw = json.loads(path.read_text())
-    table = {}
-    for row in raw["rows"]:
-        offers = (row.get("availability") or {}).get("offers") or []
-        table[(row["series"], row["code"], round(float(row["value_mohm"]), 6))] = dict(
-            match=row["bom_match"], mpn=row.get("bom_mpn"),
-            offers=[(o["distributor"], o["region"], o["stock"]) for o in offers])
-    return raw, table
-
-
-MAXFS_RAW, MAXFS_STOCK = load_maxfs_stock(MAXFS_JSON)
-_LOW_NOSTOCK = [(v, c) for v, c in MF["WSK2512-LOW"]["pairs"]
-                if ("WSK2512-LOW", c, round(v * 1e3, 6)) not in MAXFS_STOCK]
-assert not _LOW_NOSTOCK, f"WSK2512-LOW pairs without a stock row: {_LOW_NOSTOCK}; re-run the stock check"
-_AV_CACHE = {}
-
-
-def stock_info(name, code, v):
-    """Availability record of one (series, code, value) from the study snapshot. The rating is avail_rating (GOOD, FAIR,
-    POOR/UNKNOWN). The stock total is INFORMATIONAL only and never ranks a design."""
-    key = (name, code, round(v * 1e3, 6))
-    if key not in _AV_CACHE:
-        rec = MAXFS_STOCK.get(key)
-        if rec is None:
-            raise RuntimeError(f"no stock row for {name} {code} {v * 1e3:g} mohm: re-run the stock check")
-        offers = rec["offers"]
-        dists = sorted({d for d, _, _ in offers})
-        standard = any(abs(v - x) <= 1e-9 * x for x in MF[name]["part"].values(tol=code))
-        info = dict(match=rec["match"], n_dist=len(dists), dists=dists,
-                    regions=sorted({g for _, g, _ in offers}),
-                    stock=(sum(s for _, _, s in offers) if offers else None), mpn=rec["mpn"])
-        info["avail"] = avail_rating(info, standard)
-        _AV_CACHE[key] = info
-    return _AV_CACHE[key]
-
-
-# %%
-# Self-heating and error functions. Same physics as the WSK2512 cells above, with the calc module passed in, so the
-# LOW series uses its own resistance_worst (TCR row by value, tolerance code). Not DS equations unless cited.
-def _mf_rworst(calc, r0, tol, tcr, t_c):
-    return calc.resistance_worst(r0, tol, tcr, t_c, T_REF)
-
-
-def mf_r_side(calc, r0, tol, tcr, t_c, side):
-    """Not a DS equation: highest ('hi') or lowest ('lo') resistance (ohm) over the tolerance and TCR rows at t_c."""
-    w = wca(partial(_mf_rworst, calc), unit="ohm", r0=r0, tol=tol, tcr=tcr, t_c=t_c)
-    return w.max if side == "hi" else w.min
-
-
-def mf_rise(name, i, r0, tol, tcr, ta, side):
-    """ESTIMATE, not a DS equation: self-heating rise (degC) of one element at ambient ta. x = theta x I^2 x R(ta + x)
-    with theta from THIS series' derating curve. Fixed point from x = 0. Returns (x, converged)."""
-    st = MF[name]
-    x = 0.0
-    for _ in range(300):
-        x_new = st["theta"] * i * i * mf_r_side(st["part"].calc, r0, tol, tcr, ta + x, side)
-        if x_new > RUNAWAY_DEGC:
-            return x_new, False
-        if abs(x_new - x) < 1e-10:
-            return x_new, True
-        x = x_new
-    return x, False
-
-
-def mf_elem(name, code, v, i):
-    """ESTIMATE: element state of one candidate at full scale i. t_el = TA max + worst-R rise (the judged point),
-    t_lo = TA min + lowest-R rise (band low edge), r_el = worst R at t_el (ohm)."""
-    part = MF[name]["part"]
-    tol = part.tolerance(code).with_typ(0.0)  # bound-only row (min and max used)
-    tcr = part.tcr(v).with_typ(0.0)
-    x_hi, conv = mf_rise(name, i, v, tol, tcr, TA.max, "hi")
-    t_hi = TA.max + x_hi
-    x_lo, _ = mf_rise(name, i, v, tol, tcr, TA.min, "lo")
-    r_el = mf_r_side(part.calc, v, tol, tcr, t_hi, "hi") if conv else float("inf")
-    return dict(t_el=t_hi, t_lo=TA.min + x_lo, conv=conv, r_el=r_el, tol=tol, tcr=tcr)
-
-
-def _mf_fs_err(calc, i_true, r_nom, r_tol, r_tcr, t_sh, t_amb, gserr, gs_drift, vos25, vos_drift, cal_gain):
-    """Not a DS equation: fs_error with the shunt at element temperature t_sh and the INA229 at t_amb (ESTIMATE). Same
-    derivation as fs_error_sh: i_seen = i_true x R_act / R_nom x cal_gain, error = (i_seen - i_true) + current_error."""
-    r_act = calc.resistance_worst(r_nom, r_tol, r_tcr, t_sh, T_REF)
-    i_seen = i_true * r_act / r_nom * cal_gain
-    return (i_seen - i_true) + ina.calc.current_error(i_seen, r_nom, vos25, vos_drift, gserr, gs_drift, t_amb)
-
-
-def mf_err_mag(name, code, v, i_eval, lsb, gain, band, samples=0):
-    """ESTIMATE: judged self-heated worst-case error magnitude (A, with the 1 LSB term) at current i_eval, the larger of
-    the two DS Vos rows kept. band: element temperature Param for i_eval. Multilinear in (t_sh, t_amb): corners exact
-    (samples = 0); samples > 0 is the interior check."""
-    part = MF[name]["part"]
-    tol = part.tolerance(code).with_typ(0.0)
-    tcr = part.tcr(v).with_typ(0.0)
-    best = 0.0
-    for k in VOS_KEYS:
-        w = wca(partial(_mf_fs_err, part.calc), unit="A", samples=samples, i_true=i_eval, r_nom=v, r_tol=tol,
-                r_tcr=tcr, t_sh=band, t_amb=TA, gserr=GSERR, gs_drift=GS_DRIFT, vos25=ina.param(k),
-                vos_drift=VOS_DRIFT, cal_gain=gain)
-        best = max(best, abs(w.min - lsb), abs(w.max + lsb))
-    return best
-
-
-def _mf_power(calc, i_true, v_true, r_nom, r_tol, r_tcr, gserr, gs_drift, vos25, vos_drift, cal_gain, lsb_i,
-              vos_bus, vos_bus_drift, gberr, gb_drift, lsb_v, t_c):
-    """Not a DS equation: fractional power error (V x I reading), ambient only, as section 8 (power_error) but with this
-    series' calc: (1 + e_I / I)(1 + e_V / V) - 1."""
-    e_i = _mf_fs_err(calc, i_true, r_nom, r_tol, r_tcr, t_c, t_c, gserr, gs_drift, vos25, vos_drift, cal_gain) + lsb_i
-    e_v = vbus_error(v_true, vos_bus, vos_bus_drift, 0.0, 0.0, gberr, gb_drift, t_c) + lsb_v
-    return (i_true + e_i) * (v_true + e_v) / (i_true * v_true) - 1.0
-
-
-def mf_power_band(name, code, v, i, gain, v_bus):
-    """Ambient-only worst-case (min, max) fractional power error at full scale i and bus v_bus (report only). The ambient
-    is enumerated over T_POWER (the product of drift and temperature makes it quadratic in T), both Vos rows."""
-    part = MF[name]["part"]
-    tol = part.tolerance(code).with_typ(0.0)
-    tcr = part.tcr(v).with_typ(0.0)
-    lsb = ina.calc.current_lsb(i)
-    lsb_i = Param(min=-lsb, max=lsb, unit="A")
-    lsb_v = Param(min=-LSB_VBUS, max=LSB_VBUS, unit="V")
-    lo = hi = None
-    for t in T_POWER:
-        for k in VOS_KEYS:
-            w = wca(partial(_mf_power, part.calc), unit="1", samples=0, i_true=i, v_true=v_bus, r_nom=v, r_tol=tol,
-                    r_tcr=tcr, gserr=GSERR, gs_drift=GS_DRIFT, vos25=ina.param(k), vos_drift=VOS_DRIFT,
-                    cal_gain=gain, lsb_i=lsb_i, vos_bus=VOS_BUS, vos_bus_drift=VOS_BUS_DRIFT, gberr=GBERR,
-                    gb_drift=GB_DRIFT, lsb_v=lsb_v, t_c=t)
-            lo = w.min if lo is None else min(lo, w.min)
-            hi = w.max if hi is None else max(hi, w.max)
-    return lo, hi
-
-
-def mf_max_current_self_heated(name, code, v, rated):
-    """ESTIMATE: largest continuous current (A) with I^2 x R_element(I) = rated (bisection; R_element self-heated at
-    TA 70 degC). The rating basis (ambient R) is calc.max_current(rated, R_worst at 70 degC), reported next to it."""
-    lo, hi = 0.0, 1000.0
-    for _ in range(80):
-        mid = 0.5 * (lo + hi)
-        if mid * mid * mf_elem(name, code, v, mid)["r_el"] > rated:
-            hi = mid
-        else:
-            lo = mid
-    return lo
-
-# %%
-def mf_cal(raw):
-    """SHUNT_CAL as written (round half up) and the integers the judged error must cover. A raw value on a .5 tie can be
-    written either way (float noise decides a tie otherwise), so both integers are judged and the worse one is kept."""
-    cal = math.floor(raw + 0.5)
-    tie = abs((raw - math.floor(raw)) - 0.5) < 1e-9
-    return cal, ([math.floor(raw), math.floor(raw) + 1] if tie else [cal]), tie
-
-
-def mf_judged_err(name, code, v, i, lsb, raw, band, samples=0):
-    """ESTIMATE: judged self-heated error magnitude (A) over the SHUNT_CAL integers that can be written (mf_cal)."""
-    _, cands, _ = mf_cal(raw)
-    return max(mf_err_mag(name, code, v, i, lsb, c / raw, band, samples) for c in cands)
-
-
-def mf_candidate(name, code, v, i):
-    """All six criteria for one (series, code, value) at full scale i, for ADCRANGE 0 and ADCRANGE 1 (two records).
-    Criterion margins are in the units of the criterion; a margin >= 0 passes. (c) is (b) at the same R (exact identity:
-    (P x R)^1/2 >= I x R  <=>  P >= I^2 x R), so it fails with (b) and is counted once in n_fail."""
-    st = MF[name]
-    part = st["part"]
-    e = mf_elem(name, code, v, i)
-    lsb = ina.calc.current_lsb(i)  # CURRENT_LSB = I_FS / 2^19 (DS p.30, Equation 3)
-    vs = i * e["r_el"]
-    p_el = i * i * e["r_el"]
-    mwv = part.calc.max_working_voltage(st["rated"], e["r_el"])
-    band = Param(min=e["t_lo"], max=e["t_el"], unit="degC")
-    out = []
-    for adc in (0, 1):
-        raw = ina.calc.shunt_cal(lsb, v, adcrange=adc)  # DS p.30, Equation 2 (x4 for ADCRANGE 1)
-        cal, _, tie = mf_cal(raw)
-        gain = cal / raw
-        err = mf_judged_err(name, code, v, i, lsb, raw, band) / i * 100 if e["conv"] else float("inf")  # %
-        rec = dict(
-            series=name, code=code, value=v, adc=adc, i=i, mpn=part.mpn(v, tol=code), conv=e["conv"],
-            vs=vs, vdiff=ADC_LIM[adc], m_a=ADC_LIM[adc] - vs, headroom=(ADC_LIM[adc] - vs) / ADC_LIM[adc],
-            p_el=p_el, rated=st["rated"], m_b=st["rated"] - p_el,
-            mwv=mwv, m_c=mwv - vs,
-            err=err, m_d=ERR_LIMIT_PCT - err,
-            t_el=e["t_el"], zero=st["zero"], m_e=st["zero"] - e["t_el"],
-            raw=raw, cal=cal, gain=gain, tie=tie, lsb=lsb, m_f=min(cal - 1, SHUNT_CAL_MAX - cal),
-        )
-        rec["ok"] = {"a": rec["m_a"] >= 0, "b": rec["m_b"] >= 0, "c": rec["m_c"] >= 0,
-                     "d": err <= ERR_LIMIT_PCT + 1e-12, "e": e["conv"] and rec["m_e"] >= 0,
-                     "f": rec["m_f"] >= 0}
-        rec["fails"] = [k for k in CRIT if not rec["ok"][k]]
-        rec["n_fail"] = len([k for k in rec["fails"] if k != "c"])  # (c) mirrors (b): counted once
-        rec["pass"] = not rec["fails"]
-        out.append(rec)
-    return out
-
-
-MF_SCAN = {}  # I_FS (integer A) -> every candidate record (both ADCRANGE settings)
-_zero_run = 0
-for _i in range(I_START, I_CAP + 1):
-    _recs = []
-    for _name in MF:
-        for _v, _code in MF[_name]["pairs"]:
-            _recs += mf_candidate(_name, _code, _v, float(_i))
-    MF_SCAN[_i] = _recs
-    _npass = sum(1 for r in _recs if r["pass"])
-    _zero_run = _zero_run + 1 if _npass == 0 else 0
-    if _zero_run > CONFIRM_MORE:
-        break
-else:
-    raise RuntimeError("the study did not stop before I_CAP: raise I_CAP")
-MF_I = sorted(MF_SCAN)
-assert any(r["pass"] for r in MF_SCAN[MF_I[0]]), "the scan's first integer must have a passing design"
-assert any(r["pass"] and r["series"] == "WSK2512" and r["code"] == code and abs(r["value"] - R_NOM) < 1e-12
-           and r["adc"] == ADCRANGE for r in MF_SCAN[int(I_MAX)]), "the current design must pass the study at I_MAX"
-
-# %%
-# Availability: only passing designs need a rating (the snapshot must cover them: a passing design without a row is a
-# stale snapshot). Passing designs at I_FS >= 5 A are a subset of the 5 A ADCRANGE 0 fit (Vsense rises with I), which the
-# snapshot covers.
-for _i in MF_I:
-    for r in MF_SCAN[_i]:
-        if r["pass"]:
-            info = stock_info(r["series"], r["code"], r["value"])
-            r["avail"] = info["avail"]
-            r["n_dist"] = info["n_dist"]
-            r["dists"] = info["dists"]
-            r["regions"] = info["regions"]
-            r["stock"] = info["stock"]
-            r["bom_mpn"] = info["mpn"]
-        else:
-            r["avail"] = None
-
-AVAIL_RANK = {"GOOD": 0, "FAIR": 1, "POOR/UNKNOWN": 2}
-
-
-def mf_rank_key(r):
-    """Ranking of passing designs: availability (GOOD before FAIR before POOR/UNKNOWN), then lowest self-heated error
-    (compared at 0.01 %), then lower dissipation at 70 degC (element resistance)."""
-    return (AVAIL_RANK[r["avail"]], round(r["err"], 2), r["p_el"])
-
-
-def mf_key(r):
-    return (r["series"], r["code"], r["value"], r["adc"])
-
-
-def mf_label(r):
-    """Short design label: series, value, code, ADCRANGE, part number, availability."""
-    return (f"{r['series']} {r['value'] * 1e3:g} mohm {r['code']}, ADCRANGE {r['adc']}, `{r['mpn']}` "
-            f"({r['avail']})")
-
-
-MF_SUM = {}
-for _i in MF_I:
-    _recs = MF_SCAN[_i]
-    _pass = sorted([r for r in _recs if r["pass"]], key=mf_rank_key)
-    _closest = min(_recs, key=lambda r: (r["n_fail"], r["err"]))
-    MF_SUM[_i] = dict(
-        ranked=_pass,
-        n_pass=len(_pass),
-        n_gf=sum(1 for r in _pass if r["avail"] in ("GOOD", "FAIR")),
-        n_good=sum(1 for r in _pass if r["avail"] == "GOOD"),
-        closest=_closest,
-        binding=(_closest["fails"][0] if _closest["fails"] else None),
-    )
-
-# First I_FS at which each criterion fails, per candidate (the scan is ascending). The first criterion to fail as the
-# current rises is the binding one for that design (criterion c is the same test as b and is not counted separately).
-MF_FIRST_FAIL = {}
-for _i in MF_I:
-    for r in MF_SCAN[_i]:
-        d = MF_FIRST_FAIL.setdefault(mf_key(r), {})
-        for k in r["fails"]:
-            if k != "c":
-                d.setdefault(k, _i)
-
-
-def mf_limit(r):
-    """(last integer I_FS in the scan where this design still passes all criteria, binding criteria list). The binding
-    list is every criterion that fails first at the first failing integer. A design that already fails at I_START has
-    no passing integer (None, with its binding list). A design that never fails in the scan has (None, [])."""
-    d = MF_FIRST_FAIL.get(mf_key(r), {})
-    if not d:
-        return None, []
-    first = min(d.values())
-    last = first - 1 if first > I_START else None
-    return last, sorted(k for k, v in d.items() if v == first)
-
-
-# %%
-# Top-level answers: maxima and the recommended design.
-I_MAX_GF = max(i for i in MF_I if MF_SUM[i]["n_gf"] > 0)  # primary: GOOD or FAIR passing design
-I_MAX_GOOD = max(i for i in MF_I if MF_SUM[i]["n_good"] > 0)  # GOOD only
-I_MAX_ANY = max(i for i in MF_I if MF_SUM[i]["n_pass"] > 0)  # any availability (electrical pass only)
-I_FIRST_EMPTY = min(i for i in MF_I if MF_SUM[i]["n_pass"] == 0)  # first integer with no passing design
-REC = [r for r in MF_SUM[I_MAX_GOOD]["ranked"] if r["avail"] == "GOOD"][0]  # highest GOOD rated design
-REC_LIMIT, REC_BIND = mf_limit(REC)
-ALT = None  # the FAIR alternative only when it allows a higher integer rating than the GOOD design
-if I_MAX_GF > I_MAX_GOOD:
-    ALT = [r for r in MF_SUM[I_MAX_GF]["ranked"] if r["avail"] in ("GOOD", "FAIR")][0]
-ALT_LIMIT, ALT_BIND = mf_limit(ALT) if ALT is not None else (None, [])
-CLOSEST_NEXT = MF_SUM[I_FIRST_EMPTY]["closest"]  # the best candidate just above the maximum: what fails there
-assert MF_SUM[I_MAX_GOOD]["n_pass"] > 0 and REC["pass"]
-
-# %%
-# Continuous curves for the top candidates (charts ii and iii): every design that ranks first at some integer I_FS,
-# plus the recommended and the FAIR alternative.
-MF_TOP = []
-for _i in MF_I:
-    if MF_SUM[_i]["ranked"]:
-        _k = mf_key(MF_SUM[_i]["ranked"][0])
-        if _k not in [mf_key(t) for t in MF_TOP]:
-            MF_TOP.append(MF_SCAN[_i][[mf_key(x) for x in MF_SCAN[_i]].index(_k)])
-for _extra in [REC] + ([ALT] if ALT is not None else []):
-    if mf_key(_extra) not in [mf_key(t) for t in MF_TOP]:
-        MF_TOP.append(_extra)
-MF_GRID = [0.5 + 0.25 * k for k in range(int((max(MF_I) + 2 - 0.5) / 0.25) + 1)]  # A, 0.5 to max+2 in 0.25 A steps
-MF_CURVE = {}  # key -> {"p": [W], "t": [degC]} along MF_GRID
-for _r in MF_TOP:
-    _p, _t = [], []
-    for _x in MF_GRID:
-        _e = mf_elem(_r["series"], _r["code"], _r["value"], _x)
-        _p.append(_x * _x * _e["r_el"] if _e["conv"] else float("nan"))
-        _t.append(_e["t_el"])
-    MF_CURVE[mf_key(_r)] = {"p": _p, "t": _t}
-
-# %%
-# Recommendation detail: every number of the recommended design, at its maximum integer I_FS.
-def mf_detail(r):
-    """ESTIMATE/REPORT numbers for one design at its full-scale current r['i']: the self-heated error with the interior
-    check (2 samples), the error at 1 % of full scale (report only), the ambient reference, the continuous current at
-    70 degC on the rating basis and self-heated, and the power error at 12 and 40 V (ambient, report only)."""
-    name, code, v, i = r["series"], r["code"], r["value"], r["i"]
-    part = MF[name]["part"]
-    tol = part.tolerance(code).with_typ(0.0)
-    tcr = part.tcr(v).with_typ(0.0)
-    e = mf_elem(name, code, v, i)
-    band = Param(min=e["t_lo"], max=e["t_el"], unit="degC")
-    d = {}
-    d["err_s2"] = mf_judged_err(name, code, v, i, r["lsb"], r["raw"], band, samples=2) / i * 100
-    lo_i = 0.01 * i
-    e_lo = mf_elem(name, code, v, lo_i)
-    band_lo = Param(min=e_lo["t_lo"], max=e_lo["t_el"], unit="degC")
-    d["err_lo"] = mf_judged_err(name, code, v, lo_i, r["lsb"], r["raw"], band_lo) / lo_i * 100
-    d["t_lo"] = e["t_lo"]
-    band_amb = Param(min=TA.min, max=TA.max, unit="degC")
-    d["err_amb"] = mf_judged_err(name, code, v, i, r["lsb"], r["raw"], band_amb) / i * 100
-    d["i_amb"] = part.calc.max_current(r["rated"], mf_r_side(part.calc, v, tol, tcr, TA.max, "hi"))
-    d["i_sh"] = mf_max_current_self_heated(name, code, v, r["rated"])
-    d["pw12"] = mf_power_band(name, code, v, i, r["gain"], VBUS_LO)
-    d["pw40"] = mf_power_band(name, code, v, i, r["gain"], VBUS_HI)
-    d["band_lo_t"] = e_lo["t_el"]
-    return d
-
-
-REC_D = mf_detail(REC)
-ALT_D = mf_detail(ALT) if ALT is not None else None
-REC_MPN_BOM_OK = REC["bom_mpn"] == REC["mpn"]
-assert REC_MPN_BOM_OK, f"BOM MPN {REC['bom_mpn']} differs from the library MPN {REC['mpn']}"
-
-# LOW reference: the best WSK2512-LOW design at the study start, self-heated and ambient-only (no self-heating).
-LOW_REF = min([r for r in MF_SCAN[I_START] if r["series"] == "WSK2512-LOW" and r["adc"] == 0], key=lambda r: r["err"])
-LOW_REF_AMB = mf_judged_err("WSK2512-LOW", LOW_REF["code"], LOW_REF["value"], float(I_START), LOW_REF["lsb"],
-                            LOW_REF["raw"], Param(min=TA.min, max=TA.max, unit="degC")) / I_START * 100
-_LOW_ALL = [r for r in MF_SCAN[I_START] if r["series"] == "WSK2512-LOW" and r["adc"] == 0]
-LOW_BELOW3 = [r for r in _LOW_ALL if r["value"] < 3e-3 - 1e-12]
-LOW_ABOVE3 = [r for r in _LOW_ALL if r["value"] >= 3e-3 - 1e-12]
-LOW_TCR_TXT = {}
-for _row in LOW.info["series_tcr"]:
-    _t, _rg = LOW.param(_row["tcr"]), LOW.param(_row["range"])
-    LOW_TCR_TXT[_row["tcr"]] = (_t.max * 1e6, _rg.min * 1e3, _rg.max * 1e3)
-
-# %%
-def mf_name(r):
-    return f"{r['series']} {r['value'] * 1e3:g} mohm, code {r['code']}, ADCRANGE {r['adc']}"
-
-
-def mf_fails_txt(r):
-    return ", ".join(f"{k} {CRIT_SHORT[k]}" for k in r["fails"] if k != "c") or "none"
-
-
-def mf_bind_txt(keys):
-    """Text of a binding list: 'b (dissipation; identical to (c))' when b is the binding test."""
-    out = []
-    for k in keys:
-        out.append(f"({k}) {CRIT_SHORT[k]}" + ("; same test as (c)" if k == "b" else ""))
-    return ", ".join(out)
-
-
-# WSK2512-LOW without self-heating (ambient 0 to 70 degC only), at I_START: separates the TCR term from self-heating.
-LOW_AMB = {}
-for _r in _LOW_ALL:
-    LOW_AMB[mf_key(_r)] = mf_judged_err("WSK2512-LOW", _r["code"], _r["value"], float(I_START), _r["lsb"], _r["raw"],
-                                        Param(min=TA.min, max=TA.max, unit="degC")) / I_START * 100
-LOW_AMB_BEST = min(LOW_AMB.values())
-LOW_AMB_BELOW3 = min(v for k, v in LOW_AMB.items() if k[2] < 3e-3 - 1e-12)
-LOW_AMB_ABOVE3 = min(v for k, v in LOW_AMB.items() if k[2] >= 3e-3 - 1e-12)
-
-
-# Chart (i): best self-heated error vs I_FS, with the 1 % line and the binding constraint annotated.
-fig, ax = plt.subplots(figsize=(9.6, 5.4))
-_pa = [(i, MF_SUM[i]["ranked"][0]["err"]) for i in MF_I if MF_SUM[i]["ranked"]]
-_pg = [(i, [r for r in MF_SUM[i]["ranked"] if r["avail"] == "GOOD"][0]["err"]) for i in MF_I if MF_SUM[i]["n_good"]]
-_cl = [(i, MF_SUM[i]["closest"]["err"]) for i in MF_I if MF_SUM[i]["n_pass"] == 0]
-_ymax = max([e for _, e in _cl] + [ERR_LIMIT_PCT]) * 1.12
-ax.plot([i for i, _ in _pa], [e for _, e in _pa], color=BLUE, lw=1.4, marker="o", ms=5,
-        label="best passing design (any availability; rank 1)")
-ax.plot([i for i, _ in _pg], [e for _, e in _pg], color=GREEN, lw=0, marker="s", ms=6,
-        label="best GOOD-availability passing design")
-ax.plot([i for i, _ in _cl], [e for _, e in _cl], color=ORANGE, lw=0, marker="o", ms=7, mfc="white", mew=1.4,
-        label="closest design where nothing passes (fails shown)")
-ax.axhline(ERR_LIMIT_PCT, color=INK, lw=1.0, ls="--", label=f"requirement: {ERR_LIMIT_PCT:g} % of reading")
-for i in MF_I:
-    s = MF_SUM[i]
-    if s["n_pass"] == 0:
-        c = s["closest"]
-        _k = s["binding"]
-        ax.text(i, 0.04, f"no pass\n({_k}) {CRIT_CHART[_k]}", ha="center", va="bottom", fontsize=7.5, color=INK)
-ax.set_xticks(MF_I)
-ax.set_ylim(0, _ymax)
-style_axes(ax, "Full-scale current I_FS (A, integer)", "Self-heated worst-case error at I_FS (% of reading, ESTIMATE)")
-ax.set_title("Maximum full-scale study: best self-heated error vs I_FS (WSK2512 and WSK2512-LOW, ADCRANGE 0 and 1)",
-             color=INK, fontsize=10)
-ax.legend(frameon=False, loc="upper left", fontsize=8, labelcolor=INK)
-fig.tight_layout()
-save(fig, "maxfs_error.png")
-
-# %%
-# Chart (ii): dissipation vs I_FS for the top candidates against the derated rating at 70 degC.
-# Chart (iii): element temperature vs I_FS for the same candidates against the ASSUMED element limit.
-def mf_curve_label(r):
-    return f"{r['series']} {r['value'] * 1e3:g} mohm {r['code']} ADC{r['adc']}"
-
-
-_LOW_KEY = mf_key(LOW_REF)
-MF_CURVE_PLOT = [(mf_key(r), mf_curve_label(r), r) for r in MF_TOP]
-if _LOW_KEY not in MF_CURVE:
-    _p, _t = [], []
-    for _x in MF_GRID:
-        _e = mf_elem(LOW_REF["series"], LOW_REF["code"], LOW_REF["value"], _x)
-        _p.append(_x * _x * _e["r_el"] if _e["conv"] else float("nan"))
-        _t.append(_e["t_el"])
-    MF_CURVE[_LOW_KEY] = {"p": _p, "t": _t}
-    MF_CURVE_PLOT.append((_LOW_KEY, mf_curve_label(LOW_REF) + " (reference, does not pass)", LOW_REF))
-PLOT_COL = [BLUE, ORANGE, GREEN, RED, "#7a4fb0", MUTED]
-RATED_LINE = MF["WSK2512"]["rated"]
-fig, ax = plt.subplots(figsize=(9.6, 5.2))
-for j, (k, lbl, r) in enumerate(MF_CURVE_PLOT):
-    col = PLOT_COL[j % len(PLOT_COL)]
-    ls = "--" if "reference" in lbl else "-"
-    ax.plot(MF_GRID, MF_CURVE[k]["p"], color=col, lw=1.4, ls=ls, label=lbl)
-ax.axhline(RATED_LINE, color=INK, lw=1.0, ls=":", label=f"rated at 70 degC x derate: {RATED_LINE:.3g} W")
-ax.axvline(I_MAX_GOOD, color=MUTED, lw=0.8, ls=":")
-ax.text(I_MAX_GOOD + 0.1, 0.02, f"GOOD max {I_MAX_GOOD} A", color=MUTED, fontsize=8)
-style_axes(ax, "Full-scale current I_FS (A)", "Shunt dissipation at 70 degC (W, self-heated R, ESTIMATE)")
-ax.set_xlim(MF_GRID[0], MF_GRID[-1])
-ax.set_ylim(0, RATED_LINE * 1.6)
-ax.set_title("Shunt dissipation vs current for the top candidates, against the rating at 70 degC", color=INK, fontsize=10)
-ax.legend(frameon=False, loc="upper left", fontsize=7.5, labelcolor=INK)
-fig.tight_layout()
-save(fig, "maxfs_dissipation.png")
-
-fig, ax = plt.subplots(figsize=(9.6, 5.2))
-for j, (k, lbl, r) in enumerate(MF_CURVE_PLOT):
-    col = PLOT_COL[j % len(PLOT_COL)]
-    ls = "--" if "reference" in lbl else "-"
-    ax.plot(MF_GRID, MF_CURVE[k]["t"], color=col, lw=1.4, ls=ls, label=lbl)
-_zero_line = MF["WSK2512"]["zero"]
-ax.axhline(_zero_line, color=INK, lw=1.0, ls="--",
-           label=f"ASSUMED element limit {_zero_line:g} degC (derate_zero; not t_oper)")
-ax.axvline(I_MAX_GOOD, color=MUTED, lw=0.8, ls=":")
-style_axes(ax, "Full-scale current I_FS (A)", "Element temperature at TA 70 degC (degC, ESTIMATE)")
-ax.set_xlim(MF_GRID[0], MF_GRID[-1])
-ax.set_ylim(0, _zero_line * 1.2)
-ax.set_title("Shunt element temperature vs current for the top candidates (ESTIMATE, theta from each derating curve)",
-             color=INK, fontsize=10)
-ax.legend(frameon=False, loc="upper left", fontsize=7.5, labelcolor=INK)
-fig.tight_layout()
-save(fig, "maxfs_temperature.png")
-
-# %%
-# Markdown: the maximum full-scale study section (placed after the summary, before the current-design sections).
-MF_MD = ["## Maximum full-scale current study", ""]
-MF_MD += [
-    "Question (designer, 2026-11-15): the highest integer full-scale current the block can support. Requirement: "
-    "+/-1 % of reading at full scale, self-heated worst case, TA 0 to 70 degC, bus 12 to 40 V, V3V3 3.3 V +/-3 %, derate "
-    f"1.0, no fault-headroom requirement. The current design (`SHUNT_SELECTED`, {I_MAX:g} A, 10 mohm code B) is NOT changed by "
-    "this study; the sections below are the study and a RECOMMENDATION for the designer to approve.",
-    "",
-    "### MF.0 Result",
-    "",
-    f"- **Maximum I_FS, primary rule** (at least one passing design rated GOOD or FAIR): **{I_MAX_GF} A**.",
-    f"- **GOOD only:** **{I_MAX_GOOD} A**. **Any availability** (electrical pass only, POOR/UNKNOWN included): "
-    f"**{I_MAX_ANY} A**.",
-    f"- **RECOMMENDATION (GOOD):** {I_MAX_GOOD} A with `{REC['mpn']}` ({mf_name(REC)}; {REC['n_dist']} distributors). "
-    f"Self-heated error at {I_MAX_GOOD} A: {REC['err']:.3f} % (limit 1 %, margin {REC['m_d']:.3f} %). "
-    f"Limit: {mf_bind_txt(REC_BIND)}; at {REC_LIMIT + 1} A it fails.",
-    (f"- **FAIR alternative (higher rating):** {I_MAX_GF} A with `{ALT['mpn']}` ({mf_name(ALT)}; {ALT['n_dist']} "
-     f"distributor, {', '.join(ALT['dists'])}). Self-heated error {ALT['err']:.3f} % (margin {ALT['m_d']:.3f} %). "
-     f"Limit: {mf_bind_txt(ALT_BIND)}; at {I_MAX_GF + 1} A nothing passes.") if ALT is not None else
-    "- No FAIR design allows a higher rating than the GOOD design.",
-    f"- **WSK2512-LOW:** no design passes at any integer I_FS from {I_START} A. Its best self-heated error at "
-    f"{I_START} A is {LOW_REF['err']:.3f} % (`{LOW_REF['mpn']}`, criterion (d)); see MF.5.",
-    "",
-]
-
-MF_MD += ["### MF.1 Criteria (all at the 70 degC worst case; a design passes only if all six hold)", ""]
-MF_MD += mdtable(["Criterion", "Check", "Numbers from", "Status"], [
-    ["(a) Vsense", "I_FS x R_element(worst) <= VDIFF max of the ADCRANGE (163.84 mV for 0, 40.96 mV for 1)",
-     f"`vdiff_adcr0_full` ({cite(VDIFF)}), `vdiff_adcr1_full`; R_element at the self-heated element temperature", "pass/fail"],
-    ["(b) Dissipation", "I_FS^2 x R_element(worst) <= p70 x derate at TA 70 degC",
-     f"`p70` ({cite(shunt.param('p70'))}); the derating curve (knee and zero) of each series; derate {DERATE:g}",
-     "pass/fail"],
-    ["(c) Working voltage", "(P x R)^1/2 >= I_FS x R_element (P = rated at 70 degC)",
-     f"`max_working_voltage` ({cite(shunt.param('max_working_voltage'))}). Algebraically the same test as (b) at the same R, "
-     "counted once", "pass/fail"],
-    ["(d) Error", "Self-heated worst-case error <= 1 % of reading at I_FS: element tolerance and TCR at the element band "
-     "(TA 0 to 70 degC plus its own rise); INA229 gain (GSERR, GS_DRFT) and offset (both Vos rows) at ambient; the "
-     "SHUNT_CAL integer rounding; 1 LSB = I_FS / 2^19",
-     f"`tol_*`, `tcr_*` rows (per series); `gserr_25c`, `gs_drift_25c`, `vos_*`, `vos_drift_full` (INA229 DS p.5)",
-     "pass/fail; ESTIMATE (self-heating)"],
-    ["(e) Element temperature", "T_element (worst) <= derate_zero of the series (the 0 % rating point, read from the "
-     "derating curve)", "ASSUMPTION: the element limit is read as derate_zero (as section 3), not t_oper", "ESTIMATE"],
-    ["(f) SHUNT_CAL", "1 <= round(13107.2e6 x CURRENT_LSB x R x [4 for ADCRANGE 1]) <= 32767",
-     "`shunt_cal` (INA229 DS p.30, Equation 2); register width: DS p.23, Table 7-7 (SHUNT_CAL bits 14-0, bit 15 reserved)",
-     "pass/fail; library gap, see MF.7"],
-])
-MF_MD += [
-    "",
-    f"Candidate set: every orderable pair of each series (WSK2512: {len(MF['WSK2512']['pairs'])} pairs, codes B, D and F; "
-    f"WSK2512-LOW: {len(MF['WSK2512-LOW']['pairs'])} pairs, codes D and F), each at ADCRANGE 0 and 1 "
-    f"({len(MF_SCAN[I_START])} records per integer I_FS). The self-heating fixed point is per series "
-    f"(theta_est {MF['WSK2512']['theta']:g} degC/W for WSK2512 and {MF['WSK2512-LOW']['theta']:g} degC/W for WSK2512-LOW, "
-    "each from its own derating curve). The scan steps I_FS in 1 A integers from "
-    f"{I_START} A and stops {CONFIRM_MORE + 1} integers after the first integer with no passing design "
-    f"({I_FIRST_EMPTY} A), so {MF_I[-1]} A is the last integer checked.",
-    "",
-    "**Ranking of passing designs:** availability (GOOD, then FAIR, then POOR/UNKNOWN), then lowest self-heated error "
-    "(compared at 0.01 %), then lower dissipation at 70 degC. **Availability rating:** as the existing script "
-    "(`avail_rating`): GOOD = recognized by the BOM (MATCH_EXACT), 2 or more distributors, standard value; FAIR = "
-    "recognized, 1 distributor; POOR/UNKNOWN = not recognized, or no distributor listing. Stock is informational only. "
-    "Lifecycle is not checked.",
-    "",
-]
-
-MF_MD += ["### MF.2 Series data used (each from its library rows; numbers are generated, not retyped)", ""]
-_rows = []
-for _name in MF:
-    _p = MF[_name]["part"]
-    _tol = "; ".join(f"{c} +/-{_p.tolerance(c).max * 100:g} % ({_p.param(o['range']).min * 1e3:g} to "
-                     f"{_p.param(o['range']).max * 1e3:g} mohm)" for c, o in _p.info["series_tolerances"].items())
-    _tcr = "; ".join(f"+/-{_p.param(o['tcr']).max * 1e6:g} ppm/degC for {_p.param(o['range']).min * 1e3:g} to "
-                     f"{_p.param(o['range']).max * 1e3:g} mohm" for o in _p.info["series_tcr"])
-    _vals = [v for v, _ in MF[_name]["pairs"]]
-    _rows.append([f"`{_name}`", f"{min(_vals) * 1e3:g} to {max(_vals) * 1e3:g} mohm ({len(MF[_name]['pairs'])} pairs)",
-                  _tol, _tcr, f"{MF[_name]['p70']:g} W ({cite(_p.param('p70'))})",
-                  f"knee {MF[_name]['knee']:g} degC, zero {MF[_name]['zero']:g} degC (curve, `{_name}` DS p.3); "
-                  f"theta_est {MF[_name]['theta']:g} degC/W (ESTIMATE)"])
-MF_MD += mdtable(["Series", "Values (library value table)", "Tolerance codes (DS p.1 range, before the directory clip)", "TCR (DS p.2)",
-                  "Power P70 (DS p.1)", "Derating (DS p.3, curve)"], _rows)
-MF_MD += [
-    "",
-    f"Value tables: `{MF['WSK2512']['part'].param('res_range').cite}` and `{LOW.param('res_range').cite}` (the "
-    "directory ranges); the decade values are Vishay doc 30117 (lib/series.py, DECADE). WSK2512-LOW has no code B "
-    "(B starts at 0.01 ohm) and its lowest value is 1.0 mohm (library rule eseries_min 0.001 ohm; the 0.5 to 0.99 mohm "
-    "TCR row therefore has no values). Its TCR is NOT the WSK2512 TCR: "
-    + "; ".join(f"+/-{_t:g} ppm/degC for {_lo:g} to {_hi:g} mohm" for _t, _lo, _hi in LOW_TCR_TXT.values())
-    + f", against +/-{MF['WSK2512']['part'].param('tcr_5m_200m').max * 1e6:g} ppm/degC for WSK2512 (5 to 200 mohm).",
-    "",
-]
-
-# %%
-# Result by integer I_FS
-MF_MD += ["### MF.3 Result by integer full-scale current (5 A upward, until nothing passes)", ""]
-_rows = []
-for _i in MF_I:
-    _s = MF_SUM[_i]
-    _best = _s["ranked"][0] if _s["ranked"] else None
-    if _best is not None:
-        _bt = (f"{_best['series']} {_best['value'] * 1e3:g} mohm {_best['code']}, ADCRANGE {_best['adc']}, "
-               f"`{_best['mpn']}`, {_best['avail']}")
-        _vals = [f"{_best['err']:.3f}", f"{_best['t_el']:.1f}", f"{_best['p_el']:.3f}", f"{_best['vs'] * 1e3:.2f}"]
-        _bind = "-"
-    else:
-        _bt = "none"
-        _vals = ["-", "-", "-", "-"]
-        _c = _s["closest"]
-        _bind = (f"closest: {mf_name(_c)}, fails {mf_fails_txt(_c)}; first: {mf_bind_txt([_s['binding']])}")
-    _rows.append([_i, f"{_s['n_pass']} / {_s['n_gf']} / {_s['n_good']}", _bt] + _vals + [_bind])
-MF_MD += mdtable(["I_FS (A)", "Passing designs: any / GOOD+FAIR / GOOD", "Best passing design (rank 1)",
-                  "Self-heated error at I_FS (%, ESTIMATE)", "Element T at 70 degC (degC, ESTIMATE)",
-                  "Dissipation at 70 degC (W, rated 1.0 W)", "Vsense (mV)", "Binding (closest design if nothing passes)"],
-                 _rows)
-MF_MD += [
-    "",
-    f"Maximum I_FS: primary (GOOD or FAIR) **{I_MAX_GF} A**; GOOD only **{I_MAX_GOOD} A**; any availability "
-    f"**{I_MAX_ANY} A**. First integer with nothing passing: **{I_FIRST_EMPTY} A** (scan continued to {MF_I[-1]} A, "
-    "nothing passes above it).",
-    "",
-    "![Best self-heated error vs I_FS](design-analysis/maxfs_error.png)",
-    "",
-    "Figure M1. Best passing design's self-heated error at each integer I_FS (blue: any availability; green: GOOD only), "
-    "against the 1 % requirement. Where nothing passes (orange, hollow), the closest design is shown with the criterion "
-    "that fails first.",
-    "",
-]
-_ADC1_PASS = {i: sum(1 for r in MF_SCAN[i] if r["pass"] and r["adc"] == 1) for i in MF_I}
-_ADC1_GOOD = sum(1 for i in MF_I for r in MF_SUM[i]["ranked"] if r["avail"] == "GOOD" and r["adc"] == 1)
-MF_MD += [
-    "ADCRANGE 1 (40.96 mV) passing designs by I_FS: "
-    + ", ".join(f"{i} A: {n}" for i, n in _ADC1_PASS.items() if n)
-    + f". GOOD-availability ADCRANGE 1 designs among them: {_ADC1_GOOD}. The ranking takes availability first, so an "
-    "ADCRANGE 1 design ranks only where it is FAIR or better than the ADCRANGE 0 choice.",
-    "",
-]
-
-# %%
-# Limits of the top candidates: last passing integer, binding criterion and the margins at that integer.
-MF_MD += ["### MF.4 Limits of the candidates (where each design stops passing, and what stops it)", ""]
-_rows = []
-for _r in MF_TOP + [LOW_REF]:
-    _lim, _bk = mf_limit(_r)
-    _at = MF_SCAN[_lim][[mf_key(x) for x in MF_SCAN[_lim]].index(mf_key(_r))] if _lim is not None else None
-    if _lim is not None:
-        _lim_txt = f"{_lim} A"
-    elif _bk:
-        _lim_txt = f"none (fails at {I_START} A)"
-    else:
-        _lim_txt = "beyond scan"
-    _rows.append([mf_name(_r), _r["avail"] if _r["avail"] else "-", _lim_txt,
-                  mf_bind_txt(_bk) if _bk else "-",
-                  (f"{_at['err']:.3f} %, T {_at['t_el']:.1f} degC, P {_at['p_el']:.3f} W" if _at else "-")])
-MF_MD += mdtable(["Design", "Availability (at its limit)", "Last integer passing", "Binding criterion (first to fail)",
-                  "At the last passing integer"], _rows)
-MF_MD += [
-    "",
-    "The limit is the last integer before the first criterion fails (the scan is ascending; each design's first failure is "
-    "recorded). Designs listed here are the rank-1 design at some integer, the recommended design, the FAIR alternative and "
-    "the best WSK2512-LOW design at I_FS = 5 A (reference; it does not pass at any integer).",
-    "",
-    "![Shunt dissipation vs current](design-analysis/maxfs_dissipation.png)",
-    "",
-    "Figure M2. Shunt dissipation at 70 degC (element resistance, ESTIMATE) vs I_FS for the top candidates (solid) and the "
-    "WSK2512-LOW reference (dashed), against the rating at 70 degC (p70 x derate). The dotted line marks the GOOD maximum.",
-    "",
-    "![Shunt element temperature vs current](design-analysis/maxfs_temperature.png)",
-    "",
-    "Figure M3. Element temperature at TA 70 degC vs I_FS (ESTIMATE, each series' own theta) for the same candidates, against "
-    "the ASSUMED element limit (derate_zero, 170 degC).",
-    "",
-]
-
-# %%
-# Recommendation (section MF.5 in the report)
-MF_MD += ["### MF.5 RECOMMENDATION (for the designer to approve)", ""]
-MF_MD += [
-    f"**Recommended integer full-scale current: {I_MAX_GOOD} A**, with `{REC['mpn']}` (WSK2512, "
-    f"{REC['value'] * 1e3:g} mohm, tolerance code {REC['code']}, ADCRANGE {REC['adc']}, GOOD availability: "
-    f"{REC['n_dist']} distributors: {', '.join(REC['dists'])}). Stock today {REC['stock'] if REC['stock'] is not None else 'n/a'} "
-    "(informational). The design is judged at 70 degC, self-heated worst case, derate 1.0.",
-    "",
-]
-_rec_rows = [
-    ["Shunt (library MPN; BOM MPN agrees)", f"`{REC['mpn']}`, {REC['value'] * 1e3:g} mohm, code {REC['code']} "
-     f"(+/-{MF[REC['series']]['part'].tolerance(REC['code']).max * 100:g} %)", "-", "-",
-     f"{REC['avail']} (proxy; lifecycle open item)"],
-    ["Vsense worst at I_FS, self-heated", f"{REC['vs'] * 1e3:.2f} mV", f"{REC['vdiff'] * 1e3:.2f} mV (ADCRANGE {REC['adc']})",
-     f"{REC['m_a'] * 1e3:.2f} mV ({REC['headroom'] * 100:.1f} % of range)", "PASS (a)"],
-    ["Shunt dissipation at 70 degC (element R, worst)", f"{REC['p_el']:.3f} W", f"{REC['rated']:.3g} W (p70 x derate)",
-     f"{REC['m_b']:.3f} W ({REC['m_b'] / REC['rated'] * 100:.1f} % of rating)", "PASS (b)"],
-    ["(P x R)^1/2 vs Vsense (working voltage)", f"Vsense {REC['vs'] * 1e3:.2f} mV", f"(P x R)^1/2 {REC['mwv'] * 1e3:.2f} mV",
-     f"{REC['m_c'] * 1e3:.2f} mV", "PASS (c)"],
-    ["Element temperature at 70 degC (ESTIMATE, self-consistent)", f"{REC['t_el']:.2f} degC (band low {REC_D['t_lo']:.1f} "
-     "degC at TA 0)", f"{REC['zero']:g} degC (ASSUMED element limit = derate_zero)", f"{REC['m_e']:.2f} degC",
-     "ESTIMATE, PASS only under the assumed limit"],
-    ["Self-heated worst-case error at I_FS (judged; ESTIMATE)", f"{REC['err']:.4f} % of reading (2-sample interior "
-     f"check {REC_D['err_s2']:.4f} %)", f"{ERR_LIMIT_PCT:g} % of reading", f"{REC['m_d']:.4f} % of reading",
-     "PASS (d), ESTIMATE"],
-    ["Self-heated error at 1 % of I_FS (REPORT ONLY, no limit)", f"{REC_D['err_lo']:.3f} % of reading at "
-     f"{0.01 * I_MAX_GOOD:.2f} A" + (" (above 1 %: at this low end the offset, 1 uV at 25 degC plus 10 nV/degC drift, "
-     "is a large fraction of the 1 % of I_FS drop; no requirement is set at the low end)" if REC_D["err_lo"] > ERR_LIMIT_PCT else ""),
-     "none set", "-", "REPORT ONLY"],
-    ["Ambient-only error at I_FS (reference)", f"{REC_D['err_amb']:.4f} %", "reference", "-", "REFERENCE"],
-    ["CURRENT_LSB = I_FS / 2^19", f"{REC['lsb']:.6g} A/LSB ({REC['lsb'] * 1e6:.4g} uA)", "-", "-",
-     "DS p.30 Equation 3"],
-    ["SHUNT_CAL (ADCRANGE " + str(REC["adc"]) + ")", f"raw {REC['raw']:.4f}, register {REC['cal']}"
-     + (" (on a .5 tie: both integers judged, round half up written)" if REC["tie"] else ""),
-     f"{SHUNT_CAL_MAX} (15-bit field, DS p.23)", f"{REC['m_f']} counts", "PASS (f)"],
-    ["Bus-voltage error (design independent, section 7, incl. 1 LSB)", f"+/-{mv(BUS_12)} mV at 12 V, +/-{mv(BUS_40)} mV at 40 V",
-     "none set", "-", "REPORT ONLY"],
-    ["Power error at I_FS, 12 V (ambient, REPORT ONLY)", f"{pct(REC_D['pw12'][0])} to +{pct(REC_D['pw12'][1])} %",
-     "none set", "-", "REPORT ONLY"],
-    ["Power error at I_FS, 40 V (ambient, REPORT ONLY)", f"{pct(REC_D['pw40'][0])} to +{pct(REC_D['pw40'][1])} %",
-     "none set", "-", "REPORT ONLY"],
-    ["Continuous current at 70 degC, rating basis (ambient R, calc.max_current)", f"{REC_D['i_amb']:.2f} A",
-     f"I_FS {I_MAX_GOOD} A", f"{REC_D['i_amb'] - I_MAX_GOOD:+.2f} A", "rating basis"],
-    ["Continuous current at 70 degC, self-heated (element R, bisection)", f"{REC_D['i_sh']:.2f} A",
-     f"I_FS {I_MAX_GOOD} A", f"{REC_D['i_sh'] - I_MAX_GOOD:+.2f} A", "ESTIMATE"],
-]
-MF_MD += mdtable(["Item", "Value (worst case)", "Limit", "Margin", "Status"], _rec_rows)
-_REC_NEXT = MF_SCAN[REC_LIMIT + 1][[mf_key(x) for x in MF_SCAN[REC_LIMIT + 1]].index(mf_key(REC))]
-MF_MD += [
-    "",
-    f"**Limits of this design and what fails above it.** The design passes up to {REC_LIMIT} A. At {REC_LIMIT + 1} A its "
-    f"failing criteria are {mf_fails_txt(_REC_NEXT)} (first to fail: {mf_bind_txt(REC_BIND)}); its self-heated error is "
-    f"{_REC_NEXT['err']:.3f} % of reading, its dissipation {_REC_NEXT['p_el']:.3f} W against {RATED_LINE:.3g} W, and its "
-    f"element temperature {_REC_NEXT['t_el']:.1f} degC against the {_REC_NEXT['zero']:g} degC assumed limit.",
-    "",
-]
-if ALT is not None:
-    MF_MD += [
-        f"**FAIR alternative (only if the availability risk is accepted):** `{ALT['mpn']}` ({ALT['value'] * 1e3:g} mohm, "
-        f"code {ALT['code']}, ADCRANGE {ALT['adc']}), {I_MAX_GF} A. Self-heated error {ALT['err']:.4f} % (margin "
-        f"{ALT['m_d']:.4f} %), element {ALT['t_el']:.1f} degC (ESTIMATE), dissipation {ALT['p_el']:.3f} W "
-        f"(margin {ALT['m_b']:.3f} W), Vsense {ALT['vs'] * 1e3:.2f} mV (headroom {ALT['headroom'] * 100:.1f} %), "
-        f"SHUNT_CAL {ALT['cal']}. Distributor: {', '.join(ALT['dists'])}, stock today "
-        f"{ALT['stock'] if ALT['stock'] is not None else 'n/a'} (informational). Limit: {mf_bind_txt(ALT_BIND)}.",
-        "",
-    ]
-MF_MD += [
-    f"**Why WSK2512-LOW does not reach {I_START} A.** Without self-heating (ambient 0 to 70 degC only) its best design, "
-    f"`{LOW_REF['mpn']}`, would be {LOW_AMB[mf_key(LOW_REF)]:.3f} % at {I_START} A; self-heating (element "
-    f"{LOW_REF['t_el']:.1f} degC at 70 degC) raises it to {LOW_REF['err']:.3f} %. The 1.0 to 2.9 mohm values carry "
-    f"+/-{LOW_TCR_TXT[LOW.info['series_tcr'][1]['tcr']][0]:g} ppm/degC and their best ambient-only error is already "
-    f"{LOW_AMB_BELOW3:.3f} % at {I_START} A; the 3.0 to 4.9 mohm values (+/-{LOW_TCR_TXT[LOW.info['series_tcr'][2]['tcr']][0]:g} "
-    f"ppm/degC) reach {LOW_AMB_ABOVE3:.3f} % ambient-only. The main WSK2512 (+/-{MF['WSK2512']['part'].param('tcr_5m_200m').max * 1e6:g} "
-    "ppm/degC) carries a much smaller TCR term.",
-    "",
-]
-
-# %%
-MF_MD += ["### MF.6 What limits the maximum", ""]
-_B10 = [r for r in MF_SCAN[I_MAX_GOOD] if r["series"] == "WSK2512" and r["code"] == "B" and abs(r["value"] - 0.01) < 1e-12
-        and r["adc"] == 0][0]
-_B10_LIM, _B10_BIND = mf_limit(_B10)
-_B10_AT = [r for r in MF_SCAN[_B10_LIM] if mf_key(r) == mf_key(_B10)][0]  # the code B record at its own limit
-_D10_AT_B = [r for r in MF_SCAN[_B10_LIM] if r["series"] == "WSK2512" and r["code"] == "D" and abs(r["value"] - 0.01) < 1e-12
-             and r["adc"] == 0][0]
-MF_MD += [
-    f"- **GOOD design (`{REC['mpn']}`):** the first criterion to fail above {REC_LIMIT} A is {mf_bind_txt(REC_BIND)} "
-    f"(self-heated error {REC['err']:.3f} % at {REC_LIMIT} A, {_REC_NEXT['err']:.3f} % at {REC_LIMIT + 1} A).",
-    f"- **Nothing passes at {I_FIRST_EMPTY} A.** The closest design there is {mf_name(CLOSEST_NEXT)}, failing "
-    f"{mf_fails_txt(CLOSEST_NEXT)} (self-heated error {CLOSEST_NEXT['err']:.3f} %, element {CLOSEST_NEXT['t_el']:.1f} degC).",
-    f"- **Code B (+/-0.1 %), 10 mohm, ADCRANGE 0** (the current design's value and tolerance, FAIR availability) passes up "
-    f"to {_B10_LIM} A; its first criterion to fail is {mf_bind_txt(_B10_BIND)}. At {_B10_LIM} A its self-heated error is "
-    f"{_B10_AT['err']:.3f} % against {_D10_AT_B['err']:.3f} % for code D at the same current, and its dissipation "
-    f"({_B10_AT['p_el']:.3f} W) and element temperature ({_B10_AT['t_el']:.1f} degC) are the limits.",
-    "",
-]
-
-# %%
-MF_MD += ["### MF.7 Library gaps, data read off the datasheet, and cites", ""]
-MF_MD += [
-    "- **SHUNT_CAL register width (INA229), library gap:** `calc.shunt_cal` returns the value and the library has no "
-    "register-width row. Read from the datasheet page image (INA229 DS p.23, Table 7-7): SHUNT_CAL is bits 14-0 (R/W, "
-    "reset 1000h), bit 15 is reserved. A 15-bit field, so the largest value is 32767 (7FFFh). Used as criterion (f) "
-    "through the constant `SHUNT_CAL_MAX`. The library owner should add the register width as a row.",
-    "- **WSK2512-LOW data:** the LOW part has its own library directory (v0.2.0 is the pinned package tag; v0.3.0 identical). "
-    "Its datasheet is the same Vishay document as WSK2512 (DS 30108, 11-Dec-2023), so every LOW number cites DS 30108: "
-    "tolerance codes D and F (DS p.1, Standard Electrical Specifications), P70 1.0 W (DS p.1), TCR by range (DS p.2, "
-    "Technical Specifications; TCR, tolerance and P70 rows checked against the datasheet text, pages 1 and 2), derating "
-    "(DS p.3, DERATING graph; 100 % to 70 degC, 0 % at 170 degC, read off the curve; the page image checked), and the decade "
-    "value table (Vishay doc 30117 "
-    "(WSL), not referenced by DS 30108: library open item).",
-    "- **Derating curve (both series):** the knee (70 degC) and zero (170 degC) are curve readings, so theta_est "
-    f"({MF['WSK2512']['theta']:g} degC/W) and every element temperature depend on them. Both series print the same "
-    "curve, but each series' theta is computed from its own rows.",
-    "- **TCR reference temperature:** not stated by either WSK2512 datasheet; 25 degC is assumed (existing open item). The "
-    "TCR is applied as (1 + TCR x (T - 25 degC)) and the tolerance as a fixed +/- offset.",
-    "",
-]
-
-MF_MD += ["### MF.8 Current path (open item, one line)", ""]
-MF_MD += [
-    f"- **Open item:** the block's BUS_IN/BUS_OUT copper, pads and connectors must be rated for the chosen I_FS "
-    f"({I_MAX_GOOD} A recommended, {I_MAX_GF} A FAIR alternative); layout not started.",
-    "",
-]
-
-MF_MD += ["### MF.9 Method and limits of this study", ""]
-MF_MD += [
-    "- Every criterion is a worst-case bound at 70 degC, except (d) and (e), which are ESTIMATES (self-heating from the "
-    "derating curve). The INA229 terms (gain, offset, LSB) are at the ambient 0 to 70 degC.",
-    "- (c) is the same test as (b) at the same R (exact identity), so it is counted once in the fail count.",
-    "- SHUNT_CAL rounding: the written register value is round-half-up. A raw value on an exact .5 tie can be written either "
-    "way, so the judged error takes the worse of the two integers (the rounding term is a worst case, not a sign).",
-    "- The self-heated error is multilinear in its two temperatures (element and ambient), so corners are exact. The "
-    "recommended design is also checked with two interior points per input (2-sample check above).",
-    "- 'First failing' criterion per design: the scan is ascending, so the first integer where each criterion fails is "
-    "recorded; a design whose criteria are not monotone would show its first failure only.",
-    "- The availability snapshot (`analysis/data/shunt_stock_2026-11-15_maxfs.json`) covers every passing design; the "
-    "WSK2512 rows are reused from `shunt_stock_2026-11-15_rerank.json` and the WSK2512-LOW rows are new (80 pairs, "
-    "pcb bom -f json in a scratch copy with the LOW dependency 0.2.0). Lifecycle, PCN and lead time are not checked. "
-    "Stock is a snapshot.",
-    "- Power error (MF.5) is ambient only, as section 8 (report only, no limit).",
-    "",
-]
-
-# %%
-# Library data observed while building this report (for the report and the library owner)
-LIBRARY_OBSERVATIONS = [
-    "`vih_25c` (INA229): MIN 1.2 V and MAX = VS, stored as an offset of 0 from pin VS (max_ref = VS). `part.resolve()` gives "
-    "the absolute bound. Consistent with DS p.6; not used in this report.",
-    "`shunt_tempco_fs` (INA229): max 0.01638 1/degC (16383 ppm/degC), which matches the SHUNT_TEMPCO register full scale, "
-    "not a physical tempco. Unused here; check the row.",
-    "`voh_25c` (INA229): stored as min -400 mV (offset below VS), the R_out bound uses it as a drop at 1 mA. The row's "
-    "condition prints IOL = 1 mA (DS p.6, as printed).",
-    "`zvbus_25c` (INA229): 25 degC only; no temperature drift row, so the 800 kohm minimum is applied at all temperatures.",
-    "`rtheta_ja` (INA229): typical only, no max; used only for a typical-based estimate.",
-    "`vos_bus_psrr_25c` (INA229): typical only (0 with a +/-0.25 mV/V spread); shown, not bounded.",
-    "WSK2512 `derate_knee` and `derate_zero`: typ-only curve values (curve = true). The theta_est estimate depends on them.",
-    "WSK2512 `t_oper`: -65 to 170 degC, read as AMBIENT (DS p.2). Not used as the element limit (section 3.3).",
 ]
 
 # %% [markdown]
@@ -2729,92 +1414,117 @@ HEADER = [
     "",
     f"- Library: zener-library {ZL_VERSION} (`analysis/_zl.py`, component data and calc functions).",
     f"- Run date: {RUN_DATE}.",
-    f"- Inputs: `analysis/data/shunt_stock_2026-11-15_rerank.json` (fit set at 5 A, a superset of the I_MAX fit set) and "
-    f"`analysis/data/shunt_stock_2026-11-15_maxfs.json` (maximum full-scale study, WSK2512 and WSK2512-LOW). Stock "
-    "snapshots are sourcing records, not datasheet values.",
+    "- Board values and key results: `docs/design-analysis/values.json` (generated by the same run).",
     "",
     f"High-side current sense: {I_MAX:g} A bidirectional full scale, bus {VBUS_LO:g} to {VBUS_HI:g} V, "
-    f"TA {TA.min:g} to {TA.max:g} degC, VS {VS_NOM:g} V +/-{VS_TOL * 100:g} %. Current design: ADCRANGE {ADCRANGE}, "
-    f"{R_NOM * 1e3:g} mohm code {code}.",
+    f"TA {TA.min:g} to {TA.max:g} degC, VS {VS_NOM:g} V +/-{VS_TOL * 100:g} %. Design: ADCRANGE {ADCRANGE}, "
+    f"{R_NOM * 1e3:g} mohm code {code} (`{MPN}`).",
     "",
-    "## Requirement and design choices (not datasheet values)",
+    "## Operating conditions and assumptions",
     "",
+    f"- Full scale: {I_MAX:g} A, bidirectional (designer choice 2026-11-15). Bus {VBUS_LO:g} to {VBUS_HI:g} V DC, high-side.",
     f"- Accuracy requirement: +/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A full scale (designer requirement 2026-11-15), "
     "judged on the self-heated worst case (ESTIMATE). The 100 mA error is REPORT ONLY.",
-    f"- I_MAX = {I_MAX:g} A, full scale, bidirectional. Bus {VBUS_LO:g} to {VBUS_HI:g} V, high-side.",
-    f"- TA {TA.min:g} to {TA.max:g} degC; nominal (typ) reference 25 degC.",
-    f"- VS = {VS_NOM:g} V +/-{VS_TOL * 100:g} %.",
-    f"- Design shunt `SHUNT_SELECTED` = (ADCRANGE {SHUNT_SELECTED[0]}, code {SHUNT_SELECTED[1]}, {SHUNT_SELECTED[2]:g} mohm). "
-    "The designer's selection basis and the fallback are in section 1.4.",
-    f"- Derate = {DERATE:g}. Shunt TCR reference temperature {T_REF:g} degC (the WSK2512 DS states none).",
+    f"- TA {TA.min:g} to {TA.max:g} degC (board ambient); nominal (typ) reference 25 degC.",
+    f"- VS = {VS_NOM:g} V +/-{VS_TOL * 100:g} %, one rail shared by the host and the INA229.",
+    f"- Derate = {DERATE:g}. Shunt TCR reference temperature {T_REF:g} degC (the WSK2512 DS states none; assumed).",
+    f"- Self-heating is an ESTIMATE from the shunt derating curve (theta_est, section 3).",
     f"- Element temperature limit {T_ELEM_LIMIT:g} degC is an ASSUMPTION (`T_ELEM_LIMIT`), not t_oper.",
-    f"- Ambient full-scale error uses {SAMPLES} interior samples per input (quadratic in TA); the self-heated band is multilinear "
-    "in its two temperatures, so corners are exact (checked in section 5).",
-    f"- Shunt candidates: every WSK2512 (value, code) fitting ADCRANGE 0 with self-heated Vsense ({CAND_N} pairs; "
-    f"{CAND_N_ADC1} also fit ADCRANGE 1). Availability snapshot {STOCK_DATE}, a `pcb bom` sourcing record, not a guarantee.",
+    f"- Ambient full-scale error uses {SAMPLES} interior samples per input (quadratic in TA); the self-heated band is "
+    "multilinear in its two temperatures, so corners are exact (section 5).",
     f"- MISO series resistor {R_MISO:g} ohm (placeholder), ALERT_N pull-up {R_PULLUP / 1e3:g} kohm (spec.md).",
     "",
     "Conventions: PASS / FAIL against a datasheet, spec.md or the designer's requirement; ESTIMATE for curve-based or "
     "typical-based results; REPORT ONLY where no limit is set; REFERENCE for comparison only; OPEN ITEM for zero or "
     "placeholder margin; CHECK for a value with no spec limit.",
     "",
-]
-
-BODY_ORDER_NOTE = [
     "## Contents",
     "",
-    "Summary; maximum full-scale current study and RECOMMENDATION (MF.0 to MF.9); 1 shunt selection and re-rank (1.4 selected design and basis, 1.5 ADCRANGE rows, 1.6 SHUNT_TEMPCO); 2 shunt power; "
-    "3 shunt self-heating (estimate); 4 firmware constants; 5 full-scale current error; 6 error vs current; "
-    "7 bus-voltage error; 8 power measurement error; 9 INA229 junction temperature (estimate); 10 quiescent current and "
-    "power budget; 11 ratings; 12 MISO; 13 limits; 14 judgement calls.",
+    "Design definition; summary; 1 shunt operating point; 2 shunt power and rating; 3 shunt self-heating (estimate); "
+    "4 firmware constants; 5 full-scale current error; 6 error vs current; 7 bus-voltage error; 8 power measurement error; "
+    "9 INA229 junction temperature (estimate); 10 quiescent current and power budget; 11 ratings; 12 MISO; 13 limits.",
     "",
 ]
 
-LIB_BLOCK = ["## Library observations (for the library owner)", ""] + [f"- {x}" for x in LIBRARY_OBSERVATIONS] + [""]
+DESIGN_MD = ["## Design definition", ""] + mdtable(
+    ["Function", "Part", "Value / choice", "Basis (library cite or source)"], [
+        ["Monitor", "TI INA229AIDGS", f"ADCRANGE {ADCRANGE} (+/-{mv(ADC_LIM[ADCRANGE])} mV), CURRENT_LSB, SHUNT_CAL",
+         cite(VDIFF)],
+        ["Shunt", f"`{MPN}` (Vishay WSK2512)", f"{R_NOM * 1e3:g} mohm, +/-{pct(TOL.max)} % (code {code}), "
+         f"{P70:g} W at 70 degC, 4-terminal Kelvin sense", f"{cite(TOL)}; {cite(shunt.param('p70'))}"],
+        ["VS bypass", "Murata GCM188R71H104KA57", "100 nF X7R 50 V 0603, at pin VS", "INA229 DS section 9 (not analysed here)"],
+        ["MISO series resistor", "Panasonic ERJ-3EKF", f"{R_MISO:g} ohm 0603, at the INA229 MISO pin (placeholder)",
+         "design choice; section 12"],
+        ["ALERT_N pull-up", f"`{erj.mpn(R_PULLUP)}` (Panasonic ERJ-3EKF)", f"{R_PULLUP / 1e3:g} kohm 0603 to V3V3, DNP-able",
+         cite(erj.param("tol"))],
+    ]) + [""]
 
-FINAL = HEADER + BODY_ORDER_NOTE + md_summary + MF_MD + md + LIB_BLOCK
+FINAL = HEADER + DESIGN_MD + md_summary + md
 DOCS.mkdir(parents=True, exist_ok=True)
 MD_PATH.write_text("\n".join(FINAL) + "\n")
 
 # %% [markdown]
-# ### Chart: self-heated I_MAX error vs shunt value, recognized candidates (section 1)
+# ## values.json and console summary
+# Key results as numbers (top level) and as pre-formatted strings (under "text"), for the board and spec.md.
 
 # %%
-fig, ax = plt.subplots(figsize=(8.8, 5.2))
-for adc, mk, col, off in ((0, "o", BLUE, (6, -12)), (1, "D", GREEN, (6, 6))):
-    pts = [r for r in RECOGNIZED_ROWS if r["adc"] == adc]
-    if not pts:
-        continue
-    xs_ = [r["value"] * 1e3 for r in pts]
-    ys_ = [r["fs5_pct"] for r in pts]
-    ax.scatter(xs_, ys_, marker=mk, s=40, color=col, zorder=5,
-               label=f"ADCRANGE {adc} (recognized, MATCH_EXACT)" + (" (ADCRANGE 1 is 40.96 mV full scale)" if adc == 1 else ""))
-    for r, x_, y_ in zip(pts, xs_, ys_):
-        if r["code"] == "F":  # F (+/-1 %) cannot pass 1 %: unlabelled to keep the D and B points readable
-            continue
-        ax.annotate(f"{r['code']} {r['value'] * 1e3:g}", xy=(x_, y_),
-                    xytext=off, textcoords="offset points", fontsize=7.5, color=INK)
-ax.axhline(ERR_LIMIT_PCT, color=INK, lw=1.0, ls="--", label=f"requirement: {ERR_LIMIT_PCT:g} % of reading (self-heated)")
-ax.axvline(ADC_LIM[1] / I_MAX * 1e3, color=GREEN, lw=0.8, ls=":")
-ax.text(ADC_LIM[1] / I_MAX * 1e3 * 1.02, 0.05, f"ADCRANGE 1 limit at {I_MAX:g} A", color=GREEN, fontsize=7.5, rotation=90,
-        va="bottom")
-ax.set_xscale("log")
-style_axes(ax, "WSK2512 value (mohm), log scale", f"{I_MAX:g} A error, self-heated worst case (% of reading, ESTIMATE)")
-ax.set_title(f"Stocked WSK2512 candidates: self-heated {I_MAX:g} A error vs value (ADCRANGE 0 and 1)", color=INK, fontsize=10.5)
-ax.legend(frameon=False, loc="upper left", fontsize=8, labelcolor=INK)
-ax.set_ylim(0, max(max(r["fs5_pct"] for r in RECOGNIZED_ROWS) * 1.12, ERR_LIMIT_PCT * 1.3) + 0.6)
-fig.tight_layout()
-save(fig, "shunt_candidates.png")
+VALUES = {
+    "i_fs_a": I_MAX,
+    "rshunt_mohm": R_NOM * 1e3,
+    "tol_pct": TOL.max * 100,
+    "mpn": MPN,
+    "vsense_max_mv": VS_SH * 1e3,
+    "vsense_round_up_mv": VSENSE_MAX_MV,
+    "adc_range_mv": ADC_LIM[ADCRANGE] * 1e3,
+    "headroom_pct": VS_MARGIN / ADC_LIM[ADCRANGE] * 100,
+    "p_shunt_w": PW.max,
+    "p_rating_w": RATED,
+    "t_element_c": T_HOT_5,
+    "err_fs_pct": FS_SH_PCT,
+    "err_fs_ambient_pct": FS_AMB_PCT,
+    "err_low_pct": FS_SH_LO01_PCT,
+    "current_lsb_ua": CURRENT_LSB * 1e6,
+    "shunt_cal": SHUNT_CAL,
+    "a_per_v": 1 / R_NOM,
+    "bus_err_40v_mv": BUS_40 * 1e3,
+    "bus_err_12v_mv": BUS_12 * 1e3,
+    "vbus_lsb_uv": LSB_VBUS * 1e6,
+    "req_pct": ERR_LIMIT_PCT,
+    "req_status": err_pf(FS_SH_PCT),
+}
+TEXT = {
+    "i_fs_a": f"{I_MAX:g} A",
+    "rshunt_mohm": f"{R_NOM * 1e3:g} mohm",
+    "tol_pct": f"+/-{TOL.max * 100:g} %",
+    "mpn": MPN,
+    "vsense_max_mv": f"{VS_SH * 1e3:.2f} mV (self-heated worst, ESTIMATE)",
+    "vsense_round_up_mv": f"{VSENSE_MAX_MV:.1f} mV",
+    "adc_range_mv": f"+/-{ADC_LIM[ADCRANGE] * 1e3:.2f} mV",
+    "headroom_pct": f"{VS_MARGIN / ADC_LIM[ADCRANGE] * 100:.1f} %",
+    "p_shunt_w": f"{PW.max:.3f} W (70 degC)",
+    "p_rating_w": f"{RATED:.3f} W",
+    "t_element_c": f"{T_HOT_5:.1f} degC (ESTIMATE)",
+    "err_fs_pct": f"{FS_SH_PCT:.3f} % (self-heated, ESTIMATE)",
+    "err_fs_ambient_pct": f"{FS_AMB_PCT:.3f} %",
+    "err_low_pct": f"{FS_SH_LO01_PCT:.3f} % (100 mA, self-heated, report only)",
+    "current_lsb_ua": f"{CURRENT_LSB * 1e6:.4f} uA",
+    "shunt_cal": f"{SHUNT_CAL}",
+    "a_per_v": f"{1 / R_NOM:g} A/V",
+    "bus_err_40v_mv": f"+/-{BUS_40 * 1e3:.1f} mV",
+    "bus_err_12v_mv": f"+/-{BUS_12 * 1e3:.1f} mV",
+    "vbus_lsb_uv": f"{LSB_VBUS * 1e6:.4f} uV",
+    "req_pct": f"+/-{ERR_LIMIT_PCT:g} % of reading at {I_MAX:g} A",
+    "req_status": err_pf(FS_SH_PCT),
+}
+FIG_DIR.mkdir(parents=True, exist_ok=True)
+(FIG_DIR / "values.json").write_text(json.dumps({**VALUES, "text": TEXT}, indent=2) + "\n")
 
-# %% [markdown]
-# ## Console summary
-
-# %%
-print(f"Design: {R_NOM * 1e3:g} mohm, code {code}, ADCRANGE {ADCRANGE}, MPN {MPN}, availability snapshot {STOCK_DATE}: {DESIGN['avail']}, {DESIGN['n_dist']} distributor(s)")
-print(f"Vsense worst (self-heated) {mv(VS_SH)} mV, margin {mv(VS_MARGIN)} mV ({pct(VS_MARGIN / ADC_LIM[ADCRANGE])} % of limit)")
+print(f"Design: {R_NOM * 1e3:g} mohm, code {code}, ADCRANGE {ADCRANGE}, MPN {MPN}, full scale {I_MAX:g} A")
+print(f"Vsense worst (self-heated) {mv(VS_SH)} mV, headroom {mv(VS_MARGIN)} mV ({pct(VS_MARGIN / ADC_LIM[ADCRANGE])} % of limit); "
+      f"vsense_max {VSENSE_MAX_MV:.1f} mV")
 print(f"Power worst {PW.max:.4g} W, rated {RATED:.4g} W, margin {PW_MARGIN:.4g} W ({pct(PW_MARGIN / RATED)} %)")
-print(f"theta_est {THETA:g} degC/W; element at {I_MAX:g} A, 70 degC {T_HOT_5:.4g} degC (self-consistent, residual {T_RESID_5:.1e} degC); "
-      f"margin to assumed {T_ELEM_LIMIT:g} degC {T_MARGIN_5:.4g} degC (ESTIMATE)")
+print(f"theta_est {THETA:g} degC/W; element at {I_MAX:g} A, 70 degC {T_HOT_5:.4g} degC (ESTIMATE, residual {T_RESID_5:.1e} degC); "
+      f"margin to assumed {T_ELEM_LIMIT:g} degC {T_MARGIN_5:.4g} degC")
 print(f"CURRENT_LSB {CURRENT_LSB:.10g} A/LSB, SHUNT_CAL raw {SHUNT_CAL_RAW:.6f} -> {SHUNT_CAL}")
 print(f"FS error at {I_MAX:g} A, self-heated (judged vs {ERR_LIMIT_PCT:g} %): max {FS_SH_PCT:.3f} % -> {err_pf(FS_SH_PCT)}; "
       f"ambient reference max {FS_AMB_PCT:.3f} %")
@@ -2823,28 +1533,4 @@ print(f"Power error at {I_MAX:g} A: 12 V {pct(PW_5[12.0][0])} to +{pct(PW_5[12.0
       f"40 V {pct(PW_5[40.0][0])} to +{pct(PW_5[40.0][1])} %")
 print(f"INA229 Tj at TA {TA.max:g}: V3V3 only {TJ_V3:.4g} degC, all power {TJ_ALL:.4g} degC (ESTIMATE, typ rtheta_ja)")
 print(f"Quiescent V3V3 worst {mw(TOT_V3_WORST)} mW; typ 25 degC {mw(TOT_V3_ACTIVE_TYP)} mW")
-print(f"Candidates: {CAND_N} (ADCRANGE 0), {CAND_N_ADC1} also fit ADCRANGE 1; recognized (MATCH_EXACT) rows "
-      f"{len(RECOGNIZED_ROWS)}, ranked (1 %, recognized, ADC/rating checks) {len(RANKED)}")
-for n, r in enumerate(TOP3, start=1):
-    print(f"Top {n}: {r['value'] * 1e3:g} mohm {r['code']} ADCRANGE {r['adc']} {r['mpn']} self-heated {r['fs5_pct']:.3f} % "
-          f"availability {r['avail']} ({r['n_dist']} distributor(s)), stock today {sk(r)} (informational)")
-print(f"Selected: {DESIGN['mpn']} (designer choice); fallback: {FALLBACK['mpn'] if FALLBACK else '-'}; "
-      f"rank 1 by availability: {REC['mpn'] if REC else '-'}; vsense_max {VSENSE_MAX_MV:.1f} mV")
-print("Bus error table (mV):")
-for r in bus_rows:
-    print("  ", r)
-print(f"Max full-scale study: primary (GOOD or FAIR) {I_MAX_GF} A, GOOD only {I_MAX_GOOD} A, any availability {I_MAX_ANY} A; "
-      f"first empty integer {I_FIRST_EMPTY} A (scan to {MF_I[-1]} A)")
-for _i in MF_I:
-    _s = MF_SUM[_i]
-    _b = _s["ranked"][0] if _s["ranked"] else None
-    print(f"  I_FS {_i:>2} A: passing any/GOOD+FAIR/GOOD {_s['n_pass']}/{_s['n_gf']}/{_s['n_good']}; best "
-          + (f"{_b['series']} {_b['value'] * 1e3:g} mohm {_b['code']} ADC{_b['adc']} {_b['mpn']} ({_b['avail']}), "
-             f"error {_b['err']:.3f} %, T {_b['t_el']:.1f} degC, P {_b['p_el']:.3f} W" if _b else "none")
-          + ("" if _b else f"; closest fails {mf_fails_txt(_s['closest'])}"))
-print(f"RECOMMENDATION (GOOD): {I_MAX_GOOD} A {REC['mpn']} ADC{REC['adc']}, error {REC['err']:.4f} % (limit 1 %), "
-      f"P {REC['p_el']:.4f} W, T {REC['t_el']:.2f} degC, SHUNT_CAL {REC['cal']}, binding {mf_bind_txt(REC_BIND)}")
-print(f"FAIR alternative: {I_MAX_GF} A {ALT['mpn']} ADC{ALT['adc']}, error {ALT['err']:.4f} %" if ALT is not None else "no FAIR alternative")
-print(f"WSK2512-LOW best at {I_START} A: {LOW_REF['mpn']} error {LOW_REF['err']:.3f} % (ambient-only {LOW_AMB[mf_key(LOW_REF)]:.3f} %); "
-      f"passing LOW designs over the scan: {sum(1 for i in MF_I for r in MF_SCAN[i] if r['series'] == 'WSK2512-LOW' and r['pass'])}")
-print(f"Wrote {MD_PATH} and charts in {FIG_DIR}")
+print(f"Wrote {MD_PATH}, {FIG_DIR / 'values.json'} and charts in {FIG_DIR}")

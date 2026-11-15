@@ -10,7 +10,7 @@
 		(rev "A")
 		(company "Bryce Salmi Consulting")
 		(comment 1 "github.com/kb1lqc/ina229 @ 6a0152a")
-		(comment 2 "Top level: 12-40 V, 8 A high-side power monitor (INA229HighSideMonitor), SPI")
+		(comment 2 "Top level: 12-40 V, 6 A high-side power monitor (INA229HighSideMonitor), SPI")
 		(comment 3 "Author: Bryce Salmi")
 	)
 	(lib_symbols
@@ -316,7 +316,7 @@
 		)
 		(uuid "022ebba2-d96f-49d9-b166-50474a1dcd19")
 	)
-	(text "I error +/-0.63 % at 8 A, +/-0.56 % at 100 mA (self-heated worst case)\nRequirement +/-1 % at 8 A: PASS\nVBUS error +/-59.4 mV at 40 V, +/-20.2 mV at 12 V\nVBUS LSB 195.3 uV/count\nShunt 0.64 W max of 1.0 W; element ~134 C (estimate)\nV3V3 3.3 V +/-3 %, shared with host"
+	(text "I error +/-0.93 % at 6 A, +/-0.96 % at 100 mA (self-heated worst case)\nRequirement +/-1 % at 6 A: PASS\nVBUS error +/-59.6 mV at 40 V, +/-20.4 mV at 12 V\nVBUS LSB 195.3 uV/count\nShunt 0.36 W max of 1.0 W; element ~106 C (estimate)\nV3V3 3.3 V +/-3 %, shared with host"
 		(exclude_from_sim no)
 		(at 152.4 143.54 0)
 		(effects
@@ -374,7 +374,7 @@
 		)
 		(uuid "9afae58c-22e7-44f3-9a6e-e80f7eac4824")
 	)
-	(text "VBUS_IN: 12-40 V DC, high-side\n8 A FS, bidirectional\n40 V cap: IN+/IN- diff abs max\n(0 V margin at hard short)"
+	(text "VBUS_IN: 12-40 V DC, high-side\n6 A FS, bidirectional\n40 V cap: IN+/IN- diff abs max\n(0 V margin at hard short)"
 		(exclude_from_sim no)
 		(at 111.76 107.95 0)
 		(effects
@@ -396,7 +396,7 @@
 		)
 		(uuid "af9f2d0d-f954-4597-96d9-eadd69b74457")
 	)
-	(text "Bus 12-40 V DC, 8 A FS bidirectional\nRshunt 10 mohm +/-0.1 % (WSK2512R0100BEA), Kelvin\n8 A FS: Vshunt 80.4 mV max of 163.84 mV (ADCRANGE 0)\nScaling 100 A/V of Vshunt (=1/10 mohm), 15.26 uA/count\nSHUNT_CAL 2000"
+	(text "Bus 12-40 V DC, 6 A FS bidirectional\nRshunt 10 mohm +/-0.5 % (WSK2512R0100DEA), Kelvin\n6 A FS: Vshunt 60.5 mV max of 163.84 mV (ADCRANGE 0)\nScaling 100 A/V of Vshunt (=1/10 mohm), 11.44 uA/count\nSHUNT_CAL 1500"
 		(exclude_from_sim no)
 		(at 78.74 143.54 0)
 		(effects

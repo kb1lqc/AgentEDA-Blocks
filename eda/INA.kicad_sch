@@ -1357,7 +1357,7 @@
 		)
 		(uuid "a55b9bae-f20e-408c-8b62-a01201f62704")
 	)
-	(text "Rshunt 10 mohm +/-0.1 %\nKelvin E1/E2 -> IN+/IN-\n8 A FS: 80.4 mV max\n(ADC range 163.84 mV)"
+	(text "Rshunt 10 mohm +/-0.5 %\nKelvin E1/E2 -> IN+/IN-\n6 A FS: 60.5 mV max\n(ADC range 163.84 mV)"
 		(exclude_from_sim no)
 		(at 151.13 75.9 0)
 		(effects
@@ -2089,7 +2089,7 @@
 				)
 			)
 		)
-		(property "Value" "WSK2512R0100BEA"
+		(property "Value" "WSK2512R0100DEA"
 			(at 133.35 72.39 0)
 			(show_name no)
 			(do_not_autoplace yes)
