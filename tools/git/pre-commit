@@ -1,0 +1,19 @@
+#!/bin/zsh
+# Refuse commits that would put a KiCad schematic out of sync with the Zener source of truth.
+# Activated per clone with: git config core.hooksPath tools/git   (see README.md, Setup)
+# Runs only when the commit touches the design or the schematic. Bypassing (git commit --no-verify) is not allowed
+# by the repo rules in CLAUDE.md.
+staged=$(git diff --cached --name-only)
+if ! print -r -- "$staged" | grep -qE '\.zen$|^eda/.*\.kicad_(sch|pro)$|^pcb\.toml$'; then
+  exit 0
+fi
+# Check the staged content, not the working tree: stash unstaged changes for the duration.
+stashed=0
+if ! git diff --quiet; then git stash push -q --keep-index -m pre-commit-check_sync && stashed=1; fi
+tools/schematic/check_sync.sh; rc=$?
+(( stashed )) && git stash pop -q
+if (( rc != 0 )); then
+  echo "pre-commit: schematic is out of sync with the .zen source of truth; commit refused."
+  echo "            Fix the .zen (not KiCad), run 'pcb apply schematic --no-open ina229.zen', review, retry."
+  exit 1
+fi

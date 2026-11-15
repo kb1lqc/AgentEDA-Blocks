@@ -56,3 +56,7 @@ From the repo root, judging by exit code:
 For a design-value change: edit the analysis/.zen, run `python3 -m analysis.ina229_block` (regenerates the datasheet
 and `docs/design-analysis/values.json`), then `python3 tools/schematic/update_notes.py` (schematic notes from the
 values, no hand typing), then `pcb apply schematic --no-open ina229.zen` twice, netlist diff, build, ERC.
+**Sync check (mandatory):** `tools/schematic/check_sync.sh` must print `IN SYNC` before any commit that touches
+`.zen`, `pcb.toml` or `eda/*.kicad_sch`. The pre-commit hook (`tools/git/pre-commit`, enabled by
+`git config core.hooksPath tools/git`) enforces it; never bypass it with `--no-verify`. Circuit changes go in the
+`.zen`; KiCad edits are for presentation only (placement, wires as drawn, notes, boxes, title block).

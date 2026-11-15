@@ -28,6 +28,15 @@ git clone https://github.com/kb1lqc/ina229.git
 git clone --branch v0.3.0 https://github.com/kb1lqc/zener-library.git zener-library
 ```
 
+Enable the schematic sync check on commit (once per clone):
+
+```sh
+git -C ina229 config core.hooksPath tools/git
+```
+
+The `.zen` files are the source of truth for the circuit; review the schematic in KiCad, but make circuit changes in
+the `.zen`. `tools/schematic/check_sync.sh` shows whether the KiCad schematic matches the `.zen`.
+
 The library checkout must stay outside this repo: `pcb` rejects any nested `pcb.toml` with a `[workspace]` section,
 including in hidden or git-ignored folders. Set `ZENER_LIBRARY` to use a different checkout.
 
