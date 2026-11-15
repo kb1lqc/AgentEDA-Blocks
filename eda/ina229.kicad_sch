@@ -1,0 +1,14 @@
+(kicad_sch
+	(version 20260306)
+	(generator "diode")
+	(generator_version "0.4.102")
+	(uuid "513d9cc1-d27a-514d-a37c-2f1ca04dddfa")
+	(paper "A4")
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

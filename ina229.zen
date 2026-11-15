@@ -1,0 +1,18 @@
+"""
+ina229: INA229-based 85 V power, energy and charge monitor with SPI.
+
+Parts come from github.com/kb1lqc/zener-library (see CLAUDE.md). Pass `ambient` and `derate` to every library
+wrapper; an unset ambient reports UNVERIFIED on each part's temperature check.
+"""
+
+load("@stdlib/units.zen", "Temperature")
+
+ambient = config(Temperature, optional=True, help="Board ambient temperature range (set in spec.md first)")
+derate = config(float, default=1.0, help="Project derating factor in (0, 1]; shrinks abs-max limits only")
+
+Board(
+    name="ina229",
+    path="eda",
+    layers=4,
+    schematic=True,
+)

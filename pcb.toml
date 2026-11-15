@@ -1,0 +1,12 @@
+[workspace]
+repository = "github.com/kb1lqc/ina229"
+pcb-version = "0.4"
+vendor = ["code.diode.computer/**"]
+
+[board]
+name = "ina229"
+path = "ina229.zen"
+description = "INA229-based 85 V power, energy and charge monitor with SPI."
+
+[access]
+allow = ["*"]
