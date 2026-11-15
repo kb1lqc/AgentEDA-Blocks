@@ -1,0 +1,4522 @@
+{
+ "date": "2026-11-15",
+ "source": "Max full-scale study stock snapshot. Every WSK2512 row is reused from shunt_stock_2026-11-15_rerank.json (same pcb bom sourcing, WSK2512 0.2.0). Every WSK2512-LOW (value, code) pair in the library (D and F, 1.0 to 4.9 mohm) is new: pcb bom -f json in scratch copies of the board where the module SHUNT is WSK2512-LOW (dependency 0.2.0). Stock is a sourcing record (pcb bom offers), not a datasheet value.",
+ "rows": [
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 10.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0100BEA",
+   "availability": {
+    "global": {
+     "price": 0.0399,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "63fb04a6-d8c7-4566-8a87-8e8925cf4df8",
+    "offers": [
+     {
+      "id": "63fb04a6-d8c7-4566-8a87-8e8925cf4df8",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 0.0399,
+      "part_id": "C23925271",
+      "mpn": "WSK2512R0100BEA",
+      "manufacturer": "Vishay"
+     }
+    ]
+   },
+   "vsense_max": "50.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0100BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 11.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0110BEA",
+   "availability": {},
+   "vsense_max": "55.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0110BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 12.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0120BEA",
+   "availability": {},
+   "vsense_max": "60.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0120BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 13.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0130BEA",
+   "availability": {},
+   "vsense_max": "65.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0130BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 14.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0140BEA",
+   "availability": {},
+   "vsense_max": "70.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0140BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 15.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0150BEA",
+   "availability": {},
+   "vsense_max": "75.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0150BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 16.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0160BEA",
+   "availability": {},
+   "vsense_max": "80.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0160BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 17.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0170BEA",
+   "availability": {},
+   "vsense_max": "85.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0170BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 18.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0180BEA",
+   "availability": {},
+   "vsense_max": "90.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0180BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 19.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0190BEA",
+   "availability": {},
+   "vsense_max": "95.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0190BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 20.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0200BEA",
+   "availability": {
+    "global": {
+     "price": 0.0399,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "b66305d3-0e05-4110-aaee-9502adcc28cd",
+    "offers": [
+     {
+      "id": "b66305d3-0e05-4110-aaee-9502adcc28cd",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 0.0399,
+      "part_id": "C56364044",
+      "mpn": "WSK2512R0200BEA",
+      "manufacturer": "Vishay"
+     }
+    ]
+   },
+   "vsense_max": "100.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0200BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 21.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0210BEA",
+   "availability": {},
+   "vsense_max": "105.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0210BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 22.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0220BEA",
+   "availability": {},
+   "vsense_max": "110.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0220BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 23.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0230BEA",
+   "availability": {},
+   "vsense_max": "115.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0230BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 24.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0240BEA",
+   "availability": {},
+   "vsense_max": "120.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0240BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 25.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0250BEA",
+   "availability": {},
+   "vsense_max": "125.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0250BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 26.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0260BEA",
+   "availability": {},
+   "vsense_max": "130.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0260BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 27.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0270BEA",
+   "availability": {},
+   "vsense_max": "135.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0270BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 28.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0280BEA",
+   "availability": {},
+   "vsense_max": "140.8mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0280BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 29.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0290BEA",
+   "availability": {},
+   "vsense_max": "145.8mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0290BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 30.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0300BEA",
+   "availability": {},
+   "vsense_max": "150.8mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0300BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 31.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0310BEA",
+   "availability": {},
+   "vsense_max": "155.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0310BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "B",
+   "value_mohm": 32.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0320BEA",
+   "availability": {},
+   "vsense_max": "160.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0320BEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25125L000DEA",
+   "availability": {
+    "us": {
+     "price": 5.02,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "83b42590-9d14-4e5e-b940-95a729820d6e",
+    "offers": [
+     {
+      "id": "83b42590-9d14-4e5e-b940-95a729820d6e",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 0,
+      "price": 5.02,
+      "part_id": "71-WSK25125L000DEA",
+      "mpn": "WSK25125L000DEA",
+      "manufacturer": "Vishay"
+     }
+    ]
+   },
+   "vsense_max": "25.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L000DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L100DEA",
+   "availability": {},
+   "vsense_max": "25.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L100DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L200DEA",
+   "availability": {},
+   "vsense_max": "26.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L200DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L300DEA",
+   "availability": {},
+   "vsense_max": "26.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L300DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L400DEA",
+   "availability": {},
+   "vsense_max": "27.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L400DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L500DEA",
+   "availability": {},
+   "vsense_max": "27.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L500DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L600DEA",
+   "availability": {},
+   "vsense_max": "28.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L600DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L700DEA",
+   "availability": {},
+   "vsense_max": "28.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L700DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L800DEA",
+   "availability": {},
+   "vsense_max": "29.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L800DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 5.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L900DEA",
+   "availability": {},
+   "vsense_max": "29.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L900DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25126L000DEA",
+   "availability": {},
+   "vsense_max": "30.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L000DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L100DEA",
+   "availability": {},
+   "vsense_max": "30.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L100DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L200DEA",
+   "availability": {},
+   "vsense_max": "31.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L200DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L300DEA",
+   "availability": {},
+   "vsense_max": "31.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L300DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L400DEA",
+   "availability": {},
+   "vsense_max": "32.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L400DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L500DEA",
+   "availability": {},
+   "vsense_max": "32.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L500DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L600DEA",
+   "availability": {},
+   "vsense_max": "33.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L600DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L700DEA",
+   "availability": {},
+   "vsense_max": "33.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L700DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L800DEA",
+   "availability": {},
+   "vsense_max": "34.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L800DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 6.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L900DEA",
+   "availability": {},
+   "vsense_max": "34.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L900DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25127L000DEA",
+   "availability": {},
+   "vsense_max": "35.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L000DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L100DEA",
+   "availability": {},
+   "vsense_max": "35.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L100DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L200DEA",
+   "availability": {},
+   "vsense_max": "36.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L200DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L300DEA",
+   "availability": {},
+   "vsense_max": "36.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L300DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L400DEA",
+   "availability": {},
+   "vsense_max": "37.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L400DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25127L500DEA",
+   "availability": {},
+   "vsense_max": "37.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L500DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L600DEA",
+   "availability": {},
+   "vsense_max": "38.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L600DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L700DEA",
+   "availability": {},
+   "vsense_max": "38.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L700DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L800DEA",
+   "availability": {},
+   "vsense_max": "39.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L800DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 7.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L900DEA",
+   "availability": {},
+   "vsense_max": "39.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L900DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25128L000DEA",
+   "availability": {},
+   "vsense_max": "40.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25128L000DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L100DEA",
+   "availability": {},
+   "vsense_max": "40.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25128L100DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L200DEA",
+   "availability": {},
+   "vsense_max": "41.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L200DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L300DEA",
+   "availability": {},
+   "vsense_max": "41.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L300DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L400DEA",
+   "availability": {},
+   "vsense_max": "42.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L400DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L500DEA",
+   "availability": {},
+   "vsense_max": "42.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L500DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L600DEA",
+   "availability": {},
+   "vsense_max": "43.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L600DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L700DEA",
+   "availability": {},
+   "vsense_max": "43.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L700DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L800DEA",
+   "availability": {},
+   "vsense_max": "44.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L800DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 8.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L900DEA",
+   "availability": {},
+   "vsense_max": "44.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L900DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25129L000DEA",
+   "availability": {},
+   "vsense_max": "45.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L000DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L100DEA",
+   "availability": {},
+   "vsense_max": "45.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L100DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L200DEA",
+   "availability": {},
+   "vsense_max": "46.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L200DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L300DEA",
+   "availability": {},
+   "vsense_max": "46.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L300DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L400DEA",
+   "availability": {},
+   "vsense_max": "47.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L400DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L500DEA",
+   "availability": {},
+   "vsense_max": "47.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L500DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L600DEA",
+   "availability": {},
+   "vsense_max": "48.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L600DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L700DEA",
+   "availability": {},
+   "vsense_max": "48.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L700DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L800DEA",
+   "availability": {},
+   "vsense_max": "49.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L800DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 9.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L900DEA",
+   "availability": {},
+   "vsense_max": "49.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L900DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 10.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0100DEA",
+   "availability": {
+    "us": {
+     "price": 2.49,
+     "stock": 292,
+     "alt_stock": 0
+    },
+    "global": {
+     "price": 0.9212,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "9b890e46-627a-491f-9cc1-7e7a9daff099",
+    "offers": [
+     {
+      "id": "9b890e46-627a-491f-9cc1-7e7a9daff099",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 292,
+      "price": 2.49,
+      "part_id": "541-WSK2512R0100DEACT-ND",
+      "mpn": "WSK2512R0100DEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "5995bbed-4eed-47a1-bee3-91e31e6f541c",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 0,
+      "price": 3.72,
+      "part_id": "71-WSK2512R0100DEA",
+      "mpn": "WSK2512R0100DEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "bb76187c-4aca-4e46-a24a-e17dac4986ec",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 0.9212,
+      "part_id": "C1517461",
+      "mpn": "WSK2512R0100DEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590450096929746944"
+     }
+    ]
+   },
+   "vsense_max": "50.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0100DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 11.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0110DEA",
+   "availability": {},
+   "vsense_max": "55.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0110DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 12.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0120DEA",
+   "availability": {},
+   "vsense_max": "60.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0120DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 13.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0130DEA",
+   "availability": {},
+   "vsense_max": "65.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0130DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 14.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0140DEA",
+   "availability": {},
+   "vsense_max": "70.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0140DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 15.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0150DEA",
+   "availability": {},
+   "vsense_max": "75.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0150DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 16.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0160DEA",
+   "availability": {},
+   "vsense_max": "80.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0160DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 17.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0170DEA",
+   "availability": {},
+   "vsense_max": "85.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0170DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 18.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0180DEA",
+   "availability": {},
+   "vsense_max": "90.8mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0180DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 19.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0190DEA",
+   "availability": {},
+   "vsense_max": "95.8mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0190DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 20.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0200DEA",
+   "availability": {},
+   "vsense_max": "100.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0200DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 21.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0210DEA",
+   "availability": {},
+   "vsense_max": "105.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0210DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 22.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0220DEA",
+   "availability": {},
+   "vsense_max": "111.0mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0220DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 23.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0230DEA",
+   "availability": {},
+   "vsense_max": "116.0mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0230DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 24.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0240DEA",
+   "availability": {},
+   "vsense_max": "121.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0240DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 25.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0250DEA",
+   "availability": {
+    "us": {
+     "price": 2.26,
+     "stock": 3247,
+     "alt_stock": 1302
+    },
+    "global": {
+     "price": 0.877,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "4a0d17d3-05df-428c-bc3b-39ccb805c869",
+    "offers": [
+     {
+      "id": "4a0d17d3-05df-428c-bc3b-39ccb805c869",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 3247,
+      "price": 2.26,
+      "part_id": "541-WSK2512R0250DEACT-ND",
+      "mpn": "WSK2512R0250DEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "ec6b22c4-dc19-4e26-a842-5d6abbda3ca9",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 1302,
+      "price": 2.26,
+      "part_id": "71-WSK2512R0250DEA",
+      "mpn": "WSK2512R0250DEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "8d896571-294f-4eae-a79c-b809e55d30be",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 0.877,
+      "part_id": "C1517443",
+      "mpn": "WSK2512R0250DEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589032159919554560"
+     }
+    ]
+   },
+   "vsense_max": "126.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0250DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 26.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0260DEA",
+   "availability": {},
+   "vsense_max": "131.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0260DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 27.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0270DEA",
+   "availability": {},
+   "vsense_max": "136.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0270DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 28.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0280DEA",
+   "availability": {},
+   "vsense_max": "141.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0280DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 29.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0290DEA",
+   "availability": {},
+   "vsense_max": "146.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0290DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 30.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0300DEA",
+   "availability": {},
+   "vsense_max": "151.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0300DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 31.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0310DEA",
+   "availability": {},
+   "vsense_max": "156.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0310DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "D",
+   "value_mohm": 32.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0320DEA",
+   "availability": {},
+   "vsense_max": "161.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0320DEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25125L000FEA",
+   "availability": {
+    "us": {
+     "price": 2.22,
+     "stock": 170,
+     "alt_stock": 0
+    },
+    "global": {
+     "price": 4.9223,
+     "stock": 41,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "813bfbfe-62b0-4772-87ad-e2d69c6b7759",
+    "offers": [
+     {
+      "id": "813bfbfe-62b0-4772-87ad-e2d69c6b7759",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 170,
+      "price": 2.22,
+      "part_id": "71-WSK25125L000FEA",
+      "mpn": "WSK25125L000FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "e797dcaf-f13a-422d-991e-9333764c0279",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 0,
+      "price": 1.98,
+      "part_id": "541-WSK25125L000FEACT-ND",
+      "mpn": "WSK25125L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "c516e231-df47-47f4-9add-c917c9a0b864",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 41,
+      "price": 4.9223,
+      "part_id": "C1517444",
+      "mpn": "WSK25125L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589032629177339904"
+     }
+    ]
+   },
+   "vsense_max": "25.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L000FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L100FEA",
+   "availability": {},
+   "vsense_max": "25.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L100FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L200FEA",
+   "availability": {},
+   "vsense_max": "26.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L200FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.3,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25125L300FEA",
+   "availability": {},
+   "vsense_max": "26.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L300FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L400FEA",
+   "availability": {},
+   "vsense_max": "27.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L400FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25125L500FEA",
+   "availability": {},
+   "vsense_max": "27.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L500FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L600FEA",
+   "availability": {},
+   "vsense_max": "28.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L600FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L700FEA",
+   "availability": {},
+   "vsense_max": "28.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L700FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L800FEA",
+   "availability": {},
+   "vsense_max": "29.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L800FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 5.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25125L900FEA",
+   "availability": {},
+   "vsense_max": "29.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25125L900FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25126L000FEA",
+   "availability": {
+    "us": {
+     "price": 2.99,
+     "stock": 49,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "b7d48108-5699-41d5-a038-617e175ed9aa",
+    "offers": [
+     {
+      "id": "b7d48108-5699-41d5-a038-617e175ed9aa",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 49,
+      "price": 2.99,
+      "part_id": "71-WSK25126L000FEA",
+      "mpn": "WSK25126L000FEA",
+      "manufacturer": "Vishay"
+     }
+    ]
+   },
+   "vsense_max": "30.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L000FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.1,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25126L100FEA",
+   "availability": {},
+   "vsense_max": "30.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L100FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.2,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25126L200FEA",
+   "availability": {},
+   "vsense_max": "31.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L200FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L300FEA",
+   "availability": {},
+   "vsense_max": "31.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L300FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L400FEA",
+   "availability": {},
+   "vsense_max": "32.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L400FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25126L500FEA",
+   "availability": {},
+   "vsense_max": "32.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L500FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L600FEA",
+   "availability": {},
+   "vsense_max": "33.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L600FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L700FEA",
+   "availability": {},
+   "vsense_max": "34.0mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L700FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L800FEA",
+   "availability": {},
+   "vsense_max": "34.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L800FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 6.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25126L900FEA",
+   "availability": {},
+   "vsense_max": "35.0mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25126L900FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25127L000FEA",
+   "availability": {
+    "us": {
+     "price": 2.99,
+     "stock": 2669,
+     "alt_stock": 0
+    },
+    "global": {
+     "price": 7.7038,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "7a96c70f-0a76-437a-bce0-fc07b2faf21d",
+    "offers": [
+     {
+      "id": "7a96c70f-0a76-437a-bce0-fc07b2faf21d",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 2669,
+      "price": 2.99,
+      "part_id": "71-WSK25127L000FEA",
+      "mpn": "WSK25127L000FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "433b8242-519a-47b5-b4ed-570494d8e5c9",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 7.7038,
+      "part_id": "C26452738",
+      "mpn": "WSK25127L000FEA",
+      "manufacturer": "Vishay"
+     }
+    ]
+   },
+   "vsense_max": "35.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L000FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L100FEA",
+   "availability": {},
+   "vsense_max": "36.0mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L100FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L200FEA",
+   "availability": {},
+   "vsense_max": "36.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L200FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L300FEA",
+   "availability": {},
+   "vsense_max": "37.0mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L300FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L400FEA",
+   "availability": {},
+   "vsense_max": "37.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L400FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L500FEA",
+   "availability": {},
+   "vsense_max": "38.0mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L500FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L600FEA",
+   "availability": {},
+   "vsense_max": "38.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L600FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L700FEA",
+   "availability": {},
+   "vsense_max": "39.0mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L700FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L800FEA",
+   "availability": {},
+   "vsense_max": "39.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L800FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 7.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25127L900FEA",
+   "availability": {},
+   "vsense_max": "40.0mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25127L900FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25128L000FEA",
+   "availability": {},
+   "vsense_max": "40.5mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "mpn": "WSK25128L000FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L100FEA",
+   "availability": {},
+   "vsense_max": "41.0mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L100FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L200FEA",
+   "availability": {},
+   "vsense_max": "41.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L200FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L300FEA",
+   "availability": {},
+   "vsense_max": "42.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L300FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L400FEA",
+   "availability": {},
+   "vsense_max": "42.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L400FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L500FEA",
+   "availability": {},
+   "vsense_max": "43.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L500FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L600FEA",
+   "availability": {},
+   "vsense_max": "43.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L600FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L700FEA",
+   "availability": {},
+   "vsense_max": "44.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L700FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L800FEA",
+   "availability": {},
+   "vsense_max": "44.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L800FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 8.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25128L900FEA",
+   "availability": {},
+   "vsense_max": "45.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25128L900FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25129L000FEA",
+   "availability": {},
+   "vsense_max": "45.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L000FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L100FEA",
+   "availability": {},
+   "vsense_max": "46.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L100FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L200FEA",
+   "availability": {},
+   "vsense_max": "46.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L200FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L300FEA",
+   "availability": {},
+   "vsense_max": "47.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L300FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L400FEA",
+   "availability": {},
+   "vsense_max": "47.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L400FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L500FEA",
+   "availability": {},
+   "vsense_max": "48.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L500FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L600FEA",
+   "availability": {},
+   "vsense_max": "48.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L600FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L700FEA",
+   "availability": {},
+   "vsense_max": "49.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L700FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L800FEA",
+   "availability": {},
+   "vsense_max": "49.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L800FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 9.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25129L900FEA",
+   "availability": {},
+   "vsense_max": "50.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK25129L900FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 10.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0100FEA",
+   "availability": {
+    "us": {
+     "price": 1.42,
+     "stock": 5953,
+     "alt_stock": 18957
+    },
+    "global": {
+     "price": 1.0769,
+     "stock": 757,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "c56fb482-a0ee-4a51-91b9-c169473e2871",
+    "offers": [
+     {
+      "id": "c56fb482-a0ee-4a51-91b9-c169473e2871",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 5953,
+      "price": 1.42,
+      "part_id": "541-WSK2512R0100FEACT-ND",
+      "mpn": "WSK2512R0100FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "a7957e28-fd5f-4600-9186-877bc8b94021",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 18957,
+      "price": 1.42,
+      "part_id": "71-WSK2512R0100FEA",
+      "mpn": "WSK2512R0100FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "3ba37cb9-9ffa-4fdb-9fb0-bff371eb76ba",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 757,
+      "price": 1.0769,
+      "part_id": "C3985410",
+      "mpn": "WSK2512R0100FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590289112269303808"
+     }
+    ]
+   },
+   "vsense_max": "50.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0100FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 11.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0110FEA",
+   "availability": {},
+   "vsense_max": "55.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0110FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 12.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0120FEA",
+   "availability": {},
+   "vsense_max": "60.8mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0120FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 13.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0130FEA",
+   "availability": {},
+   "vsense_max": "65.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0130FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 14.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0140FEA",
+   "availability": {},
+   "vsense_max": "70.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0140FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 15.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0150FEA",
+   "availability": {},
+   "vsense_max": "76.0mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0150FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 16.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0160FEA",
+   "availability": {},
+   "vsense_max": "81.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0160FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 17.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0170FEA",
+   "availability": {},
+   "vsense_max": "86.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0170FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 18.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0180FEA",
+   "availability": {},
+   "vsense_max": "91.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0180FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 19.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0190FEA",
+   "availability": {},
+   "vsense_max": "96.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0190FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 20.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0200FEA",
+   "availability": {
+    "us": {
+     "price": 1.42,
+     "stock": 16330,
+     "alt_stock": 5231
+    },
+    "global": {
+     "price": 1.272,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "972a218b-09e4-4773-afbb-1eb04c5e48e7",
+    "offers": [
+     {
+      "id": "972a218b-09e4-4773-afbb-1eb04c5e48e7",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 16330,
+      "price": 1.42,
+      "part_id": "541-WSK2512R0200FEACT-ND",
+      "mpn": "WSK2512R0200FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "8bea8042-ed7d-4c24-8256-64d49af02de4",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 5231,
+      "price": 1.51,
+      "part_id": "71-WSK2512R0200FEA",
+      "mpn": "WSK2512R0200FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "cb0e82a9-197f-4608-a42c-0e13e6e1d1b2",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 1.272,
+      "part_id": "C1517429",
+      "mpn": "WSK2512R0200FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590450096937730048"
+     }
+    ]
+   },
+   "vsense_max": "101.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0200FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 21.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0210FEA",
+   "availability": {},
+   "vsense_max": "106.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0210FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 22.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0220FEA",
+   "availability": {},
+   "vsense_max": "111.5mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0220FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 23.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0230FEA",
+   "availability": {},
+   "vsense_max": "116.6mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0230FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 24.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0240FEA",
+   "availability": {},
+   "vsense_max": "121.7mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0240FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 25.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK2512R0250FEA",
+   "availability": {
+    "us": {
+     "price": 1.4,
+     "stock": 7001,
+     "alt_stock": 1880
+    },
+    "global": {
+     "price": 1.0048,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "7c182dfb-c950-4dc9-9e81-dd7192649a71",
+    "offers": [
+     {
+      "id": "7c182dfb-c950-4dc9-9e81-dd7192649a71",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 7001,
+      "price": 1.4,
+      "part_id": "541-WSK2512R0250FEACT-ND",
+      "mpn": "WSK2512R0250FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "7a6951d3-b9dc-4af8-a117-6823c2b890ba",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 1880,
+      "price": 1.4,
+      "part_id": "71-WSK2512R0250FEA",
+      "mpn": "WSK2512R0250FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "8f963cf9-fc2f-401a-a237-d43cea35d7c1",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 1.0048,
+      "part_id": "C1517426",
+      "mpn": "WSK2512R0250FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589032160044572672"
+     }
+    ]
+   },
+   "vsense_max": "126.8mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0250FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 26.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0260FEA",
+   "availability": {},
+   "vsense_max": "131.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0260FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 27.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0270FEA",
+   "availability": {},
+   "vsense_max": "136.9mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0270FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 28.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0280FEA",
+   "availability": {},
+   "vsense_max": "142.0mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0280FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 29.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0290FEA",
+   "availability": {},
+   "vsense_max": "147.1mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0290FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 30.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0300FEA",
+   "availability": {},
+   "vsense_max": "152.2mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0300FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 31.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0310FEA",
+   "availability": {},
+   "vsense_max": "157.3mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0310FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512",
+   "code": "F",
+   "value_mohm": 32.0,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK2512R0320FEA",
+   "availability": {},
+   "vsense_max": "162.4mV",
+   "adc_fit": [
+    0
+   ],
+   "mpn": "WSK2512R0320FEA",
+   "bom_rc": 0,
+   "source": "reused: analysis/data/shunt_stock_2026-11-15_rerank.json (pcb bom, same sourcing)"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25121L000DEA",
+   "mpn": "WSK25121L000DEA",
+   "availability": {},
+   "vsense_max": "5.1mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L100DEA",
+   "mpn": "WSK25121L100DEA",
+   "availability": {},
+   "vsense_max": "5.6mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L200DEA",
+   "mpn": "WSK25121L200DEA",
+   "availability": {},
+   "vsense_max": "6.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L300DEA",
+   "mpn": "WSK25121L300DEA",
+   "availability": {},
+   "vsense_max": "6.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L400DEA",
+   "mpn": "WSK25121L400DEA",
+   "availability": {},
+   "vsense_max": "7.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25121L500DEA",
+   "mpn": "WSK25121L500DEA",
+   "availability": {},
+   "vsense_max": "7.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L600DEA",
+   "mpn": "WSK25121L600DEA",
+   "availability": {},
+   "vsense_max": "8.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L700DEA",
+   "mpn": "WSK25121L700DEA",
+   "availability": {},
+   "vsense_max": "8.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L800DEA",
+   "mpn": "WSK25121L800DEA",
+   "availability": {},
+   "vsense_max": "9.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 1.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L900DEA",
+   "mpn": "WSK25121L900DEA",
+   "availability": {},
+   "vsense_max": "9.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25122L000DEA",
+   "mpn": "WSK25122L000DEA",
+   "availability": {
+    "us": {
+     "price": 5.23,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "525e1877-e994-4bcc-9b16-3ef3393b65dd",
+    "offers": [
+     {
+      "id": "525e1877-e994-4bcc-9b16-3ef3393b65dd",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 0,
+      "price": 5.23,
+      "part_id": "71-WSK25122L000DEA",
+      "mpn": "WSK25122L000DEA",
+      "manufacturer": "Vishay"
+     }
+    ]
+   },
+   "vsense_max": "10.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L100DEA",
+   "mpn": "WSK25122L100DEA",
+   "availability": {},
+   "vsense_max": "10.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L200DEA",
+   "mpn": "WSK25122L200DEA",
+   "availability": {},
+   "vsense_max": "11.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L300DEA",
+   "mpn": "WSK25122L300DEA",
+   "availability": {},
+   "vsense_max": "11.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L400DEA",
+   "mpn": "WSK25122L400DEA",
+   "availability": {},
+   "vsense_max": "12.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25122L500DEA",
+   "mpn": "WSK25122L500DEA",
+   "availability": {},
+   "vsense_max": "12.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L600DEA",
+   "mpn": "WSK25122L600DEA",
+   "availability": {},
+   "vsense_max": "13.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L700DEA",
+   "mpn": "WSK25122L700DEA",
+   "availability": {},
+   "vsense_max": "13.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L800DEA",
+   "mpn": "WSK25122L800DEA",
+   "availability": {},
+   "vsense_max": "14.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 2.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L900DEA",
+   "mpn": "WSK25122L900DEA",
+   "availability": {},
+   "vsense_max": "14.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25123L000DEA",
+   "mpn": "WSK25123L000DEA",
+   "availability": {
+    "us": {
+     "price": 3.32,
+     "stock": 2660,
+     "alt_stock": 0
+    },
+    "global": {
+     "price": 0.7622,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "fbfc626b-deba-4aaa-b21a-841e0bbc78b3",
+    "offers": [
+     {
+      "id": "fbfc626b-deba-4aaa-b21a-841e0bbc78b3",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 2660,
+      "price": 3.32,
+      "part_id": "541-WSK25123L000DEACT-ND",
+      "mpn": "WSK25123L000DEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "ea14b1f3-baf0-4a4c-ae8d-b2585e4b6949",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 0,
+      "price": 3.32,
+      "part_id": "71-WSK25123L000DEA",
+      "mpn": "WSK25123L000DEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "8c9542b4-fd4a-4a8e-be1f-047720341eb2",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 0.7622,
+      "part_id": "C1517442",
+      "mpn": "WSK25123L000DEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589032159911030784"
+     }
+    ]
+   },
+   "vsense_max": "15.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L100DEA",
+   "mpn": "WSK25123L100DEA",
+   "availability": {},
+   "vsense_max": "15.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L200DEA",
+   "mpn": "WSK25123L200DEA",
+   "availability": {},
+   "vsense_max": "16.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.3,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25123L300DEA",
+   "mpn": "WSK25123L300DEA",
+   "availability": {},
+   "vsense_max": "16.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L400DEA",
+   "mpn": "WSK25123L400DEA",
+   "availability": {},
+   "vsense_max": "17.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L500DEA",
+   "mpn": "WSK25123L500DEA",
+   "availability": {},
+   "vsense_max": "17.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L600DEA",
+   "mpn": "WSK25123L600DEA",
+   "availability": {},
+   "vsense_max": "18.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L700DEA",
+   "mpn": "WSK25123L700DEA",
+   "availability": {},
+   "vsense_max": "18.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L800DEA",
+   "mpn": "WSK25123L800DEA",
+   "availability": {},
+   "vsense_max": "19.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 3.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L900DEA",
+   "mpn": "WSK25123L900DEA",
+   "availability": {},
+   "vsense_max": "19.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25124L000DEA",
+   "mpn": "WSK25124L000DEA",
+   "availability": {
+    "us": {
+     "price": 5.24,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "260c6a8a-7713-426f-9d46-9252ebeb5655",
+    "offers": [
+     {
+      "id": "260c6a8a-7713-426f-9d46-9252ebeb5655",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 0,
+      "price": 5.24,
+      "part_id": "71-WSK25124L000DEA",
+      "mpn": "WSK25124L000DEA",
+      "manufacturer": "Vishay"
+     }
+    ]
+   },
+   "vsense_max": "20.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L100DEA",
+   "mpn": "WSK25124L100DEA",
+   "availability": {},
+   "vsense_max": "20.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L200DEA",
+   "mpn": "WSK25124L200DEA",
+   "availability": {},
+   "vsense_max": "21.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L300DEA",
+   "mpn": "WSK25124L300DEA",
+   "availability": {},
+   "vsense_max": "21.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L400DEA",
+   "mpn": "WSK25124L400DEA",
+   "availability": {},
+   "vsense_max": "22.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L500DEA",
+   "mpn": "WSK25124L500DEA",
+   "availability": {},
+   "vsense_max": "22.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L600DEA",
+   "mpn": "WSK25124L600DEA",
+   "availability": {},
+   "vsense_max": "23.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L700DEA",
+   "mpn": "WSK25124L700DEA",
+   "availability": {},
+   "vsense_max": "23.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L800DEA",
+   "mpn": "WSK25124L800DEA",
+   "availability": {},
+   "vsense_max": "24.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "D",
+   "value_mohm": 4.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L900DEA",
+   "mpn": "WSK25124L900DEA",
+   "availability": {},
+   "vsense_max": "24.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25121L000FEA",
+   "mpn": "WSK25121L000FEA",
+   "availability": {
+    "us": {
+     "price": 2.46,
+     "stock": 4023,
+     "alt_stock": 0
+    },
+    "global": {
+     "price": 1.3097,
+     "stock": 3898,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "2663a8b3-1152-4df0-af1d-4b1e16e0125e",
+    "offers": [
+     {
+      "id": "2663a8b3-1152-4df0-af1d-4b1e16e0125e",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 4023,
+      "price": 2.46,
+      "part_id": "71-WSK25121L000FEA",
+      "mpn": "WSK25121L000FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "037205eb-7140-4d7a-97a4-bddc78c9ff1f",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 0,
+      "price": 2.05,
+      "part_id": "541-10300-1-ND",
+      "mpn": "WSK25121L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "a24bfa1d-9827-46bd-807b-94495d65a710",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 3898,
+      "price": 1.3097,
+      "part_id": "C4248455",
+      "mpn": "WSK25121L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590259643848298496"
+     }
+    ]
+   },
+   "vsense_max": "5.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L100FEA",
+   "mpn": "WSK25121L100FEA",
+   "availability": {},
+   "vsense_max": "5.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L200FEA",
+   "mpn": "WSK25121L200FEA",
+   "availability": {},
+   "vsense_max": "6.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L300FEA",
+   "mpn": "WSK25121L300FEA",
+   "availability": {},
+   "vsense_max": "6.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L400FEA",
+   "mpn": "WSK25121L400FEA",
+   "availability": {},
+   "vsense_max": "7.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25121L500FEA",
+   "mpn": "WSK25121L500FEA",
+   "availability": {},
+   "vsense_max": "7.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L600FEA",
+   "mpn": "WSK25121L600FEA",
+   "availability": {},
+   "vsense_max": "8.2mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L700FEA",
+   "mpn": "WSK25121L700FEA",
+   "availability": {},
+   "vsense_max": "8.7mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L800FEA",
+   "mpn": "WSK25121L800FEA",
+   "availability": {},
+   "vsense_max": "9.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 1.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25121L900FEA",
+   "mpn": "WSK25121L900FEA",
+   "availability": {},
+   "vsense_max": "9.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25122L000FEA",
+   "mpn": "WSK25122L000FEA",
+   "availability": {
+    "us": {
+     "price": 1.92,
+     "stock": 354,
+     "alt_stock": 2339
+    },
+    "global": {
+     "price": 3.6552,
+     "stock": 142,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "d2cfacd5-0ab3-4a17-b82a-23781a3d8410",
+    "offers": [
+     {
+      "id": "d2cfacd5-0ab3-4a17-b82a-23781a3d8410",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 354,
+      "price": 1.92,
+      "part_id": "541-WSK25122L000FEACT-ND",
+      "mpn": "WSK25122L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "710e3d37-2831-4366-98bc-7dd759433474",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 2339,
+      "price": 1.92,
+      "part_id": "71-WSK25122L000FEA",
+      "mpn": "WSK25122L000FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "05207cd6-e1cb-45d1-81dd-b02eca4836aa",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 142,
+      "price": 3.6552,
+      "part_id": "C3997408",
+      "mpn": "WSK25122L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590297662748078080"
+     }
+    ]
+   },
+   "vsense_max": "10.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L100FEA",
+   "mpn": "WSK25122L100FEA",
+   "availability": {},
+   "vsense_max": "10.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L200FEA",
+   "mpn": "WSK25122L200FEA",
+   "availability": {},
+   "vsense_max": "11.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L300FEA",
+   "mpn": "WSK25122L300FEA",
+   "availability": {},
+   "vsense_max": "11.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L400FEA",
+   "mpn": "WSK25122L400FEA",
+   "availability": {},
+   "vsense_max": "12.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25122L500FEA",
+   "mpn": "WSK25122L500FEA",
+   "availability": {},
+   "vsense_max": "12.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L600FEA",
+   "mpn": "WSK25122L600FEA",
+   "availability": {},
+   "vsense_max": "13.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.7,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25122L700FEA",
+   "mpn": "WSK25122L700FEA",
+   "availability": {},
+   "vsense_max": "13.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L800FEA",
+   "mpn": "WSK25122L800FEA",
+   "availability": {},
+   "vsense_max": "14.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 2.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25122L900FEA",
+   "mpn": "WSK25122L900FEA",
+   "availability": {},
+   "vsense_max": "14.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25123L000FEA",
+   "mpn": "WSK25123L000FEA",
+   "availability": {
+    "us": {
+     "price": 2.12,
+     "stock": 1883,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "c878bc0f-cddb-440c-a34f-15426e9ede27",
+    "offers": [
+     {
+      "id": "c878bc0f-cddb-440c-a34f-15426e9ede27",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 1883,
+      "price": 2.12,
+      "part_id": "71-WSK25123L000FEA",
+      "mpn": "WSK25123L000FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "9edf781f-5741-4478-a5c3-f18e34ff8f5e",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 0,
+      "price": 2.05,
+      "part_id": "541-WSK25123L000FEACT-ND",
+      "mpn": "WSK25123L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/doc?30108"
+     }
+    ]
+   },
+   "vsense_max": "15.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L100FEA",
+   "mpn": "WSK25123L100FEA",
+   "availability": {},
+   "vsense_max": "15.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.2,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L200FEA",
+   "mpn": "WSK25123L200FEA",
+   "availability": {},
+   "vsense_max": "16.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.3,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25123L300FEA",
+   "mpn": "WSK25123L300FEA",
+   "availability": {},
+   "vsense_max": "16.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L400FEA",
+   "mpn": "WSK25123L400FEA",
+   "availability": {},
+   "vsense_max": "17.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.5,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25123L500FEA",
+   "mpn": "WSK25123L500FEA",
+   "availability": {},
+   "vsense_max": "17.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L600FEA",
+   "mpn": "WSK25123L600FEA",
+   "availability": {},
+   "vsense_max": "18.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L700FEA",
+   "mpn": "WSK25123L700FEA",
+   "availability": {},
+   "vsense_max": "18.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.8,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25123L800FEA",
+   "mpn": "WSK25123L800FEA",
+   "availability": {},
+   "vsense_max": "19.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 3.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25123L900FEA",
+   "mpn": "WSK25123L900FEA",
+   "availability": {},
+   "vsense_max": "19.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.0,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25124L000FEA",
+   "mpn": "WSK25124L000FEA",
+   "availability": {
+    "us": {
+     "price": 1.9,
+     "stock": 944,
+     "alt_stock": 19
+    },
+    "global": {
+     "price": 0.818,
+     "stock": 0,
+     "alt_stock": 0
+    },
+    "selected_offer_id": "0a9de6b8-6e58-4cd8-8bba-eac8f3c5c3bd",
+    "offers": [
+     {
+      "id": "0a9de6b8-6e58-4cd8-8bba-eac8f3c5c3bd",
+      "region": "US",
+      "distributor": "DigiKey",
+      "stock": 944,
+      "price": 1.9,
+      "part_id": "541-WSK25124L000FEACT-ND",
+      "mpn": "WSK25124L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://www.vishay.com/docs/30108/wsk2512.pdf"
+     },
+     {
+      "id": "fd193f27-1733-4477-9cdd-114c7eb3f121",
+      "region": "US",
+      "distributor": "Mouser",
+      "stock": 19,
+      "price": 2.54,
+      "part_id": "71-WSK25124L000FEA",
+      "mpn": "WSK25124L000FEA",
+      "manufacturer": "Vishay"
+     },
+     {
+      "id": "30101905-1955-49e5-ab0c-e220d8c4673c",
+      "region": "Global",
+      "distributor": "LCSC",
+      "stock": 0,
+      "price": 0.818,
+      "part_id": "C1517445",
+      "mpn": "WSK25124L000FEA",
+      "manufacturer": "Vishay",
+      "datasheet_url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590450096929071105"
+     }
+    ]
+   },
+   "vsense_max": "20.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.1,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L100FEA",
+   "mpn": "WSK25124L100FEA",
+   "availability": {},
+   "vsense_max": "20.8mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.2,
+   "bom_match": "MATCH_EXACT",
+   "bom_mpn": "WSK25124L200FEA",
+   "mpn": "WSK25124L200FEA",
+   "availability": {},
+   "vsense_max": "21.3mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.3,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L300FEA",
+   "mpn": "WSK25124L300FEA",
+   "availability": {},
+   "vsense_max": "21.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.4,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L400FEA",
+   "mpn": "WSK25124L400FEA",
+   "availability": {},
+   "vsense_max": "22.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.5,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L500FEA",
+   "mpn": "WSK25124L500FEA",
+   "availability": {},
+   "vsense_max": "22.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.6,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L600FEA",
+   "mpn": "WSK25124L600FEA",
+   "availability": {},
+   "vsense_max": "23.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.7,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L700FEA",
+   "mpn": "WSK25124L700FEA",
+   "availability": {},
+   "vsense_max": "23.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.8,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L800FEA",
+   "mpn": "WSK25124L800FEA",
+   "availability": {},
+   "vsense_max": "24.4mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  },
+  {
+   "series": "WSK2512-LOW",
+   "code": "F",
+   "value_mohm": 4.9,
+   "bom_match": "MATCH_FAILED",
+   "bom_mpn": "WSK25124L900FEA",
+   "mpn": "WSK25124L900FEA",
+   "availability": {},
+   "vsense_max": "24.9mV",
+   "adc_fit": [
+    0,
+    1
+   ],
+   "bom_rc": 0,
+   "source": "pcb bom -f json (pcbc 0.4.102), scratch copy: module SHUNT = WSK2512-LOW 0.2.0"
+  }
+ ]
+}

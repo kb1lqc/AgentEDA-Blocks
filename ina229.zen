@@ -30,9 +30,15 @@ SPI = Spi(
     MISO=Net("SPI_MISO", voltage="0V to 3.399V"),
 )
 
-# rshunt, rshunt_tol: analysis/out/ina229_block.md section 1, stocked-part selection (stock snapshot 2026-11-15): 25 mohm
-# code D (+/-0.5 %), WSK2512R0250DEA. The +/-0.1 % 32 mohm optimum has no stock. Shunt power 0.63 W vs 1 W rating.
-# vsense_max: same section, worst-case Vsense 125.82 mV at 5 A, rounded up to 125.9 mV (23 % ADC headroom to 163.84 mV).
+# Full scale: 8 A bidirectional (designer decision 2026-11-15, was 5 A). Basis: balanced rating from the maximum
+# full-scale study (docs/design-analysis.md, MF.0 to MF.9; the study's maximum for this part is 9 A).
+# rshunt, rshunt_tol: WSK2512R0100BEA (10 mohm, code B +/-0.1 %), designer choice 2026-11-15. Basis: best self-heated
+# 8 A error of the candidates that pass +/-1 % (0.626 %, docs/design-analysis.md section 1.4). Availability is FAIR (one
+# distributor listing, zero stock in the 2026-11-15 snapshot): OPEN ITEM. Fallback WSK2512R0100DEA (+/-0.5 %, GOOD) fails
+# 1 % at 8 A (1.029 %), so it is not a fallback at this current.
+# vsense_max: self-heated worst-case Vsense 80.39 mV at 8 A (section 1 and Summary), rounded up to 0.1 mV: 80.4 mV
+# (50.9 % ADC headroom to 163.84 mV). Shunt dissipation 0.642 W vs 1 W rating at 70 degC (section 2); element
+# 134.3 degC at 70 degC (ESTIMATE, section 3).
 INA = INA229HighSideMonitor(
     name="INA",
     BUS_IN=VBUS_IN,
@@ -41,9 +47,9 @@ INA = INA229HighSideMonitor(
     GND=GND,
     SPI=SPI,
     ALERT_N=ALERT_N,
-    rshunt="25mohm",
-    rshunt_tol="D",
-    vsense_max="125.9mV",
+    rshunt="10mohm",
+    rshunt_tol="B",
+    vsense_max="80.4mV",
     ambient=ambient,
     derate=derate,
 )

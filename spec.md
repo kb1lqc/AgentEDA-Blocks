@@ -11,15 +11,18 @@ Phase: schematic only. No PCB layout work until it is explicitly started.
 
 ## Requirements
 
-Worst-case analysis: `analysis/ina229_block.py` -> `analysis/out/ina229_block.md` (all min/max corners; every
-datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
+Worst-case analysis: `analysis/ina229_block.py` -> `docs/design-analysis.md` and charts in `docs/design-analysis/` (all
+min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
 
 **Operating conditions (first instance)**
 - Bus: 12 V to 40 V DC, high-side sensing. Shunt in the positive rail.
-- Current: 5 A full scale, bidirectional.
+- Current: 8 A full scale, bidirectional (designer decision 2026-11-15; was 5 A).
 - Ambient: 0 to 70 degC (board `ambient` config). Derating factor `derate` = 1.0 (none).
 - Logic supply: 3.3 V +/-3 %, one rail shared by the host and the INA229. A 3 % rail keeps logic levels within the
   VIO abs max of VS + 0.3 V when checked worst case (+/-5 % would exceed it by 30 mV).
+- Accuracy: +/-1 % of reading at 8 A full scale, judged on the self-heated worst case (designer requirement 2026-11-15).
+  Result: 0.626 % max (-0.6235 % to +0.6256 %). **PASS**, margin 0.374 % of reading (ESTIMATE: shunt self-heating,
+  `docs/design-analysis.md` section 5).
 
 **Block definition: `INA229HighSideMonitor`**
 - High-side only. The INA229 VBUS (bus voltage) input is wired inside the block to `BUS_OUT`, the low (load) side of
@@ -49,7 +52,7 @@ datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
 | Function | Part | Value / choice | Basis |
 |---|---|---|---|
 | Monitor | TI INA229AIDGS | ADCRANGE = 0 (+/-163.84 mV) | DS p.5 |
-| Shunt | Vishay WSK2512R0250DEA | 25 mohm, +/-0.5 % (code D), 1 W, 4-terminal Kelvin | WCA: best stocked value (stock snapshot 2026-11-15, `analysis/out/shunt_stock_2026-11-15.json`); 32 mohm +/-0.1 % optimum not stocked |
+| Shunt | Vishay WSK2512R0100BEA | 10 mohm, +/-0.1 % (code B), 1 W, 4-terminal Kelvin | Designer choice 2026-11-15, rated for 8 A full scale. Basis: best self-heated 8 A error of the candidates that pass +/-1 % (0.626 %, `docs/design-analysis.md` section 1.4). Availability **FAIR**: one distributor listing (LCSC, zero stock; snapshot 2026-11-15, `analysis/data/shunt_stock_2026-11-15_rerank.json`), OPEN ITEM. No GOOD fallback at 8 A: WSK2512R0100DEA (10 mohm, +/-0.5 % code D, same footprint, GOOD: 3 distributors) gives 1.029 % self-heated at 8 A (FAIL) |
 | VS bypass | Murata GCM188R71H104KA57 | 100 nF X7R 50 V 0603, at pin VS | DS section 9 |
 | MISO termination | Panasonic ERJ-3EKF | 33 ohm 0603, at the INA229 MISO pin | DESIGN CHOICE placeholder (see open items) |
 | ALERT_N pull-up | Panasonic ERJ-3EKF | 10 kohm 0603 to V3V3, DNP-able (`alert_pullup`) | DS Fig 8-2 |
@@ -57,14 +60,23 @@ datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
 5 parts, 5 BOM lines, all 0603 or larger except the 2512 shunt. No input filter or input protection parts
 (decision; see open items).
 
-**Worst-case results (TA 0-70 degC)**
-- Shunt voltage at 5 A: 125.8 mV max vs 163.84 mV ADC range (38.0 mV margin, 23.2 %).
-- Shunt power at 5 A: 0.63 W vs 1.0 W rating at 70 degC (37 % margin).
-- Current error: +/-40.0 mA (+/-0.80 % of reading) at 5 A; about +/-0.87 % at 100 mA. Shunt tolerance is the
-  largest term. Plot: `analysis/out/ina229_current_error.png`.
-- Bus voltage error: +/-20.2 mV at 12 V, +/-28.6 mV at 18 V, +/-42.6 mV at 28 V, +/-53.8 mV at 36 V, +/-59.4 mV
-  at 40 V (0.15 to 0.17 %).
-- Firmware constants: CURRENT_LSB = 9.5367e-6 A/LSB (5 A / 2^19), SHUNT_CAL = 3125 (ADCRANGE = 0, R_NOM 25 mohm).
+**Worst-case results (TA 0-70 degC, 8 A full scale; `docs/design-analysis.md`)**
+- Shunt voltage at 8 A, self-heated worst case (ESTIMATE, section 1): 80.39 mV vs 163.84 mV ADC range (ADCRANGE 0):
+  83.45 mV margin (50.9 %). Board `vsense_max` = 80.4 mV.
+- Shunt power at 8 A, 70 degC: 0.642 W (0.6416 W) vs 1.0 W rating (35.8 % margin, section 2). Continuous current at
+  70 degC: 9.99 A on the rating basis (ambient resistance), 9.97 A self-heated (ESTIMATE, section 2). Shunt element
+  temperature at 8 A, 70 degC: 134.3 degC (ESTIMATE, section 3; theta_est 100 degC/W; rise 64.3 degC), 35.7 degC below
+  the ASSUMED 170 degC element limit.
+- Current error at 8 A, SELF-HEATED worst case (ESTIMATE): 0.626 % of reading (-0.6235 % to +0.6256 %), PASS vs
+  +/-1 %, margin 0.374 % (ambient only: 0.400 %, reference). At 100 mA, SELF-HEATED worst case: 0.558 % of reading,
+  report only, no limit set (ambient only: 0.558 %). Plot: `docs/design-analysis/current_error.png`.
+- Power error at 8 A (V x I, ambient only, report only; section 8): -0.5683 % to +0.5707 % at 12 V, -0.5474 % to
+  +0.5496 % at 40 V.
+- Bus voltage error (unchanged): +/-20.2 mV at 12 V, +/-28.6 mV at 18 V, +/-42.6 mV at 28 V, +/-53.8 mV at 36 V,
+  +/-59.4 mV at 40 V (0.15 to 0.17 %).
+- Firmware constants: CURRENT_LSB = 1.52588e-5 A/LSB (15.2588 uA; 8 A / 2^19), SHUNT_CAL = 2000 (ADCRANGE = 0,
+  R_NOM 10 mohm; raw 2000.0, exact integer, no rounding). Scaling: 100 A/V (A/V = 1/R with R = 10 mohm, unchanged);
+  shunt-voltage LSB 312.5 nV (ADCRANGE 0).
 
 **Interfaces (board level)**
 - SPI: 50 ohm controlled-impedance lines, each with a source series termination at its driver (R_series + driver
@@ -98,9 +110,18 @@ datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
   resistors (DS 8.1.4). This is why the bus is limited to 40 V for now.
 - **MISO driver output impedance unknown:** the DS bounds it only as R_out <= 400 ohm (VOH >= VS - 0.4 V at 1 mA).
   33 ohm is a placeholder until the TI IBIS model or a TDR measurement gives R_out.
-- **Shunt accuracy:** no +/-0.1 % WSK2512 fitting 5 A was stocked (2026-11-15); the +/-0.5 % part doubles worst-case
-  error to 0.80 %. Options: WSK2512R0200BEA (20 mohm +/-0.1 %, ~0.40 %) if purchasing can source it, or a firmware
-  one-point gain calibration plus SHUNT_TEMPCO.
+- **Shunt availability:** availability of WSK2512R0100BEA is FAIR (single distributor listing, LCSC, zero stock; snapshot
+  2026-11-15): confirm long-term availability and lead time with Vishay or the distributors before release. No GOOD
+  fallback exists at 8 A: WSK2512R0100DEA (10 mohm +/-0.5 %, same footprint, GOOD) gives 1.029 % self-heated (FAIL). The
+  shunt element 170 degC limit is an assumption (the element temperature estimate depends on it). Lifecycle and PCN not
+  verified.
+- **Current path rating:** BUS_IN/BUS_OUT copper, shunt pads and connectors must be rated for 8 A continuous plus margin
+  (layout not started).
+- **Maximum current study (`docs/design-analysis.md`, MF.0 to MF.9):** for WSK2512R0100BEA the highest passing integer is
+  9 A (0.686 %, 0.814 W, element 151.4 degC: 18.6 degC to the assumed limit and 0.186 W to the rating, thin margins);
+  10 A fails. Across the WSK2512 and WSK2512-LOW library the GOOD-rated maximum is 7 A (WSK2512R0100DEA, 0.976 %), the
+  FAIR-rated maximum is 10 A (WSK25125L000DEA, 5 mohm code D, one distributor, 0.980 %), and no design passes at 11 A or
+  above (scan to 14 A). 8 A is the designer's choice on the FAIR-rated 10 mohm code B part.
 - **Typical-only or partial data:** VBUS PSRR is typical-only (shown, not bounded); shunt gain error is specified at
   VCM = 24 V only; the WSK2512 TCR reference temperature (25 degC) is assumed; INA229 gain-drift rows carry the
   25 degC table header (DS ambiguity, from the library).

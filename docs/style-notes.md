@@ -7,9 +7,9 @@ review; confirm before promoting it to a rule).
 ## Workflow
 - Schematic first. No layout work until it is explicitly started. (stated, 2026-11-15)
 - Worst-case analysis bounds every requirement; typical values are never bounds. (stated)
-- Prefer stocked parts. When the WCA-optimal value is not stocked, rank the stocked alternatives by worst-case
-  error and headroom, and present the trade-off. (observed: chose the stocked 25 mohm +/-0.5 % shunt over the
-  unstocked 32 mohm +/-0.1 % one, accepting the error doubling to 0.80 %)
+- Prefer long-term availability over today's stock: active lifecycle, standard values, several distributors.
+  Today's stock is an informational snapshot, never the deciding factor. (stated, 2026-11-15; supersedes the
+  earlier observed "prefer stocked parts")
 - Build reusable blocks as modules, with the sense element on the block (shunt inside). (stated in planning)
 
 ## Parts and BOM
