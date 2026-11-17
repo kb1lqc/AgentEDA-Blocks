@@ -55,6 +55,7 @@ sys.path.insert(0, str(REPO))  # first, so `analysis` is the repo package and no
 from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.path)
 from analysis._zl import ZL_VERSION
 from lib import Param, load, wca
+from analysis.md_pdf import write_pdf
 
 import matplotlib.pyplot as plt  # imported after lib, which selects the Agg backend
 from matplotlib.lines import Line2D
@@ -1857,6 +1858,7 @@ DESIGN_MD = ["## Design definition", ""] + mdtable(
 FINAL = HEADER + DESIGN_MD + md_summary + md
 DOCS.mkdir(parents=True, exist_ok=True)
 MD_PATH.write_text("\n".join(FINAL) + "\n")
+write_pdf(MD_PATH)  # design-analysis.pdf: the datasheet as PDF, stamped with the .md hash
 
 # %% [markdown]
 # ## values.json and console summary

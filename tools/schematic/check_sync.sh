@@ -41,8 +41,19 @@ for zen in $zens; do
   fi
 done
 rm -rf $tmp
+echo "== passive text stacks (benches/*/arrange_sheet.py --check, where supported)"
+for zen in $zens; do
+  arr=${zen:h}/arrange_sheet.py
+  if [[ -f $arr ]] && grep -q -- '--check' $arr; then
+    if python3 $arr --check 2>&1 | sed 's/^/      /'; [[ ${pipestatus[1]} == 0 ]]; then :; else fail=1; fi
+  else
+    echo "      ${zen:h}: no arrange_sheet.py --check, skipped"
+  fi
+done
 echo "== schematic PDFs (benches/*/docs/<bench name>.pdf)"
 benches=(${zens:h})
 tools/schematic/export_pdf.sh --check $benches | sed 's/^/      /' || fail=1
-if (( fail )); then echo "RESULT: DRIFT - run 'pcb apply schematic --no-open <bench.zen>' to restore the .zen values (and tools/schematic/export_pdf.sh for a stale PDF), then review"; exit 1; fi
+echo "== design-analysis PDFs (benches/*/docs/design-analysis.pdf vs its .md; python3 -m analysis.md_pdf --check)"
+if python3 -m analysis.md_pdf --check benches/*/docs/design-analysis.md 2>&1 | sed 's/^/      /'; [[ ${pipestatus[1]} == 0 ]]; then :; else fail=1; fi
+if (( fail )); then echo "RESULT: DRIFT - run 'pcb apply schematic --no-open <bench.zen>' to restore the .zen values (and tools/schematic/export_pdf.sh for a stale PDF; python3 blocks/<Block>/analysis.py for a stale design-analysis PDF), then review"; exit 1; fi
 echo "RESULT: IN SYNC - every checked KiCad schematic matches the Zener source of truth"

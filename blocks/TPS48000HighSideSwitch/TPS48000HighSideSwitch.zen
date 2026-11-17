@@ -1,0 +1,227 @@
+"""TPS48000HighSideSwitch: reusable high-side N-FET load switch, TPS48000QDGXQ1 controller and ISC035N10NM5LF2 FET,
+with an external Kelvin high-side shunt (WSK2512-LOW) for short-circuit protection.
+
+Power path: BUS_IN -> SHUNT (I1 = BUS_IN, I2 = DRAIN; CS+ on the BUS_IN-side tap E1, CS- on the drain-side tap E2)
+-> Q1 drain; Q1 source = SRC = BUS_OUT. Positive current flows BUS_IN -> BUS_OUT (DS Fig 7-5 p.16; spec.md Block
+definition). The controller VS pin and the UVLO/OV ladder sit on BUS_IN; the charge pump (BST) is across SRC.
+
+io: BUS_IN, BUS_OUT (power path), EN (active high, drives INP), FAULT_N (open drain, FLT), PGOOD_N (open drain,
+FLT_GD, active low: low when the FET is fully enhanced), V3V3 (pull-up rail for FAULT_N and PGOOD_N only), GND.
+
+config: rshunt, rshunt_tol, riscp, ctmr, rtmr, rtmr_fitted, rgate, cgate, r_damp, r_top, r_mid, r_bot, fault_pullup,
+pgood_pullup, ambient (optional Temperature range), derate (float, default 1.0). Configs change values and DNP only;
+topology is fixed. All values come from the block's analysis and the board's params (spec.md Config table).
+
+Instances: U (TPS48000QDGXQ1), Q1 (ISC035N10NM5LF2), SHUNT (WSK2512-LOW), R_ISCP, C_TMR, R_TMR, R_GATE, C_GATE,
+R_DAMP, C_BST, C_VS, C_SRC, R_TOP, R_MID, R_BOT, R_FAULT, R_PGOOD.
+
+Gate network (DS Fig 7-4 p.15): PU -> R1 -> gate; PD tied to the gate; gate -> R2 -> C1 -> GND. C1 returns to GND, not
+SRC (designer correction D12). Gate, PU and BST nets are declared relative to SRC (BUS_OUT plus the abs-max window to
+SRC, DS p.5); the C1 node is declared against GND. Quiescent and timing values are not checked here; the analysis
+(blocks/TPS48000HighSideSwitch/analysis.py) owns them.
+"""
+
+load("@stdlib/units.zen", "Capacitance", "Resistance", "Temperature", "Voltage")
+
+TPS = Module("github.com/kb1lqc/zener-library/components/TexasInstruments/TPS48000QDGXQ1/TPS48000QDGXQ1.zen")
+ISC = Module("github.com/kb1lqc/zener-library/components/Infineon/ISC035N10NM5LF2/ISC035N10NM5LF2.zen")
+WSK = Module("github.com/kb1lqc/zener-library/components/Vishay/WSK2512-LOW/WSK2512-LOW.zen")
+GCM = Module("github.com/kb1lqc/zener-library/components/Murata/GCM188/GCM188.zen")
+GCM21B = Module("github.com/kb1lqc/zener-library/components/Murata/GCM21B/GCM21B.zen")
+ERJ = Module("github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF/ERJ-3EKF.zen")
+
+Project(name="TPS48000HighSideSwitch", path="TPS48000HighSideSwitch", layout=False)
+
+BUS_IN = io(Net)
+BUS_OUT = io(Net)
+# Active high enable; drives the controller INP pin directly.
+EN = io(Net)
+# Open drain, active low (FLT).
+FAULT_N = io(Net)
+# Open drain, active low (FLT_GD): low when the FET is fully enhanced.
+PGOOD_N = io(Net)
+# Pull-up rail for FAULT_N and PGOOD_N. Plain Net so the sub-sheet draws a local hierarchical label.
+V3V3 = io(Net)
+# Plain Net for the same reason; the cast below re-types it for library pins that require Ground.
+GND = io(Net)
+_GND = Ground(GND)
+
+rshunt = config(Resistance, help="Shunt resistance, an orderable WSK2512-LOW value for the chosen rshunt_tol")
+rshunt_tol = config(str, help="WSK2512-LOW tolerance code: D (+/-0.5 %) or F (+/-1.0 %); from the block analysis")
+riscp = config(Resistance, help="ISCP resistor to GND; sets V(SCP) through the library vscp_from_riscp")
+ctmr = config(Capacitance, help="Fault-timer capacitor, TMR to GND")
+rtmr = config(Resistance, default="100kohm", help="Latch-off resistor across CTMR (DS p.19)")
+rtmr_fitted = config(bool, default=True, help="Fit RTMR; False = DNP (fault behaviour changes, topology does not)")
+rgate = config(Resistance, help="Gate ramp resistor R1, PU to the gate")
+cgate = config(Capacitance, help="Gate ramp capacitor C1, gate to GND (DS Fig 7-4 p.15)")
+r_damp = config(Resistance, default="10ohm", help="Damping resistor R2, in series with cgate (DS p.16, Fig 7-4 p.15)")
+r_top = config(Resistance, help="UVLO/OV ladder: BUS_IN to EN/UVLO (DS Fig 7-5 p.16)")
+r_mid = config(Resistance, help="UVLO/OV ladder: EN/UVLO to OV (DS Fig 7-5 p.16)")
+r_bot = config(Resistance, help="UVLO/OV ladder: OV to GND (DS Fig 7-5 p.16)")
+fault_pullup = config(bool, default=True, help="Fit the FAULT_N pull-up to V3V3; False when the host supplies one")
+pgood_pullup = config(bool, default=True, help="Fit the PGOOD_N pull-up to V3V3; False when the host supplies one")
+ambient = config(Temperature, optional=True, help="Board ambient temperature range")
+derate = config(float, default=1.0, help="Project derating factor in (0, 1]; shrinks abs-max only")
+# Worst-case pin-pair voltages from the block analysis (values.json). Optional: unset, the wrappers fall back to the
+# independent net ranges, which fail on a wide bus. Bench values are in bench.zen with their keys.
+v_vgs = config(Voltage, optional=True, help="Range of V(G) - V(S), values.json v_vgs_range")
+v_abs_cs_pair = config(
+    Voltage, optional=True, help="Range of V(CS+) - V(CS-), both fault directions (D10), values.json v_cs_pair_range"
+)
+v_vds_rating = config(Voltage, optional=True, help="Range of V(D) - V(S) in operation, values.json v_vds_range")
+v_shunt_across = config(Voltage, optional=True, help="Shunt voltage, normal operation at the 6 A design current")
+v_rdamp_across = config(Voltage, optional=True, help="Voltage across R_DAMP, DC, values.json v_rdamp_dc")
+
+# The wrappers' optional ambient config rejects None, so pass it only when the board sets it.
+_AMB = {"ambient": ambient} if ambient != None else {}
+# Pin-pair and shunt voltages, passed only when the board sets them (same pattern as ambient).
+_VGS = {"v_vgs": v_vgs} if v_vgs != None else {}
+_VDS = {"v_vds_rating": v_vds_rating} if v_vds_rating != None else {}
+_CSP = {"v_abs_cs_pair": v_abs_cs_pair} if v_abs_cs_pair != None else {}
+_VSH = {"v_across": v_shunt_across} if v_shunt_across != None else {}
+_VRD = {"v_across": v_rdamp_across} if v_rdamp_across != None else {}
+
+# Internal nets. Voltages are declared as bounds (see the module docstring); the shunt and FET drain follow BUS_IN.
+DRAIN = Net(voltage=BUS_IN.voltage)
+# Shunt taps: CS+ on the BUS_IN-side tap (E1), CS- on the drain-side tap (E2).
+CS_P = Net(voltage=BUS_IN.voltage)
+CS_N = Net(voltage=BUS_IN.voltage)
+# Gate, PU and BST nets: SRC (up to 40 V, the rated bus) plus the abs-max window to SRC (-0.3 V to 19 V, DS p.5).
+# Declared as absolute bounds because the module cannot read the caller voltage of BUS_OUT at definition time.
+GATE = Net(voltage="-0.3V to 59V")
+PU_NET = Net(voltage="-0.3V to 59V")
+BST_NET = Net(voltage="-0.3V to 59V")
+# C1 node (R2 to C1): C1 returns to GND, so this node sees the gate voltage against GND (up to the bus maximum plus
+# V(BST-SRC) max, 53.86 V, values.json v_c1_max_v). Declared at 59 V, above that, and inside the 100 V C0G rating.
+C1_NODE = Net(voltage="-0.3V to 59V")
+# Controller timing and set-point pins, bounded by the ISCP/TMR abs-max row (DS p.5).
+ISCP_NET = Net(voltage="-0.3V to 5.5V")
+TMR_NET = Net(voltage="-0.3V to 5.5V")
+# UVLO/OV divider nodes: between 0 and the bus maximum (the divider never exceeds BUS_IN).
+EN_NODE = Net(voltage="0V to 40V")
+OV_NODE = Net(voltage="0V to 40V")
+
+U = TPS(
+    name="U",
+    EN_UVLO=EN_NODE,
+    OV=OV_NODE,
+    INP=EN,
+    FLT_GD=PGOOD_N,
+    FLT=FAULT_N,
+    GND=_GND,
+    CS_SEL=_GND,
+    ISCP=ISCP_NET,
+    TMR=TMR_NET,
+    SCP_TEST=_GND,
+    BST=BST_NET,
+    SRC=BUS_OUT,
+    PD=GATE,
+    PU=PU_NET,
+    CS_N=CS_N,
+    CS_P=CS_P,
+    VS=BUS_IN,
+    derate=derate,
+    **dict(_AMB, **_CSP),
+)
+
+Q1 = ISC(
+    name="Q1",
+    S=BUS_OUT,
+    G=GATE,
+    D=DRAIN,
+    derate=derate,
+    **dict(_VGS, **_VDS),
+)
+
+SHUNT = WSK(
+    name="SHUNT",
+    value=rshunt,
+    tolerance=rshunt_tol,
+    I1=BUS_IN,
+    I2=DRAIN,
+    E1=CS_P,
+    E2=CS_N,
+    derate=derate,
+    **dict(_AMB, **_VSH),
+)
+
+# ISCP set-point resistor to GND (V(SCP) from RISCP).
+R_ISCP = ERJ(name="R_ISCP", value=riscp, P1=ISCP_NET, P2=_GND, derate=derate, **_AMB)
+
+# Fault timer: CTMR, and the latch-off resistor RTMR across it (DS p.19). C0G so the timer tolerance is not temperature
+# or DC-bias dependent.
+C_TMR = GCM(
+    name="C_TMR",
+    value=ctmr,
+    rated_v="100V",
+    dielectric="C0G",
+    tolerance="+/-5%",
+    P1=TMR_NET,
+    P2=_GND,
+    derate=derate,
+    **_AMB,
+)
+R_TMR = ERJ(name="R_TMR", value=rtmr, P1=TMR_NET, P2=_GND, dnp=not rtmr_fitted, derate=derate, **_AMB)
+
+# Gate ramp (DS Fig 7-4 p.15): PU -> R1 -> gate; PD tied to the gate (fast turn-off, DS p.16); gate -> R2 -> C1 -> GND.
+R_GATE = ERJ(name="R_GATE", value=rgate, P1=PU_NET, P2=GATE, derate=derate, **_AMB)
+R_DAMP = ERJ(name="R_DAMP", value=r_damp, P1=GATE, P2=C1_NODE, derate=derate, **dict(_AMB, **_VRD))
+# C1 sees V(gate - GND) up to the bus maximum plus V(BST-SRC) max (eq. 3 / eq. 4, DS p.16). 100 V C0G (designer D13).
+C_GATE = GCM(
+    name="C_GATE",
+    value=cgate,
+    rated_v="100V",
+    dielectric="C0G",
+    tolerance="+/-5%",
+    P1=C1_NODE,
+    P2=_GND,
+    derate=derate,
+    **_AMB,
+)
+
+# Charge pump (DS eq. 4, p.16): one X7R 470 nF 0805, BST to SRC (designer decision D14: 470 nF tolerates more than 50 %
+# DC-bias loss; the minimum is in values.json cbst_min_nf).
+C_BST = GCM21B(
+    name="C_BST",
+    value="470nF",
+    rated_v="50V",
+    dielectric="X7R",
+    tolerance="+/-10%",
+    P1=BST_NET,
+    P2=BUS_OUT,
+    derate=derate,
+    **_AMB,
+)
+
+# Decoupling: 100 nF at VS (to GND) and at SRC (to GND).
+C_VS = GCM(
+    name="C_VS",
+    value="100nF",
+    rated_v="50V",
+    dielectric="X7R",
+    tolerance="+/-10%",
+    P1=BUS_IN,
+    P2=_GND,
+    derate=derate,
+    **_AMB,
+)
+C_SRC = GCM(
+    name="C_SRC",
+    value="100nF",
+    rated_v="50V",
+    dielectric="X7R",
+    tolerance="+/-10%",
+    P1=BUS_OUT,
+    P2=_GND,
+    derate=derate,
+    **_AMB,
+)
+
+# UVLO/OV ladder: BUS_IN -> r_top -> EN/UVLO -> r_mid -> OV -> r_bot -> GND (DS Fig 7-5 p.16, eq. 12, 13).
+R_TOP = ERJ(name="R_TOP", value=r_top, P1=BUS_IN, P2=EN_NODE, derate=derate, **_AMB)
+R_MID = ERJ(name="R_MID", value=r_mid, P1=EN_NODE, P2=OV_NODE, derate=derate, **_AMB)
+R_BOT = ERJ(name="R_BOT", value=r_bot, P1=OV_NODE, P2=_GND, derate=derate, **_AMB)
+
+# Open-drain pull-ups to V3V3 (DNP-able). 10 kohm, as on INA229HighSideMonitor.
+R_FAULT = ERJ(name="R_FAULT", value="10kohm", P1=FAULT_N, P2=V3V3, dnp=not fault_pullup, derate=derate, **_AMB)
+R_PGOOD = ERJ(name="R_PGOOD", value="10kohm", P1=PGOOD_N, P2=V3V3, dnp=not pgood_pullup, derate=derate, **_AMB)

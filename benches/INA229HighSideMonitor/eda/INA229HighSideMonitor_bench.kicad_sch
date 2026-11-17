@@ -3,13 +3,13 @@
 	(generator "diode")
 	(generator_version "0.4.102")
 	(uuid "513d9cc1-d27a-514d-a37c-2f1ca04dddfa")
-	(paper "A4")
+	(paper "USLedger")
 	(title_block
 		(title "INA229HighSideMonitor bench")
-		(date "2026-11-15")
+		(date "2026-11-17")
 		(rev "A")
 		(company "Bryce Salmi Consulting")
-		(comment 1 "github.com/kb1lqc/circuit-blocks: benches/INA229HighSideMonitor")
+		(comment 1 "github.com/kb1lqc/circuit-blocks @ 169e58a: benches/INA229HighSideMonitor")
 		(comment 2 "Bench: 12-40 V, 6 A high-side reference instance of INA229HighSideMonitor, SPI")
 		(comment 3 "Author: Bryce Salmi")
 	)
@@ -270,8 +270,8 @@
 		)
 	)
 	(rectangle
-		(start 175.26 81.28)
-		(end 238.76 127)
+		(start 96.52 167.86)
+		(end 174.852 196.43)
 		(stroke
 			(width 0.1524)
 			(type dash)
@@ -279,11 +279,11 @@
 		(fill
 			(type none)
 		)
-		(uuid "2e7734e4-b5ef-4568-ad49-b40f9380e9ca")
+		(uuid "242df074-e547-5f40-a254-33fd5f046b52")
 	)
 	(rectangle
-		(start 76.2 138.43)
-		(end 238.76 160.02)
+		(start 248.92 107.22)
+		(end 341.3462 117.8)
 		(stroke
 			(width 0.1524)
 			(type dash)
@@ -291,11 +291,11 @@
 		(fill
 			(type none)
 		)
-		(uuid "79e92788-0fd3-4bc4-82d5-3cd107c09e3a")
+		(uuid "45392b69-5b8b-5cf7-ac57-5d3873bc2450")
 	)
 	(rectangle
-		(start 76.2 81.28)
-		(end 114.3 127)
+		(start 96.52 79.46)
+		(end 141.7351 108.78)
 		(stroke
 			(width 0.1524)
 			(type dash)
@@ -303,273 +303,321 @@
 		(fill
 			(type none)
 		)
-		(uuid "c32affea-1a67-417c-ae54-5ff8eb57ca91")
+		(uuid "5d8d7af3-fc09-5f3f-98b2-bb3f4dcda740")
 	)
-	(text "SPI: 50 ohm lines;\nMISO terminated on block,\nhost terminates CS/SCLK/MOSI"
+	(rectangle
+		(start 248.92 87.52)
+		(end 341.3462 102.52)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "a5a7e832-f7bf-545e-b1b9-8760be00ffd8")
+	)
+	(rectangle
+		(start 248.92 120.5)
+		(end 341.3462 147.74)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "dfc04a83-7f29-5e7e-89af-a3ae7e19849a")
+	)
+	(text "Bus 12-40 V DC, 6 A FS bidirectional\nRshunt 10 mohm +/-0.5 % (WSK2512R0100DEA), Kelvin\n6 A FS: Vshunt 60.5 mV max of 163.84 mV (ADCRANGE 0)\nI error +/-0.375 % cal, +/-6.444 % uncal at 6 A (BOL worst case)\nRequirement +/-1 % at 6 A, 1-point cal (ref +/-0.1 %): PASS\nScaling 11.44 uA/count (100 A/V of Vshunt), SHUNT_CAL 1500\nShunt 0.36 W max of 1.0 W, element ~106 C (estimate)\nVBUS error +/-59.6 mV at 40 V, +/-20.4 mV at 12 V; LSB 195.3 uV\nV3V3 3.3 V +/-3 %, shared with host"
 		(exclude_from_sim no)
-		(at 198.12 113.6 0)
+		(at 100.33 174.66 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left top)
 		)
-		(uuid "022ebba2-d96f-49d9-b166-50474a1dcd19")
+		(uuid "1b56996b-8594-5e06-9488-8b1fa25f02bf")
 	)
-	(text "I error +/-0.37 % cal, +/-6.44 % uncal at 6 A (BOL worst case)\nRequirement +/-1 % at 6 A, 1-point cal (ref +/-0.1 %): PASS\nVBUS error +/-59.6 mV at 40 V, +/-20.4 mV at 12 V\nVBUS LSB 195.3 uV/count\nShunt 0.36 W max of 1.0 W; element ~106 C (estimate)\nV3V3 3.3 V +/-3 %, shared with host"
+	(text "40 V cap: IN+/IN- diff abs max\n(0 V margin at hard short)"
 		(exclude_from_sim no)
-		(at 152.4 143.54 0)
+		(at 99.6 99.72 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left top)
 		)
-		(uuid "48612bb9-5ece-441a-9ede-8f681192e0e7")
-	)
-	(text "POWER IN"
-		(exclude_from_sim no)
-		(at 77.47 82.55 0)
-		(effects
-			(font
-				(size 1.524 1.524)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "6ea3080d-cd5c-4ab1-b4bb-9a165012fffa")
-	)
-	(text "POWER OUT / INTERFACE"
-		(exclude_from_sim no)
-		(at 176.53 82.55 0)
-		(effects
-			(font
-				(size 1.524 1.524)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "8966d16a-d94c-46dc-a4be-cf6814874d16")
-	)
-	(text "VBUS_LOAD: to load\nVBUS sensed here (shunt low side)"
-		(exclude_from_sim no)
-		(at 198.12 101.9 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "8df0f2c6-04de-40a2-8e90-e8d5b105f505")
-	)
-	(text "DESIGN VALUES (TA 0-70 C)"
-		(exclude_from_sim no)
-		(at 77.47 139.7 0)
-		(effects
-			(font
-				(size 1.524 1.524)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "9afae58c-22e7-44f3-9a6e-e80f7eac4824")
-	)
-	(text "VBUS_IN: 12-40 V DC, high-side\n6 A FS, bidirectional\n40 V cap: IN+/IN- diff abs max\n(0 V margin at hard short)"
-		(exclude_from_sim no)
-		(at 111.76 107.95 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right top)
-		)
-		(uuid "a7547bad-ee6f-4a0e-a086-fdad5aa2d48f")
+		(uuid "20afd6e1-a145-5061-a5d7-0e61741f4073")
 	)
 	(text "ALERT_N: open drain, active low"
 		(exclude_from_sim no)
-		(at 198.12 99.06 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "af9f2d0d-f954-4597-96d9-eadd69b74457")
-	)
-	(text "Bus 12-40 V DC, 6 A FS bidirectional\nRshunt 10 mohm +/-0.5 % (WSK2512R0100DEA), Kelvin\n6 A FS: Vshunt 60.5 mV max of 163.84 mV (ADCRANGE 0)\nScaling 100 A/V of Vshunt (=1/10 mohm), 11.44 uA/count\nSHUNT_CAL 1500"
-		(exclude_from_sim no)
-		(at 78.74 143.54 0)
+		(at 292.1 113.3 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left top)
 		)
-		(uuid "d32be9b3-5bd9-482a-92f9-1a704ecea68e")
+		(uuid "354cfdf3-d0c6-54c1-ace4-9dcfdebd579c")
 	)
-	(wire
-		(pts
-			(xy 172.72 124.46) (xy 195.58 124.46)
+	(text "POWER IN"
+		(exclude_from_sim no)
+		(at 97.79 80.73 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
 		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "214c3fb9-6e1f-5f5d-87d7-3c3b7b2daaaa")
+		(uuid "64f407d5-feec-5921-8881-214ab093e0f0")
 	)
-	(wire
-		(pts
-			(xy 172.72 119.38) (xy 195.58 119.38)
+	(text "ALERT_N"
+		(exclude_from_sim no)
+		(at 250.19 108.49 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
 		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6650b27f-a415-5ca6-beef-2abc7022af8d")
+		(uuid "9deae1ba-34bb-5d5d-9bc0-71df61434766")
 	)
-	(wire
-		(pts
-			(xy 172.72 99.06) (xy 195.58 99.06)
+	(text "SPI"
+		(exclude_from_sim no)
+		(at 250.19 121.77 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
 		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "80c31760-eb6f-543f-a03a-fa9a3cd410ce")
+		(uuid "9e302a05-f829-5842-9478-3db38a2a7809")
 	)
-	(wire
-		(pts
-			(xy 147.32 81.28) (xy 147.32 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8fd87dd0-ef90-4555-b6b3-cc2506d2807e")
-	)
-	(wire
-		(pts
-			(xy 172.72 114.3) (xy 195.58 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9e267696-fc7e-5546-9b84-d4579f0e2924")
-	)
-	(wire
-		(pts
-			(xy 101.6 104.14) (xy 121.92 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b1072196-06f7-5c3d-8f43-cfb9d57e7606")
-	)
-	(wire
-		(pts
-			(xy 172.72 109.22) (xy 195.58 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d8cb8aca-6957-5aaf-8c16-b6c1c3885b7a")
-	)
-	(wire
-		(pts
-			(xy 147.32 127) (xy 147.32 130.81)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f560cf59-795c-4836-921d-2c3e957d90f7")
-	)
-	(wire
-		(pts
-			(xy 172.72 104.14) (xy 195.58 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fb1ea3d8-b10c-5186-9f14-35673435108d")
-	)
-	(label "ALERT_N"
-		(at 195.58 99.06 180)
+	(text "VBUS_LOAD: to load\nVBUS sensed here (shunt low side)"
+		(exclude_from_sim no)
+		(at 292.1 93.52 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left top)
 		)
-		(uuid "063bac3f-e343-5ee8-900e-467901e08e3e")
+		(uuid "c79a83ab-5233-5804-ae05-a3421b76aeb3")
 	)
-	(label "VBUS_LOAD"
-		(at 195.58 104.14 180)
+	(text "SPI: 50 ohm lines; MISO terminated on block\nHost terminates CS, SCLK, MOSI"
+		(exclude_from_sim no)
+		(at 292.1 130 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left top)
 		)
-		(uuid "3480a000-eacb-5c25-8ee8-a2e88c5972cc")
+		(uuid "cb75b776-b28e-5ed2-b52b-ffbbbc0733ce")
 	)
-	(label "SPI_MOSI"
-		(at 195.58 114.3 180)
+	(text "POWER OUT"
+		(exclude_from_sim no)
+		(at 250.19 88.79 0)
 		(effects
 			(font
-				(size 1.27 1.27)
+				(size 1.524 1.524)
+				(bold yes)
 			)
-			(justify right bottom)
+			(justify left top)
 		)
-		(uuid "7b37adc4-ec93-5f10-9c8e-0c2bce056a95")
+		(uuid "d9011f0a-1b3f-59fe-b3b9-9271a88928ab")
 	)
-	(label "SPI_CLK"
-		(at 195.58 119.38 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "b1c4f6b2-1a64-5dfd-9cd9-a03f4efb8e06")
-	)
-	(label "SPI_MISO"
-		(at 195.58 124.46 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "b566abd6-2cfb-5ea3-a6ce-8a0d7bc1696b")
-	)
-	(label "VBUS_IN"
-		(at 101.6 104.14 0)
+	(text "VBUS_IN: bus 12-40 V DC, high-side\n6 A FS, bidirectional"
+		(exclude_from_sim no)
+		(at 99.6 91.02 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "ba6d45ac-78d4-5db7-850a-e10d09bb6c5e")
+		(uuid "f3672f6f-96ce-5072-b916-442d5264765b")
 	)
-	(label "SPI_CS"
-		(at 195.58 109.22 180)
+	(text "DESIGN VALUES (TA 0-70 C, bench instance)"
+		(exclude_from_sim no)
+		(at 97.79 169.13 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "ff81cdbe-6f2f-5a3a-b227-2971e7f188f5")
+	)
+	(wire
+		(pts
+			(xy 241.3 142.24) (xy 287.02 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1d3cbd63-c098-5e69-bd8c-7315230a39cb")
+	)
+	(wire
+		(pts
+			(xy 215.9 149.86) (xy 215.9 160.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "237c20d6-d36c-5976-93d9-690909c0775e")
+	)
+	(wire
+		(pts
+			(xy 101.6 96.52) (xy 177.8 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2e095456-4799-5d9c-9089-de223805bbbe")
+	)
+	(wire
+		(pts
+			(xy 241.3 114.3) (xy 287.02 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "563c5cff-4aa4-5df6-8999-00830e08851f")
+	)
+	(wire
+		(pts
+			(xy 241.3 127) (xy 287.02 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5a6cab74-d1f3-55ab-b890-a0781f5de3ba")
+	)
+	(wire
+		(pts
+			(xy 203.2 73.66) (xy 203.2 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6af80fdb-aa02-56d4-91b6-ab1ef0fa59b1")
+	)
+	(wire
+		(pts
+			(xy 241.3 96.52) (xy 287.02 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "825b04df-ef9f-597c-a180-1d5eb0df164f")
+	)
+	(wire
+		(pts
+			(xy 241.3 137.16) (xy 287.02 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f4a065e9-7ecb-5374-8a28-2ad85d948196")
+	)
+	(wire
+		(pts
+			(xy 241.3 132.08) (xy 287.02 132.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f576c566-6722-5f55-b3d0-4bea368b71d9")
+	)
+	(label "ALERT_N"
+		(at 287.02 114.3 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "efd11601-0fbc-5a03-a140-2d8177f26e82")
+		(uuid "2ebe8e1d-5897-5c87-b877-5fe64f61ab6b")
+	)
+	(label "VBUS_LOAD"
+		(at 287.02 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "42cdf5a2-7420-533b-825f-808c2f612a61")
+	)
+	(label "SPI_CS"
+		(at 287.02 127 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "639a5c6e-dfdb-5237-b8a1-6ec1cae31ed6")
+	)
+	(label "VBUS_IN"
+		(at 101.6 96.52 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "6be2fafd-93b9-553d-95d0-4aeeb23964f2")
+	)
+	(label "SPI_MOSI"
+		(at 287.02 137.16 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "7d3b6a55-9391-5374-afdf-44ed042b6f29")
+	)
+	(label "SPI_MISO"
+		(at 287.02 142.24 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "7d6dec6f-b20b-5230-a638-0a914efdd408")
+	)
+	(label "SPI_CLK"
+		(at 287.02 132.08 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "fc9ca7cf-a584-57e4-a7a5-556b97641064")
 	)
 	(symbol
 		(lib_id "GND")
-		(at 147.32 130.81 0)
+		(at 215.9 160.02 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -580,7 +628,7 @@
 		(fields_autoplaced yes)
 		(uuid "196d45d3-b3e2-5d08-a856-c563530f2944")
 		(property "Reference" "#PWR196d45d3b3e25d08a856c563530f2944"
-			(at 147.32 130.81 0)
+			(at 215.9 160.02 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -591,7 +639,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 147.32 134.62 0)
+			(at 215.9 163.83 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -601,7 +649,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 147.32 130.81 0)
+			(at 215.9 160.02 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -612,7 +660,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 147.32 130.81 0)
+			(at 215.9 160.02 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -623,7 +671,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 147.32 130.81 0)
+			(at 215.9 160.02 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -634,7 +682,7 @@
 			)
 		)
 		(property "ki_keywords" "global power"
-			(at 147.32 130.81 0)
+			(at 215.9 160.02 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -658,7 +706,7 @@
 	)
 	(symbol
 		(lib_id "VCC")
-		(at 147.32 73.66 0)
+		(at 203.2 73.66 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -669,7 +717,7 @@
 		(fields_autoplaced yes)
 		(uuid "5564ae20-204a-5a56-9239-6a22e4910036")
 		(property "Reference" "#PWR5564ae20204a5a5692396a22e4910036"
-			(at 147.32 73.66 0)
+			(at 203.2 73.66 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -680,7 +728,7 @@
 			)
 		)
 		(property "Value" "V3V3"
-			(at 147.32 69.85 0)
+			(at 203.2 69.85 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -690,7 +738,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 147.32 73.66 0)
+			(at 203.2 73.66 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -701,7 +749,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 147.32 73.66 0)
+			(at 203.2 73.66 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -712,7 +760,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 147.32 73.66 0)
+			(at 203.2 73.66 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -723,7 +771,7 @@
 			)
 		)
 		(property "ki_keywords" "global power"
-			(at 147.32 73.66 0)
+			(at 203.2 73.66 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -746,8 +794,8 @@
 		)
 	)
 	(sheet
-		(at 121.92 81.28)
-		(size 50.8 45.72)
+		(at 177.8 83.82)
+		(size 63.5 66.04)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -761,7 +809,7 @@
 		)
 		(uuid "8749cfd6-e66f-59fa-961a-8aa97d408460")
 		(property "Sheetname" "INA"
-			(at 121.92 79.375 0)
+			(at 177.8 81.92 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -772,7 +820,7 @@
 			)
 		)
 		(property "Sheetfile" "INA.kicad_sch"
-			(at 121.92 129.54 0)
+			(at 177.8 151.76 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -783,7 +831,7 @@
 			)
 		)
 		(pin "ALERT_N" bidirectional
-			(at 172.72 99.06 0)
+			(at 241.3 114.3 0)
 			(uuid "983d200b-0332-5588-843e-e0b38c2d55b5")
 			(effects
 				(font
@@ -793,7 +841,7 @@
 			)
 		)
 		(pin "SPI.CLK" bidirectional
-			(at 172.72 119.38 0)
+			(at 241.3 132.08 0)
 			(uuid "3f44b2f7-8a3c-5d12-b7a5-fc2d38d56d76")
 			(effects
 				(font
@@ -803,7 +851,7 @@
 			)
 		)
 		(pin "SPI.CS" bidirectional
-			(at 172.72 109.22 0)
+			(at 241.3 127 0)
 			(uuid "e3d4466a-8a5e-580a-9ba1-24ca19498ea5")
 			(effects
 				(font
@@ -813,7 +861,7 @@
 			)
 		)
 		(pin "SPI.MISO" bidirectional
-			(at 172.72 124.46 0)
+			(at 241.3 142.24 0)
 			(uuid "952612b0-6ee5-5d38-9382-766ae3a9d5b6")
 			(effects
 				(font
@@ -823,7 +871,7 @@
 			)
 		)
 		(pin "SPI.MOSI" bidirectional
-			(at 172.72 114.3 0)
+			(at 241.3 137.16 0)
 			(uuid "649e4edb-89e8-5644-95ba-063fc51dd938")
 			(effects
 				(font
@@ -833,7 +881,7 @@
 			)
 		)
 		(pin "BUS_IN" bidirectional
-			(at 121.92 104.14 180)
+			(at 177.8 96.52 180)
 			(uuid "5e0956a5-83ea-5d10-ac6f-aede2bf0cfd8")
 			(effects
 				(font
@@ -843,7 +891,7 @@
 			)
 		)
 		(pin "BUS_OUT" bidirectional
-			(at 172.72 104.14 0)
+			(at 241.3 96.52 0)
 			(uuid "c074c346-a5eb-5095-8465-4b9145a1e55d")
 			(effects
 				(font
@@ -853,7 +901,7 @@
 			)
 		)
 		(pin "V3V3" bidirectional
-			(at 147.32 81.28 90)
+			(at 203.2 83.82 90)
 			(uuid "f0503e7f-c3f8-4d03-9d50-5549afdd5edd")
 			(effects
 				(font
@@ -863,7 +911,7 @@
 			)
 		)
 		(pin "GND" bidirectional
-			(at 147.32 127 270)
+			(at 215.9 149.86 270)
 			(uuid "e40b9a27-5a21-4651-ae7a-32c6f61210ec")
 			(effects
 				(font
