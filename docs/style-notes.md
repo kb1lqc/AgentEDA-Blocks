@@ -88,8 +88,10 @@ review; confirm before promoting it to a rule).
 - Title block carries title, revision, date, company and author, repo URL plus git short hash, and a one-line
   description of what the sheet contains. (stated, 2026-11-15)
 
+- Sheet size: Tabloid (11 x 17 in) for block and bench sheets. (stated, 2026-11-15)
+
 ## Open questions to ask during review
 - Active-low naming (suffix `_N`, `#`, or overbar) and case.
 - Reference designator style and the value text shown on parts (MPN vs value, e.g. "100nF 50V X7R").
 - Global vs local vs hierarchical labels for signals leaving a sheet.
-- Sheet size, grid, text sizes.
+- Grid, text sizes.

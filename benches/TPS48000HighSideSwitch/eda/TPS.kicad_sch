@@ -1,0 +1,5573 @@
+(kicad_sch
+	(version 20260306)
+	(generator "diode")
+	(generator_version "0.4.102")
+	(uuid "f7f61e53-408b-54f1-bc25-d52d0cce3d49")
+	(paper "USLedger")
+	(title_block
+		(title "TPS48000HighSideSwitch")
+		(date "2026-11-16")
+		(rev "A")
+		(company "Bryce Salmi Consulting")
+		(comment 1 "github.com/kb1lqc/circuit-blocks @ 169e58a: blocks/TPS48000HighSideSwitch")
+		(comment 2 "Reference sheet: TPS48000 high-side switch, on-block shunt, latch-off, status")
+		(comment 3 "Author: Bryce Salmi")
+	)
+	(lib_symbols
+		(symbol "ERJ-3EKF"
+			(pin_names
+				(offset 0.254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "R"
+				(at 0 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "ERJ-3EKF"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "ERJ-3EKF"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Name" "Panasonic"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Part_Number" "ERJ-3EKF series: part number set by value (calc.mpn)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "resistor thick film ERJ-3EKF"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "ERJ-3EKF"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "ERJ-3EKF_1_1"
+				(polyline
+					(pts
+						(xy -2.54 0) (xy -1.905 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.905 1.27) (xy -0.635 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.635 -1.27) (xy 0.635 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 1.27) (xy 1.905 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.905 -1.27) (xy 3.175 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.175 1.27) (xy 4.445 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 4.445 -1.27) (xy 5.08 0)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "GCM188"
+			(pin_names
+				(offset 0.254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "C"
+				(at 1.27 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "GCM188"
+				(at 3.81 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "GCM188"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "per variant: Murata reference sheet (variants.toml datasheet_file)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Name" "Murata"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Part_Number" "GCM188 family: part number per variant (variants.toml)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "capacitor MLCC GCM188"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "GCM188"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "GCM188_1_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0.9398 0)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.9398 -1.905) (xy 0.9398 1.905)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.5748 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.5748 -1.905) (xy 1.5748 1.905)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -2.54 0 0)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "GCM21B"
+			(pin_names
+				(offset 0.254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "C"
+				(at 1.27 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "GCM21B"
+				(at 3.81 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "GCM21B"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "per catalog row: Murata reference sheet"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Name" "Murata"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Part_Number" "GCM21B family: part number per catalog row (catalog.csv)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "capacitor MLCC GCM21B"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "GCM21B"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "GCM21B_1_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0.9398 0)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.9398 -1.905) (xy 0.9398 1.905)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.5748 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.5748 -1.905) (xy 1.5748 1.905)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -2.54 0 0)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "ISC035N10NM5LF2"
+			(pin_names
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "Q"
+				(at 9.652 -1.778 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Value" "ISC035N10NM5LF2"
+				(at 9.652 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Footprint" "ISC035N10NM5LF2"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.infineon.com"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "100 V N-channel OptiMOS 5 Linear FET 2 (hot swap / e-fuse), 164 A, 3.5 mohm max, PG-TDSON-8-59"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Name" "Infineon Technologies"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Part_Number" "ISC035N10NM5LF2"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "ISC035N10NM5LF2"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "ISC035N10NM5LF2_1_0"
+				(polyline
+					(pts
+						(xy 0 0) (xy 2.032 0)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 32 50 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.032 2.286) (xy 2.032 -2.286)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.286) (xy 2.54 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 0) (xy 4.064 -0.508) (xy 4.064 0.508) (xy 2.54 0)
+					)
+					(stroke
+						(width 0)
+						(type solid)
+						(color 37 25 255 1)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 -0.508) (xy 2.54 0.508)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 -2.286) (xy 2.54 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 2.54) (xy 7.62 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 1.778) (xy 2.54 1.778)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 1.778) (xy 5.08 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 0) (xy 5.08 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 -1.778) (xy 2.54 -1.778)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 -2.54) (xy 7.62 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 6.604 0.762) (xy 8.636 0.762)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 7.62 2.54) (xy 7.62 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 0 0 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 7.62 0.762) (xy 6.604 -0.762) (xy 8.636 -0.762) (xy 7.62 0.762) (xy 7.62 0.762)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+						(color 15 47 255 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(text "5, 6, 7, 8"
+					(at 4.572 2.794 900)
+					(effects
+						(font
+							(size 0.762 0.762)
+						)
+						(justify left bottom)
+					)
+				)
+				(text "1, 2, 3"
+					(at 4.572 -6.858 900)
+					(effects
+						(font
+							(size 0.762 0.762)
+						)
+						(justify left bottom)
+					)
+				)
+				(pin passive line
+					(at 5.08 -7.62 90)
+					(length 5.08)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -7.62 90)
+					(length 5.08)
+					(hide yes)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -7.62 90)
+					(length 5.08)
+					(hide yes)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 5.08)
+					(name "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 7.62 270)
+					(length 5.08)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 7.62 270)
+					(length 5.08)
+					(hide yes)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 7.62 270)
+					(length 5.08)
+					(hide yes)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 7.62 270)
+					(length 5.08)
+					(hide yes)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "TPS48000QDGXQ1"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at 0 20.32 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "TPS48000QDGXQ1"
+				(at 0 -20.32 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "TPS48000QDGXQ1"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tps4800-q1.pdf"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Description" "TPS48000-Q1 automotive high-side N-channel MOSFET gate driver / eFuse controller with current sense and short-circuit protection, VSSOP-19 (DGX)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Name" "Texas Instruments"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Part_Number" "TPS48000QDGXRQ1"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "TPS48000-Q1 TPS48000 high-side driver controller VSSOP-19 DGX"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "TPS48000QDGXQ1"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "TPS48000QDGXQ1_0_1"
+				(polyline
+					(pts
+						(xy -20.32 15.24) (xy -20.32 -17.78)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -20.32 -17.78) (xy 20.32 -17.78)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 20.32 15.24) (xy -20.32 15.24)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 20.32 -17.78) (xy 20.32 15.24)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin input line
+					(at -27.94 10.16 0)
+					(length 7.62)
+					(name "EN/UVLO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -27.94 7.62 0)
+					(length 7.62)
+					(name "OV"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -27.94 5.08 0)
+					(length 7.62)
+					(name "INP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin open_collector line
+					(at -27.94 2.54 0)
+					(length 7.62)
+					(name "FLT_GD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin open_collector line
+					(at -27.94 0 0)
+					(length 7.62)
+					(name "FLT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -27.94 -2.54 0)
+					(length 7.62)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -27.94 -5.08 0)
+					(length 7.62)
+					(name "CS_SEL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -27.94 -7.62 0)
+					(length 7.62)
+					(name "ISCP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -27.94 -10.16 0)
+					(length 7.62)
+					(name "TMR"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 27.94 -12.7 180)
+					(length 7.62)
+					(name "SCP_TEST"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 27.94 -10.16 180)
+					(length 7.62)
+					(name "N.C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "11"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 27.94 -7.62 180)
+					(length 7.62)
+					(name "BST"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "12"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 27.94 -5.08 180)
+					(length 7.62)
+					(name "SRC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "13"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 27.94 -2.54 180)
+					(length 7.62)
+					(name "PD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "14"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 27.94 0 180)
+					(length 7.62)
+					(name "PU"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "15"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 27.94 2.54 180)
+					(length 7.62)
+					(name "CS-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "17"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 27.94 5.08 180)
+					(length 7.62)
+					(name "CS+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "18"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 27.94 7.62 180)
+					(length 7.62)
+					(name "N.C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "19"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 27.94 10.16 180)
+					(length 7.62)
+					(name "VS"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "20"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "WSK2512-LOW"
+			(pin_names
+				(offset 0.762)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "R"
+				(at 0 7.62 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "WSK2512-LOW"
+				(at 0 5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "WSK2512-LOW"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.vishay.com/doc?30108"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Description" "WSK2512 series 4-terminal (Kelvin) Power Metal Strip current-sense resistor, 2512, 0.0005 to 0.0049 ohm"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer_Name" "Vishay Dale"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "Manufacturer_Part_Number" "WSK2512-LOW series: part number set by value and tolerance (calc.mpn)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "WSK2512-LOW shunt Kelvin current sense"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "WSK2512-LOW"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "WSK2512-LOW_0_1"
+				(polyline
+					(pts
+						(xy -5.08 2.54) (xy -5.08 -5.08)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -3.81 0)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 -5.08) (xy 5.08 -5.08)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -3.81 0) (xy -3.81 -2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -3.81 -1.27)
+					(radius 0.127)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -3.81 -2.54) (xy -5.08 -2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.286 -1.27) (xy -3.81 -1.27)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.286 -1.27) (xy -1.778 -0.508)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 -0.508) (xy -1.27 -2.032)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 -2.032) (xy -0.762 -0.508)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.762 -0.508) (xy -0.254 -2.032)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.254 -2.032) (xy 0.254 -0.508)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 -0.508) (xy 0.762 -2.032)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -2.032) (xy 1.27 -0.508)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -0.508) (xy 1.778 -2.032)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.778 -2.032) (xy 2.286 -1.27)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.81 0) (xy 3.81 -2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.81 -1.27) (xy 2.286 -1.27)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 3.81 -1.27)
+					(radius 0.127)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 2.54) (xy -5.08 2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 0) (xy 3.81 0)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 -2.54) (xy 3.81 -2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 -5.08) (xy 5.08 2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -12.7 0 0)
+					(length 7.62)
+					(name "I2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -12.7 -2.54 0)
+					(length 7.62)
+					(name "E2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 12.7 -2.54 180)
+					(length 7.62)
+					(name "E1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 12.7 0 180)
+					(length 7.62)
+					(name "I1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+	)
+	(rectangle
+		(start 282.8914 44.1)
+		(end 377.19 61.19)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "1704fa09-0a79-5c52-bd10-69fff971bb4a")
+	)
+	(rectangle
+		(start 281.94 76.2)
+		(end 388.1008 147.67)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "1a6b5c35-b3e4-5d06-bf7c-453ddaed71b9")
+	)
+	(rectangle
+		(start 15.24 76.2)
+		(end 119.38 124.81)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "1a96c7ea-6b83-59c8-a421-89f7a83abb10")
+	)
+	(rectangle
+		(start 15.24 129.54)
+		(end 119.38 208.35)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "42692e81-2a03-5bcb-bfc9-296f07c7b62a")
+	)
+	(rectangle
+		(start 15.24 18.1)
+		(end 381 65)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "4e7de96e-5b58-5959-9c8d-05fb23c62ed4")
+	)
+	(rectangle
+		(start 281.94 152.4)
+		(end 388.1008 188.54)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "50df42a1-f7a4-5bc8-a08f-7b3f59e8d60b")
+	)
+	(rectangle
+		(start 123.19 149.86)
+		(end 276.86 193.9)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "71a1bc54-38c2-5cd6-a62a-175d513d47bf")
+	)
+	(rectangle
+		(start 123.19 76.2)
+		(end 276.86 144.84)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "e8d76725-6327-5d3d-9127-ca7bd31a6756")
+	)
+	(text "100nF\n0603\n50V X7R\n10%"
+		(exclude_from_sim no)
+		(at 257.2 117.96 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "055e8adf-bf40-5f0a-ba35-4ca84cae52ae")
+	)
+	(text "LOAD TURN-ON RATING"
+		(exclude_from_sim no)
+		(at 284.1614 45.37 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "05cb2406-6181-58da-94b7-2d40196f55a2")
+	)
+	(text "C1 (C_BST): BST pin 12 to SRC pin 13, place at pins; >= 159.6 nF (DS eq. 4)\nC1 (C_BST): turn-on delay 4.7-64.3 ms (DS eq. 1)"
+		(exclude_from_sim no)
+		(at 289.56 180.98 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "0b5e5c63-b704-5266-baa2-1d7b97d06cff")
+	)
+	(text "10kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 51.46 101.205 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "1b53dc36-28e6-529e-ab2c-5c57b21e89cd")
+	)
+	(text "R4 (R_GATE), C2 (C_GATE) set inrush 1.43-2.74 A into 200 uF (DS eq. 3, Fig 7-4 p.15)\nR2 (R_DAMP) ~10 ohm damping (DS p.16)\nPD tied to the gate: fast turn-off (DS p.16)"
+		(exclude_from_sim no)
+		(at 289.56 138.08 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "1c927b90-167a-538a-9154-4795b819da99")
+	)
+	(text "4mΩ\n2512\n0.5%"
+		(exclude_from_sim no)
+		(at 100.33 25.385 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "254c53da-06cf-51cf-bb63-6ddb5fa6f990")
+	)
+	(text "SOFT START / GATE DRIVE"
+		(exclude_from_sim no)
+		(at 283.21 77.47 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "276a80bc-0a5e-556e-997c-0473f2e6f77e")
+	)
+	(text "470nF\n0805\n50V X7R\n10%"
+		(exclude_from_sim no)
+		(at 307.34 168.71 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "37154afa-239d-51ad-924e-e1ab0d72e503")
+	)
+	(text "STATUS / CONTROL"
+		(exclude_from_sim no)
+		(at 16.51 77.47 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "3c832e1d-25c8-538a-92b2-f7315b805299")
+	)
+	(text "CONTROLLER"
+		(exclude_from_sim no)
+		(at 124.46 77.47 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "3cb7256e-8d30-57e9-b1ef-1f7b000b1b41")
+	)
+	(text "EN: active high, 3.3 V or 5 V logic (V(INP_H) max 2 V)\nEN low-high toggle clears a latch (DS p.19)"
+		(exclude_from_sim no)
+		(at 127 80.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "44871bf2-3816-5f7f-b95f-7beaaf899432")
+	)
+	(text "10Ω\n0603\n1%"
+		(exclude_from_sim no)
+		(at 335.94 106.285 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "58cce737-09bb-5c91-910f-6fb7e499f9fe")
+	)
+	(text "100kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 307.34 86.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "69ede142-d3cb-516c-bd1e-bb1243e13e3a")
+	)
+	(text "6.8nF\n0603\n100V C0G\n5%"
+		(exclude_from_sim no)
+		(at 335.94 120.5 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "6d1e137e-f443-5405-8b51-32453ecf30ce")
+	)
+	(text "100nF\n0603\n50V X7R\n10%"
+		(exclude_from_sim no)
+		(at 257.2 92.56 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "6fee7b02-c9be-56c5-9c97-d240e2af2daf")
+	)
+	(text "Q1: high-side N-FET, source = SRC = BUS_OUT\nNo reverse blocking, no TVS fitted"
+		(exclude_from_sim no)
+		(at 184 41.3 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "71e23d06-89b5-5a41-b6f3-95219f53aaa8")
+	)
+	(text "BOOTSTRAP"
+		(exclude_from_sim no)
+		(at 283.21 153.67 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "71e57fd0-5441-5949-8529-500fd8219eed")
+	)
+	(text "10kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 100.99 96.125 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "8435bc71-87b5-53a9-a2ff-3f7e6f40de72")
+	)
+	(text "Any load at 12-40 V, <= 6 A, with 200 uF: inrush 1.43-2.74 A at turn-on\nTurn-on ramp 0.88-1.67 ms at 12 V, 2.92-5.58 ms at 40 V; no load reads PGOOD_N\nAbove 6 A at or after turn-on: outside the rating (spec.md)"
+		(exclude_from_sim no)
+		(at 286.7014 50.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "8bfcb405-1cc8-5c19-b68f-558a81d1fa34")
+	)
+	(text "30.1kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 30.48 165.975 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "a7c80639-593a-5079-999a-6d85dd8b8582")
+	)
+	(text "10.5kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 150.52 167.245 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "ab009786-b5bd-5667-b5ba-78a54ac9bd98")
+	)
+	(text "UVLO / OV"
+		(exclude_from_sim no)
+		(at 16.51 130.81 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "afba153c-ca9e-5334-9fb0-e7c7088ecf90")
+	)
+	(text "PGOOD_N: open drain, low = Q1 fully enhanced\nFAULT_N: open drain, low on short, UVLO, OV or SCP\nPull-ups DNP if the host supplies them"
+		(exclude_from_sim no)
+		(at 19.05 115.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "b7015670-b757-5aec-abbf-9f67a7cf0f76")
+	)
+	(text "536kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 30.48 148.195 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "c2f16303-c425-58f7-8a7a-5b689a827484")
+	)
+	(text "51.1kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 30.48 183.755 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "c61fc3c1-265e-5803-85e3-61c0f7a58a98")
+	)
+	(text "POWER PATH"
+		(exclude_from_sim no)
+		(at 16.51 19.37 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "c7d03730-e953-5ff7-a5aa-f3fd22988915")
+	)
+	(text "SHORT-CIRCUIT / LATCH"
+		(exclude_from_sim no)
+		(at 124.46 151.13 0)
+		(effects
+			(font
+				(size 1.524 1.524)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "d135da79-3c6e-5c7e-8b8d-a8165146f846")
+	)
+	(text "6.8nF\n0603\n100V C0G\n5%"
+		(exclude_from_sim no)
+		(at 183.54 166.48 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "d59e4185-09b1-5602-a10d-937baef7fd0e")
+	)
+	(text "C5 (C_VS): U1 VS pin 20, place at pin\nC3 (C_SRC): U1 SRC pin 13, place at pin\nDS p.5: VS, SRC to GND >= 22 nF\nCS_SEL to GND: high-side sensing (DS p.3, Table 4-1); SCP_TEST to GND; pins 11, 19 no connect"
+		(exclude_from_sim no)
+		(at 127 133.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "e0ce79a9-7f27-5ab2-b5f3-44af4d08cf7c")
+	)
+	(text "R5 (R_ISCP): V(SCP) = 30.8-49.2 mV -> I(SC) = 6.78-14.31 A\nC4 (C_TMR): tSC = 70.7-132.9 us; R8 (R_TMR) fitted = latch-off (EN low->high resets)"
+		(exclude_from_sim no)
+		(at 127 186.34 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "e3807a5b-8abb-536b-a097-9acb02fd6906")
+	)
+	(text "R10 (SHUNT): 4-terminal Kelvin, value set per instance\nCS+ at the BUS_IN-side tap, CS- at the Q1 drain (DS Fig 7-5, p.16)"
+		(exclude_from_sim no)
+		(at 127 35.3 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e8a82a14-24e1-5f18-98a3-6ca9059e0039")
+	)
+	(text "UVLO / OV ladder: DS Fig 7-5, p.16, eq. 12, 13"
+		(exclude_from_sim no)
+		(at 19.05 202.85 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "e9d233e5-d616-52f4-aeaa-1e835e64d4dc")
+	)
+	(text "100kΩ\n0603\n1%"
+		(exclude_from_sim no)
+		(at 216.56 167.245 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "f0a5df2d-d410-5115-89c5-6bb1d2384242")
+	)
+	(junction
+		(at 254 86.36)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0f091dee-768e-51eb-add1-293caed55970")
+	)
+	(junction
+		(at 43.18 173.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "18b71bfd-ea56-5a24-9181-c7d14f7af872")
+	)
+	(junction
+		(at 97.79 104.14)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4b04d582-cac3-5962-b85f-8a0ce6905e31")
+	)
+	(junction
+		(at 332.74 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "653bd615-08ba-563f-87d9-dda0ea958392")
+	)
+	(junction
+		(at 332.74 116.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "65921fed-7336-5800-b8c9-d9b729a5806f")
+	)
+	(junction
+		(at 43.18 156.21)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "761f5398-f16a-5dd4-92c6-d01d4011ebe4")
+	)
+	(junction
+		(at 326.39 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "80926b87-8fb8-51a0-b08e-071ef32370ba")
+	)
+	(junction
+		(at 48.26 109.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "80ffcf8d-f84c-5ab8-9db2-96237e5ca0a4")
+	)
+	(junction
+		(at 254 111.76)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "83d31e1b-d21f-5343-b1b5-62c204aebb4a")
+	)
+	(junction
+		(at 133.35 114.3)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ad3bcd7e-242b-53ad-938a-33bd47a6224f")
+	)
+	(junction
+		(at 213.36 162.56)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ada7aef3-fde8-5561-a6b3-60cb36ed70ce")
+	)
+	(no_connect
+		(at 218.44 101.6)
+		(uuid "2da87569-dab2-56b9-86c6-7841cbae70b9")
+	)
+	(no_connect
+		(at 218.44 119.38)
+		(uuid "a8c2b728-509b-57b3-80ee-242e985d5c0e")
+	)
+	(wire
+		(pts
+			(xy 43.18 143.51) (xy 43.18 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03b3a847-c88f-5d67-88b2-00553d096db4")
+	)
+	(wire
+		(pts
+			(xy 226.06 106.68) (xy 226.06 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "051892a3-7426-5b61-8694-6e26967f67c9")
+	)
+	(wire
+		(pts
+			(xy 40.64 38.1) (xy 93.98 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0743235c-24e8-5b5c-8dbf-e109bbaef792")
+	)
+	(wire
+		(pts
+			(xy 218.44 111.76) (xy 231.14 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0745d6fa-22f8-597c-8271-cc39b99271ea")
+	)
+	(wire
+		(pts
+			(xy 220.98 86.36) (xy 259.08 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0877443d-779e-5707-a612-aec2ae7a9e28")
+	)
+	(wire
+		(pts
+			(xy 254 99.06) (xy 254 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "09a81fb6-456f-5407-bb4a-2ce5b81b9e00")
+	)
+	(wire
+		(pts
+			(xy 160.02 88.9) (xy 139.7 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0e2b7d17-7b99-59a6-bd80-7d927a823bf1")
+	)
+	(wire
+		(pts
+			(xy 97.79 91.44) (xy 97.79 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0fda1eb3-95c9-57c6-a6da-3671991411cf")
+	)
+	(wire
+		(pts
+			(xy 231.14 106.68) (xy 248.92 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1260dcbe-349f-54bd-879d-991cc2057c5a")
+	)
+	(wire
+		(pts
+			(xy 254 48.26) (xy 254 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "156cdd18-b47b-5686-bd9e-bbd7e3f37c26")
+	)
+	(wire
+		(pts
+			(xy 157.48 101.6) (xy 157.48 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1ccc6cb7-6412-54ac-9138-2684debce708")
+	)
+	(wire
+		(pts
+			(xy 223.52 91.44) (xy 248.92 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1da5c825-e1c1-5fb6-bef4-62fe74fdf6f1")
+	)
+	(wire
+		(pts
+			(xy 162.56 111.76) (xy 133.35 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1fcc98b2-4efd-50fa-a0c0-7f15d590cf59")
+	)
+	(wire
+		(pts
+			(xy 223.52 121.92) (xy 223.52 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "216c74b7-89e3-5df4-8412-b87ea3c26822")
+	)
+	(wire
+		(pts
+			(xy 332.74 127) (xy 332.74 132.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "228b91d8-fda2-5523-8179-0975b9e3d972")
+	)
+	(wire
+		(pts
+			(xy 162.56 109.22) (xy 30.48 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "25e29b1e-2758-501c-87b3-f352dab4343f")
+	)
+	(wire
+		(pts
+			(xy 218.44 99.06) (xy 220.98 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2acd99db-f663-5edc-a38b-616556174a1f")
+	)
+	(wire
+		(pts
+			(xy 133.35 111.76) (xy 133.35 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3c497d45-69b9-53e0-8109-497e4c217782")
+	)
+	(wire
+		(pts
+			(xy 157.48 116.84) (xy 157.48 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4350ac9b-a29a-5107-8f76-18a0de40b0e7")
+	)
+	(wire
+		(pts
+			(xy 226.06 96.52) (xy 248.92 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "44a4a4ab-a836-5a1b-9b53-caf3cc35e274")
+	)
+	(wire
+		(pts
+			(xy 223.52 104.14) (xy 223.52 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "467df3cf-1acb-591b-bdbe-a367e429a05b")
+	)
+	(wire
+		(pts
+			(xy 254 111.76) (xy 254 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5a986c14-1584-5f48-9a5b-064153d4411f")
+	)
+	(wire
+		(pts
+			(xy 162.56 114.3) (xy 133.35 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61845ed7-6b17-5fec-b2cb-bd358c15253c")
+	)
+	(wire
+		(pts
+			(xy 43.18 191.77) (xy 43.18 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "690321be-a1c4-53f2-8183-5cd4e78cfa70")
+	)
+	(wire
+		(pts
+			(xy 218.44 109.22) (xy 228.6 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6becde04-52de-564d-bc09-d7f42b9e1dcc")
+	)
+	(wire
+		(pts
+			(xy 43.18 173.99) (xy 43.18 179.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6bedce69-204c-50bc-b8c1-5cbdb4e9fa9d")
+	)
+	(wire
+		(pts
+			(xy 154.94 99.06) (xy 139.7 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6fb9ad46-ef1e-58dc-8c19-07148b2cff6c")
+	)
+	(wire
+		(pts
+			(xy 314.96 163.83) (xy 332.74 163.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6fca8a11-ba62-55f1-a398-c7bf35bfe9b7")
+	)
+	(wire
+		(pts
+			(xy 254 86.36) (xy 254 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "79202427-d933-53cc-9519-9b905cd62582")
+	)
+	(wire
+		(pts
+			(xy 152.4 106.68) (xy 152.4 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7b9ae995-b506-5b85-abd5-35e694c4ce03")
+	)
+	(wire
+		(pts
+			(xy 233.68 111.76) (xy 259.08 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d92e9be-f7eb-5663-87a0-69492db54294")
+	)
+	(wire
+		(pts
+			(xy 160.02 119.38) (xy 160.02 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e64e69c-53fa-5b00-aca6-e80dd49af4af")
+	)
+	(wire
+		(pts
+			(xy 228.6 109.22) (xy 228.6 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "82286623-6684-5aaa-b3c5-f7a3a843d93b")
+	)
+	(wire
+		(pts
+			(xy 231.14 111.76) (xy 231.14 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8429e30b-0f88-50b8-b2e6-cc11904b1504")
+	)
+	(wire
+		(pts
+			(xy 147.32 175.26) (xy 147.32 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "85e4ebb4-6d6b-587b-9e6f-905db12b7fb7")
+	)
+	(wire
+		(pts
+			(xy 180.34 170.18) (xy 180.34 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "874a6520-805f-5ee0-bce8-3e9a962e7abe")
+	)
+	(wire
+		(pts
+			(xy 320.04 96.52) (xy 358.14 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "87e1d140-f5f4-5fb7-ae05-4b8d4e5316b7")
+	)
+	(wire
+		(pts
+			(xy 332.74 114.3) (xy 332.74 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "89c15d09-674a-5447-b96f-a0f026e4475b")
+	)
+	(wire
+		(pts
+			(xy 218.44 116.84) (xy 248.92 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8f0ce5cd-a391-516d-9fe5-f826412af082")
+	)
+	(wire
+		(pts
+			(xy 48.26 96.52) (xy 48.26 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8f2c11a6-f760-5fc4-9ac8-8b3a25578c3c")
+	)
+	(wire
+		(pts
+			(xy 180.34 162.56) (xy 238.76 162.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8f2f22f2-9c5c-5b78-ba84-01be2af15d19")
+	)
+	(wire
+		(pts
+			(xy 213.36 175.26) (xy 213.36 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "943f2eac-3fe5-5bd0-a119-dea59f19994d")
+	)
+	(wire
+		(pts
+			(xy 332.74 96.52) (xy 332.74 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "96d8a691-aad2-559e-97fb-60d14e6ae9f4")
+	)
+	(wire
+		(pts
+			(xy 160.02 99.06) (xy 160.02 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9a19cca7-5797-59e9-841d-411327f3bd9f")
+	)
+	(wire
+		(pts
+			(xy 289.56 163.83) (xy 307.34 163.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9aef3bd9-a938-59ed-a27e-c6589afd8140")
+	)
+	(wire
+		(pts
+			(xy 218.44 121.92) (xy 223.52 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ff74f0d-7dc9-50e4-b563-c62cd7633f13")
+	)
+	(wire
+		(pts
+			(xy 162.56 101.6) (xy 157.48 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0863f81-f553-5bc5-8b76-00fe93c9b6bf")
+	)
+	(wire
+		(pts
+			(xy 220.98 99.06) (xy 220.98 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a28d793e-bb12-5833-b6e6-63c1e168507f")
+	)
+	(wire
+		(pts
+			(xy 157.48 93.98) (xy 139.7 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a40585d5-f553-58f9-b053-160367755c86")
+	)
+	(wire
+		(pts
+			(xy 289.56 104.14) (xy 326.39 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a4c902c7-2f2f-5207-a454-23f531c74076")
+	)
+	(wire
+		(pts
+			(xy 254 124.46) (xy 254 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a6d31e1b-f217-5363-b437-84bbdb677c33")
+	)
+	(wire
+		(pts
+			(xy 233.68 114.3) (xy 233.68 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a7729c92-df3c-548f-b4a1-7fdf3c617d85")
+	)
+	(wire
+		(pts
+			(xy 43.18 156.21) (xy 43.18 161.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a90c651b-70e6-5a1a-8367-aeb764c50c40")
+	)
+	(wire
+		(pts
+			(xy 43.18 173.99) (xy 60.96 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "aa3a68ec-d3d0-515c-88ed-fb9c616ca11c")
+	)
+	(wire
+		(pts
+			(xy 218.44 106.68) (xy 226.06 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ab6be4e5-5d3c-56a9-8b42-3c4f2be04f3a")
+	)
+	(wire
+		(pts
+			(xy 162.56 99.06) (xy 160.02 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b5cf0533-a7b1-5587-88cc-f17a2d77970e")
+	)
+	(wire
+		(pts
+			(xy 326.39 104.14) (xy 326.39 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b65a6b16-908b-5e16-9354-70c7bf3a9fcf")
+	)
+	(wire
+		(pts
+			(xy 162.56 104.14) (xy 154.94 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b9db6039-3127-584c-ac63-31539f8020d6")
+	)
+	(wire
+		(pts
+			(xy 119.38 38.1) (xy 246.38 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bc466382-a68f-54ec-8988-c3920b0a35cd")
+	)
+	(wire
+		(pts
+			(xy 119.38 40.64) (xy 119.38 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c13375d6-5f67-5d46-96dd-58ae0ff7862f")
+	)
+	(wire
+		(pts
+			(xy 261.62 38.1) (xy 360.68 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c2113042-a16e-50c5-b149-b8a81c6486e4")
+	)
+	(wire
+		(pts
+			(xy 162.56 116.84) (xy 157.48 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf87b1ae-9ab2-5f89-881a-ecf77704f3cf")
+	)
+	(wire
+		(pts
+			(xy 228.6 101.6) (xy 248.92 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d7f150af-b133-5634-bfa1-342728fb1c3e")
+	)
+	(wire
+		(pts
+			(xy 154.94 104.14) (xy 154.94 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd21ff38-8e5c-53ff-b5a5-f7621b082e5e")
+	)
+	(wire
+		(pts
+			(xy 289.56 96.52) (xy 307.34 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd7b1518-6ac3-5904-9647-905e8ef6fcb9")
+	)
+	(wire
+		(pts
+			(xy 43.18 138.43) (xy 60.96 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de087cb3-dfaa-53d3-9480-fc6492e79926")
+	)
+	(wire
+		(pts
+			(xy 152.4 104.14) (xy 76.2 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e05c0585-3d5c-5151-a769-39eae8331e4b")
+	)
+	(wire
+		(pts
+			(xy 162.56 119.38) (xy 160.02 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e6a6375a-8317-5ec7-8ae1-16a45416dded")
+	)
+	(wire
+		(pts
+			(xy 43.18 156.21) (xy 60.96 156.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ead31d14-5c3f-5702-b2e7-89b34380d392")
+	)
+	(wire
+		(pts
+			(xy 218.44 104.14) (xy 223.52 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee058f6b-deea-5839-aae7-014e818d9b92")
+	)
+	(wire
+		(pts
+			(xy 160.02 124.46) (xy 139.7 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee89aaef-9b8e-5985-b60d-291467cc003e")
+	)
+	(wire
+		(pts
+			(xy 157.48 119.38) (xy 139.7 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f06c131a-6616-527f-834f-d23dbe690e30")
+	)
+	(wire
+		(pts
+			(xy 332.74 116.84) (xy 314.96 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f8a61751-2b3a-5a40-9dee-579e40fa9457")
+	)
+	(wire
+		(pts
+			(xy 218.44 114.3) (xy 233.68 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fa22c4a9-a188-50cc-8a15-0718cf7fb6f2")
+	)
+	(wire
+		(pts
+			(xy 147.32 162.56) (xy 129.54 162.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fc0fc943-7b40-55eb-b2ea-f2d944c7b600")
+	)
+	(wire
+		(pts
+			(xy 93.98 40.64) (xy 93.98 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe8efaf7-7ce5-5add-9a63-7561732892df")
+	)
+	(wire
+		(pts
+			(xy 162.56 106.68) (xy 152.4 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ff2f1f9d-980a-5449-96c3-e9cd5db30b1f")
+	)
+	(label "TPS.DRAIN"
+		(at 223.52 38.1 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "01dc643a-8252-5eb9-a775-adcab026e812")
+	)
+	(label "TPS.PU_NET"
+		(at 289.56 96.52 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "04590fbc-69e2-5b24-a53d-c22cea98faf5")
+	)
+	(label "TPS.PU_NET"
+		(at 248.92 101.6 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "088059fc-8e37-5a5e-9c49-883ee978c23b")
+	)
+	(label "GND"
+		(at 43.18 196.85 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0ca7bbd8-095f-56e1-b52f-405c7afb169f")
+	)
+	(label "TPS.EN_NODE"
+		(at 60.96 156.21 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "1d2b10f3-47b2-5a48-854f-134ffda87243")
+	)
+	(label "TPS.C1_NODE"
+		(at 314.96 116.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "253dc908-802f-5cc9-ae93-d48cbefc9802")
+	)
+	(label "TPS.ISCP_NET"
+		(at 129.54 162.56 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "25496963-2d56-51c6-9666-318e575080c7")
+	)
+	(label "TPS.GATE"
+		(at 358.14 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "28e3bd0e-5497-59ba-a794-91c9d5de3835")
+	)
+	(label "TPS.GATE"
+		(at 289.56 104.14 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2e90eeab-c901-5b88-a42a-13dfc31a4a82")
+	)
+	(label "GND"
+		(at 254 129.54 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "45ba76cc-ce44-51a4-b752-31bb620be0cc")
+	)
+	(label "TPS.CS_N"
+		(at 248.92 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "484c9e3a-db4c-50ae-8205-548da555ddb9")
+	)
+	(label "TPS.GATE"
+		(at 254 60.96 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4877eeb1-00e0-56bc-99c1-572613dc8a6b")
+	)
+	(label "TPS.TMR_NET"
+		(at 139.7 124.46 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4b2752b8-e85d-5fe5-80e9-aaa2c3c24952")
+	)
+	(label "GND"
+		(at 147.32 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5add5532-f496-5d01-99b2-dac642028332")
+	)
+	(label "GND"
+		(at 223.52 127 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "64c25901-7179-50db-975a-850ca3d618fe")
+	)
+	(label "TPS.ISCP_NET"
+		(at 139.7 119.38 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "662f0581-6df7-5efe-98e7-75d6f582e46d")
+	)
+	(label "TPS.EN_NODE"
+		(at 139.7 88.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "6a76e755-6cb3-546e-81bd-817f8f6a5372")
+	)
+	(label "TPS.CS_P"
+		(at 93.98 53.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "6c92d20b-9838-5427-9edd-95f5fbcb00e3")
+	)
+	(label "GND"
+		(at 254 104.14 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "75830ab3-e5ae-5b4c-9b12-033211688f84")
+	)
+	(label "GND"
+		(at 180.34 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "80a5f743-cdb9-5cd7-98cc-57c7307f8c81")
+	)
+	(label "TPS.BST_NET"
+		(at 248.92 116.84 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "8ff281b8-a9cc-5c02-b634-a0ea587df5be")
+	)
+	(label "GND"
+		(at 213.36 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "94522fb0-001c-53e8-bfd4-ebc25512fd11")
+	)
+	(label "V3V3"
+		(at 48.26 88.9 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "96d7a5db-56eb-5835-9adb-787c6cd94ee1")
+	)
+	(label "TPS.OV_NODE"
+		(at 60.96 173.99 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a4113c5f-5044-5367-9028-5c2b7639132b")
+	)
+	(label "TPS.CS_N"
+		(at 119.38 53.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a4d8639f-71e6-540b-95ed-069f33f19829")
+	)
+	(label "GND"
+		(at 332.74 132.08 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b7f3a24f-9da3-56e6-9888-0b3e82e62f5b")
+	)
+	(label "TPS.OV_NODE"
+		(at 139.7 93.98 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b855e80a-e6d3-562f-a6cb-bbf0d938b084")
+	)
+	(label "TPS.CS_P"
+		(at 248.92 91.44 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "bc38efa1-e77e-589d-bddb-eaadabb8300c")
+	)
+	(label "TPS.GATE"
+		(at 248.92 106.68 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "db0461de-fe38-5428-8ffa-c83568e13538")
+	)
+	(label "TPS.BST_NET"
+		(at 289.56 163.83 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f45bfff9-ed14-5699-8e0c-556b42886398")
+	)
+	(label "TPS.TMR_NET"
+		(at 238.76 162.56 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "fd86f3b7-31dd-533c-badd-c4da3f8c8b56")
+	)
+	(hierarchical_label "EN"
+		(shape bidirectional)
+		(at 139.7 99.06 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "0bded1fc-37a6-5b28-be62-c49aafbaff1a")
+	)
+	(hierarchical_label "BUS_OUT"
+		(shape bidirectional)
+		(at 332.74 163.83 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1049e2ea-7641-57b1-9c8e-5e344df93621")
+	)
+	(hierarchical_label "BUS_OUT"
+		(shape bidirectional)
+		(at 259.08 111.76 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1124777e-08b7-57c3-bbaf-31b37ca815ff")
+	)
+	(hierarchical_label "V3V3"
+		(shape bidirectional)
+		(at 97.79 83.82 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "14435a87-b50c-5e99-869f-56a0fbaa28da")
+	)
+	(hierarchical_label "BUS_IN"
+		(shape bidirectional)
+		(at 40.64 38.1 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1e3010cf-066b-5eb3-8374-dfc0c3e0d979")
+	)
+	(hierarchical_label "BUS_IN"
+		(shape bidirectional)
+		(at 60.96 138.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "493411d1-a3d6-5e77-8b26-b6d547f5618b")
+	)
+	(hierarchical_label "BUS_OUT"
+		(shape bidirectional)
+		(at 360.68 38.1 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "6ae65920-239f-50bf-bd89-bc93a8f29842")
+	)
+	(hierarchical_label "BUS_IN"
+		(shape bidirectional)
+		(at 259.08 86.36 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "6cc9a23b-ab05-5850-93b5-44921956f774")
+	)
+	(hierarchical_label "FAULT_N"
+		(shape bidirectional)
+		(at 30.48 109.22 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a0252bd0-d8be-546a-8300-1a5d35d3c2b5")
+	)
+	(hierarchical_label "PGOOD_N"
+		(shape bidirectional)
+		(at 76.2 104.14 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b9d10231-0228-5250-9930-41959b6a5563")
+	)
+	(hierarchical_label "GND"
+		(shape bidirectional)
+		(at 133.35 116.84 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f8b13056-4834-57bd-93cd-8eeffc5c30c3")
+	)
+	(symbol
+		(lib_id "GCM188")
+		(at 254 119.38 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0658c639-1832-59fa-85c3-131ea3bc536a")
+		(property "Reference" "C3"
+			(at 257.2 116.58 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GCM188R71H104KA57D"
+			(at 256.54 121.92 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Murata_GCM188@0.2.0:GCM188"
+			(at 254 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 254 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 254 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.C_SRC.GCM188"
+			(at 254 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "eff922eb-02c3-58c1-86af-d726b9c964f7")
+		)
+		(pin "2"
+			(uuid "7c166eb0-f1c5-5f3f-add3-3d4d072addfe")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "C3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 43.18 186.69 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0efd7f89-c26b-5a46-8096-dbfac281057b")
+		(property "Reference" "R1"
+			(at 30.48 182.375 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF5112V"
+			(at 45.72 186.69 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 43.18 186.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 43.18 186.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 43.18 186.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_BOT.ERJ-3EKF"
+			(at 43.18 186.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0642f9e8-f50e-5daf-8717-798a2d143bf8")
+		)
+		(pin "2"
+			(uuid "9ea04efd-3fdf-51f4-9483-727d5275b337")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "GCM21B")
+		(at 309.88 163.83 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2383d53a-e01c-5669-bb3a-3d996b328a92")
+		(property "Reference" "C1"
+			(at 307.34 167.33 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GCM21BR71H474KA55L"
+			(at 311.15 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Murata_GCM21B@0.2.0:GCM21B"
+			(at 309.88 163.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 309.88 163.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 309.88 163.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.C_BST.GCM21B"
+			(at 309.88 163.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "38c6e291-92e9-5add-baab-b2f67a62909b")
+		)
+		(pin "2"
+			(uuid "60ba3d8b-9f47-50e7-9c2f-32638e71099b")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "C1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ISC035N10NM5LF2")
+		(at 254 43.18 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2490c634-95d3-59bc-97c7-60abf096003d")
+		(property "Reference" "Q1"
+			(at 263 43.1 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ISC035N10NM5LF2"
+			(at 263 45.6 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Infineon_ISC035N10NM5LF2@0.2.1-0.20261116080147-f563e7eb12a068f7fc1e2ec2d6c8ba3a7803e41a:ISC035N10NM5LF2"
+			(at 254 43.18 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.infineon.com"
+			(at 254 43.18 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "100 V N-channel OptiMOS 5 Linear FET 2 (hot swap / e-fuse), 164 A, 3.5 mohm max, PG-TDSON-8-59"
+			(at 254 43.18 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.Q1.ISC035N10NM5LF2"
+			(at 254 43.18 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "df417520-4061-50aa-b234-89a3413a744f")
+		)
+		(pin "2"
+			(uuid "910837d7-889e-5255-ae4b-7e7e85f97ecf")
+		)
+		(pin "3"
+			(uuid "e3e90ad3-f7fd-5399-8e46-641ccce42468")
+		)
+		(pin "4"
+			(uuid "73d58024-3d74-540a-9587-b84849a8f928")
+		)
+		(pin "5"
+			(uuid "57eda9c0-bbe0-5321-898f-8bbb3deb2d4b")
+		)
+		(pin "6"
+			(uuid "828769c9-d89e-5a21-9603-5aeef1e00b1e")
+		)
+		(pin "7"
+			(uuid "af8f366b-939b-5c4f-8c3b-0cae4c4c5aea")
+		)
+		(pin "8"
+			(uuid "1d718691-e9a0-542d-8d41-222f890dc041")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "Q1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "GCM188")
+		(at 180.34 165.1 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "40b2fab0-0e38-5a03-b04e-ad80b48dde4a")
+		(property "Reference" "C4"
+			(at 183.54 165.1 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GCM1885C2A682JE02D"
+			(at 182.88 167.64 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Murata_GCM188@0.2.0:GCM188"
+			(at 180.34 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180.34 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 180.34 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.C_TMR.GCM188"
+			(at 180.34 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "2fc07748-25e9-5609-8589-5d5e0ad03bfb")
+		)
+		(pin "2"
+			(uuid "0ffd447d-0656-523f-8113-fb541dee9872")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "C4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 332.74 109.22 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5a77c9d7-74b6-57f4-a829-12c914349e15")
+		(property "Reference" "R2"
+			(at 335.94 104.905 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF10R0V"
+			(at 334.01 105.41 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 332.74 109.22 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 332.74 109.22 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 332.74 109.22 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_DAMP.ERJ-3EKF"
+			(at 332.74 109.22 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f0aa409f-f221-5c6d-8669-786ad7373b61")
+		)
+		(pin "2"
+			(uuid "98ef8fe8-3629-5793-a5b6-782bc93845e0")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 97.79 96.52 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "69fa7515-4045-5bdd-a932-ac81a1cd1c4f")
+		(property "Reference" "R7"
+			(at 100.99 94.745 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF1002V"
+			(at 100.33 99.06 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 97.79 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 97.79 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 97.79 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_PGOOD.ERJ-3EKF"
+			(at 97.79 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "beccfcfa-d62c-5f8c-aaff-54837cde25a2")
+		)
+		(pin "2"
+			(uuid "d67961e4-b53b-508e-b29a-e8fa980e573d")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "GCM188")
+		(at 254 93.98 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "731d9918-efc4-5bce-90df-7e143bb8a9ef")
+		(property "Reference" "C5"
+			(at 257.2 91.18 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GCM188R71H104KA57D"
+			(at 256.54 96.52 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Murata_GCM188@0.2.0:GCM188"
+			(at 254 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 254 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 254 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.C_VS.GCM188"
+			(at 254 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c09eb681-e644-573e-9c38-9e96ee0c7838")
+		)
+		(pin "2"
+			(uuid "cefec724-2997-5a77-8f87-f9f19ac9b5d8")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "C5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "GCM188")
+		(at 332.74 121.92 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "768ed743-1a51-52ea-902d-2d4f26d4bf75")
+		(property "Reference" "C2"
+			(at 335.94 119.12 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GCM1885C2A682JE02D"
+			(at 335.28 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Murata_GCM188@0.2.0:GCM188"
+			(at 332.74 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 332.74 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 332.74 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.C_GATE.GCM188"
+			(at 332.74 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f769fde3-e5fc-5398-8635-dee6a9ff528e")
+		)
+		(pin "2"
+			(uuid "82de15b3-3a35-577d-9eca-05df59f6533f")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "C2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 43.18 168.91 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b00e7ecd-873d-5b72-b4a5-11a2e24eae92")
+		(property "Reference" "R6"
+			(at 30.48 164.595 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF3012V"
+			(at 44.45 165.1 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 43.18 168.91 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 43.18 168.91 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 43.18 168.91 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_MID.ERJ-3EKF"
+			(at 43.18 168.91 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "90b504ef-e818-5549-a039-3c8fbe27d285")
+		)
+		(pin "2"
+			(uuid "7301d6e8-b50a-5fbb-a121-63443f19929f")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 43.18 151.13 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b3390bb3-8e5a-576a-a514-f5f808475f3e")
+		(property "Reference" "R9"
+			(at 30.48 146.815 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF5363V"
+			(at 45.72 151.13 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 43.18 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 43.18 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 43.18 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_TOP.ERJ-3EKF"
+			(at 43.18 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "58b32584-c919-5d0a-889e-c0e4ed4a91c8")
+		)
+		(pin "2"
+			(uuid "87d9b6e7-2633-5b1d-81bb-d2a6c88bac23")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "WSK2512-LOW")
+		(at 106.68 38.1 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d2af5e9a-452c-561b-a4df-082b13903260")
+		(property "Reference" "R10"
+			(at 100.33 24.005 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "WSK25124L000DEA"
+			(at 106.68 33.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Vishay_WSK2512-LOW@0.2.0:WSK2512-LOW"
+			(at 106.68 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.vishay.com/doc?30108"
+			(at 106.68 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "WSK2512 series 4-terminal (Kelvin) Power Metal Strip current-sense resistor, 2512, 0.0005 to 0.0049 ohm"
+			(at 106.68 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.SHUNT.WSK2512-LOW"
+			(at 106.68 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "41dfd582-611e-537b-acc7-d2335faa8d5e")
+		)
+		(pin "2"
+			(uuid "6ecd38eb-ee56-5321-b649-2511127ca98f")
+		)
+		(pin "3"
+			(uuid "bc5f24a6-5894-544a-9af4-7d88d163f690")
+		)
+		(pin "4"
+			(uuid "d3da09f5-8995-5979-9f84-97bcf55fd316")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 213.36 170.18 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e4ef5469-3af8-5b85-83af-72c810997ac0")
+		(property "Reference" "R8"
+			(at 216.56 165.865 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF1003V"
+			(at 215.9 170.18 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 213.36 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 213.36 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 213.36 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_TMR.ERJ-3EKF"
+			(at 213.36 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d9a1f7a6-44fe-5c19-b8d0-7fe3d712ec2a")
+		)
+		(pin "2"
+			(uuid "9f3b2a49-a26b-5535-a0ef-ab965d7b94e2")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 314.96 96.52 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e4fcf7d5-5475-5ff7-8606-a02ab6bfcd26")
+		(property "Reference" "R4"
+			(at 307.34 85.43 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "ERJ3EKF1003V"
+			(at 316.23 92.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 314.96 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 314.96 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 314.96 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_GATE.ERJ-3EKF"
+			(at 314.96 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "fd537cd0-59c7-575c-9e5c-7e5bf58c3993")
+		)
+		(pin "2"
+			(uuid "3b6a338d-107d-570a-8ee8-6a600e99e93f")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 48.26 101.6 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ed9992ff-c021-58d7-a128-1a9186bf0f74")
+		(property "Reference" "R3"
+			(at 51.46 99.825 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF1002V"
+			(at 50.8 104.14 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 48.26 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 48.26 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 48.26 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_FAULT.ERJ-3EKF"
+			(at 48.26 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "9c6a9b62-883d-5de2-b3bc-77f5af86c632")
+		)
+		(pin "2"
+			(uuid "094c315e-ae3b-5f2a-beab-7cca79dbb5d9")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "TPS48000QDGXQ1")
+		(at 190.5 109.22 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "edaaf113-67cb-5861-aa8a-2a2c51755b13")
+		(property "Reference" "U1"
+			(at 190.5 89.12 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Value" "TPS48000QDGXRQ1"
+			(at 190.5 86.52 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_TexasInstruments_TPS48000QDGXQ1@0.2.1-0.20261116080147-f563e7eb12a068f7fc1e2ec2d6c8ba3a7803e41a:TPS48000QDGXQ1"
+			(at 190.5 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tps4800-q1.pdf"
+			(at 190.5 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "TPS48000-Q1 automotive high-side N-channel MOSFET gate driver / eFuse controller with current sense and short-circuit protection, VSSOP-19 (DGX)"
+			(at 190.5 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.U.TPS48000QDGXQ1"
+			(at 190.5 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "aea76846-2f50-53dc-bd96-985495dd5686")
+		)
+		(pin "10"
+			(uuid "a0b2e2b9-448e-58e7-bd80-a2d3e65c4e69")
+		)
+		(pin "11"
+			(uuid "0c9adef6-39bb-56ab-8e86-9c1fc7707186")
+		)
+		(pin "12"
+			(uuid "910a18b8-ca4a-543f-804b-6e285e1936f9")
+		)
+		(pin "13"
+			(uuid "4fb70176-dee0-5a5d-9ae7-7b75cfedd537")
+		)
+		(pin "14"
+			(uuid "f87e6d54-fc2d-5ae1-a42c-a59851bc01ac")
+		)
+		(pin "15"
+			(uuid "9a0769b4-3aa8-553a-a54f-bde64a2d9adc")
+		)
+		(pin "17"
+			(uuid "2e616013-e4ff-57d7-8935-b450957856be")
+		)
+		(pin "18"
+			(uuid "764ef340-fb9a-5234-9065-aee9c144de7e")
+		)
+		(pin "19"
+			(uuid "e885d3f3-0ead-52ea-a5a4-e38aabc3b804")
+		)
+		(pin "2"
+			(uuid "0949529b-da3b-5139-9908-9dd520affd66")
+		)
+		(pin "20"
+			(uuid "6441b0f6-c331-5d07-8fbb-713d3563448f")
+		)
+		(pin "3"
+			(uuid "304f7dce-feb9-5a10-b697-7dda7012b294")
+		)
+		(pin "4"
+			(uuid "95c1b652-ef55-5076-bcf4-7ffb6b50ad5a")
+		)
+		(pin "5"
+			(uuid "1bba2824-481d-5afe-bf37-bed9f761b043")
+		)
+		(pin "6"
+			(uuid "dfba549a-c5f6-5b9f-8569-8decbb772ee7")
+		)
+		(pin "7"
+			(uuid "961f381e-9e8d-5af9-91b7-4440f85fc71b")
+		)
+		(pin "8"
+			(uuid "8d21b0b0-c3c9-5695-8584-8774b45dc861")
+		)
+		(pin "9"
+			(uuid "702b7346-d7e7-5ce5-a182-403af8d4d04c")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ERJ-3EKF")
+		(at 147.32 170.18 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fd1e1865-2a00-597a-96dc-550c9f2e46ea")
+		(property "Reference" "R5"
+			(at 150.52 165.865 270)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ERJ3EKF1052V"
+			(at 149.86 170.18 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.3.0:ERJ-3EKF"
+			(at 147.32 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf"
+			(at 147.32 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Description" "0603 (1608 metric) 0.1 W +/-1 % thick film chip resistor, ERJ-3EKF series (10 ohm to 1 Mohm, E24/E96)"
+			(at 147.32 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Path" "TPS.R_ISCP.ERJ-3EKF"
+			(at 147.32 170.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "513d4ea4-e63f-5ef8-b36c-34d8019f7388")
+		)
+		(pin "2"
+			(uuid "6f077d75-034a-5965-a99c-20cd0006125e")
+		)
+		(instances
+			(project "TPS48000HighSideSwitch_bench"
+				(path "/513d9cc1-d27a-514d-a37c-2f1ca04dddfa/7f10fbe4-be93-52ab-8f5a-c3a25c48dc33"
+					(reference "R5")
+					(unit 1)
+				)
+			)
+		)
+	)
+)

@@ -1,0 +1,23 @@
+{
+  "diode": {
+    "schematic_sheets": [
+      {
+        "parent_file": "TPS48000HighSideSwitch_bench.kicad_sch",
+        "parent_id": "513d9cc1-d27a-514d-a37c-2f1ca04dddfa",
+        "sheet": "(sheet\n\t(at 177.8 83.82)\n\t(size 63.5 50.8)\n\t(exclude_from_sim no)\n\t(in_bom yes)\n\t(on_board yes)\n\t(dnp no)\n\t(stroke\n\t\t(width 0.1524)\n\t\t(type solid)\n\t)\n\t(fill\n\t\t(color 0 0 0 0)\n\t)\n\t(uuid \"7f10fbe4-be93-52ab-8f5a-c3a25c48dc33\")\n\t(property \"Sheetname\" \"TPS\"\n\t\t(at 177.8 81.92 0)\n\t\t(show_name no)\n\t\t(do_not_autoplace no)\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t)\n\t)\n\t(property \"Sheetfile\" \"TPS.kicad_sch\"\n\t\t(at 177.8 136.52 0)\n\t\t(show_name no)\n\t\t(do_not_autoplace no)\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t)\n\t)\n\t(pin \"GND\" bidirectional\n\t\t(at 215.9 134.62 270)\n\t\t(uuid \"fd4a997d-7d7a-5a5e-a78f-4e21c03fbebe\")\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t(justify left)\n\t\t)\n\t)\n\t(pin \"EN\" bidirectional\n\t\t(at 241.3 114.3 0)\n\t\t(uuid \"29180097-f835-5b7d-8523-97f6c76ac3ee\")\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t(justify right)\n\t\t)\n\t)\n\t(pin \"FAULT_N\" bidirectional\n\t\t(at 241.3 124.46 0)\n\t\t(uuid \"c431a6dc-35ad-584e-b72b-834bf2bf7558\")\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t(justify right)\n\t\t)\n\t)\n\t(pin \"PGOOD_N\" bidirectional\n\t\t(at 241.3 119.38 0)\n\t\t(uuid \"dee56ec0-80a3-5aa0-8d1b-f85fa71efc4d\")\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t(justify right)\n\t\t)\n\t)\n\t(pin \"V3V3\" bidirectional\n\t\t(at 177.8 121.92 180)\n\t\t(uuid \"ea2ba5a0-bf4c-5980-8190-055c882da83b\")\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t(justify left)\n\t\t)\n\t)\n\t(pin \"BUS_IN\" bidirectional\n\t\t(at 177.8 96.52 180)\n\t\t(uuid \"76585cab-4ebb-55be-9ef3-d8a02818c8c9\")\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t(justify left)\n\t\t)\n\t)\n\t(pin \"BUS_OUT\" bidirectional\n\t\t(at 241.3 96.52 0)\n\t\t(uuid \"04950750-bb6c-54ce-8935-fdf5160120d6\")\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t(justify right)\n\t\t)\n\t)\n\t(instances\n\t\t(project \"TPS48000HighSideSwitch_bench\"\n\t\t\t(path \"/513d9cc1-d27a-514d-a37c-2f1ca04dddfa\"\n\t\t\t\t(page \"2\")\n\t\t\t)\n\t\t)\n\t)\n)\n"
+      }
+    ]
+  },
+  "meta": {
+    "version": 1
+  },
+  "schematic": {
+    "top_level_sheets": [
+      {
+        "filename": "TPS48000HighSideSwitch_bench.kicad_sch",
+        "name": "TPS48000HighSideSwitch_bench",
+        "uuid": "513d9cc1-d27a-514d-a37c-2f1ca04dddfa"
+      }
+    ]
+  }
+}
