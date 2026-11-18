@@ -9,8 +9,9 @@ table), never typed; the generator stops (SystemExit) when a field cannot be res
 differs from the analysis input it is given. `check_stacks` recomputes the stacks and compares them with a sheet
 (no writes); benches expose it as `arrange_sheet.py --check`, which tools/schematic/check_sync.sh runs.
 
-Library checkout: $ZENER_LIBRARY, else ../zener-library-soa, else ../zener-library (next to this repo).
-Helpers (place.py, kicad_sexpr.py): $ZL_TOOLS, default ../zener-library-tools/tools/schematic.
+Library checkout: $ZENER_LIBRARY, else ../zener-library (next to this repo; the v0.4.0 release checkout that
+analysis/_zl.py loads).
+Helpers (place.py, kicad_sexpr.py): $ZL_TOOLS, default ../zener-library/tools/schematic.
 """
 import csv
 import os
@@ -21,7 +22,7 @@ from collections import Counter
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-ZL = os.environ.get("ZL_TOOLS", str(REPO.parent / "zener-library-tools" / "tools" / "schematic"))
+ZL = os.environ.get("ZL_TOOLS", str(REPO.parent / "zener-library" / "tools" / "schematic"))
 if ZL not in sys.path:
     sys.path.insert(0, ZL)
 import kicad_sexpr as kx  # noqa: E402
@@ -32,7 +33,7 @@ TOPOFF = 0.65  # free text "left top" anchor sits this far above the centre of i
 
 
 def zl_root():
-    for c in (os.environ.get("ZENER_LIBRARY"), REPO.parent / "zener-library-soa", REPO.parent / "zener-library"):
+    for c in (os.environ.get("ZENER_LIBRARY"), REPO.parent / "zener-library"):
         if c and (Path(c) / "components").is_dir():
             return Path(c)
     raise SystemExit("zener-library checkout not found (set ZENER_LIBRARY)")

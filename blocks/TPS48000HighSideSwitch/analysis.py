@@ -1494,8 +1494,9 @@ def analyze(params_path=None, out=None, instance="TPS"):
     MD_PATH.write_text("\n".join(FINAL) + "\n")
     write_pdf(MD_PATH)  # design-analysis.pdf: the datasheet as PDF, stamped with the .md hash
 
-    LIB_PINS = ("Zener wrappers ISC035/TPS48000 at zener-library commit f563e7e (PR #14, pseudo-version); analysis data at "
-                f"{git('branch', '--show-current') or 'detached'} commit {git('rev-parse', '--short', 'HEAD')} (PR #11); both to be re-pinned to the release tag")
+    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.3.0 and TPS48000QDGXQ1 v0.3.0; Python library zener-library v0.4.0 "
+                "(ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases "
+                "(before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).")
     VSENSE_MAX = math.ceil(round(I_NT * r_hi(TE_NT) * 1e4, 6)) / 1e4  # V, rounded UP to 0.1 mV
     IR125 = 10e9  # ohm: `ir_125c_c0g` 'more than 10000 Mohm' of the series reference part (row restricted to GCM1885C1H101GA16): ASSUMED for the 6.8 nF part
     I_LEAK_C1 = V_C1_MAX / IR125

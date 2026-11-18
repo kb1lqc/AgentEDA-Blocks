@@ -9,7 +9,7 @@
 		(date "2026-11-16")
 		(rev "A")
 		(company "Bryce Salmi Consulting")
-		(comment 1 "github.com/kb1lqc/circuit-blocks @ 169e58a: benches/TPS48000HighSideSwitch")
+		(comment 1 "github.com/kb1lqc/circuit-blocks @ 66b8398: benches/TPS48000HighSideSwitch")
 		(comment 2 "Bench: 12-40 V, 6 A high-side reference instance of TPS48000HighSideSwitch")
 		(comment 3 "Author: Bryce Salmi")
 	)
