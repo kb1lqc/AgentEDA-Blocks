@@ -58,5 +58,7 @@ benches=(${zens:h})
 tools/schematic/export_pdf.sh --check $benches | sed 's/^/      /' || fail=1
 echo "== design-analysis PDFs (benches/*/docs/design-analysis.pdf vs its .md; python3 -m analysis.md_pdf --check)"
 if python3 -m analysis.md_pdf --check benches/*/docs/design-analysis.md 2>&1 | sed 's/^/      /'; [[ ${pipestatus[1]} == 0 ]]; then :; else fail=1; fi
+echo "== merge conflict markers (tracked text files)"
+if git grep -n -I -E '^(<<<<<<<|>>>>>>>) ' -- ':!*.pdf' | sed 's/^/      /' | grep .; then echo "      conflict markers found"; fail=1; else echo "      none"; fi
 if (( fail )); then echo "RESULT: DRIFT - run 'python3 tools/schematic/stamp_hash.py' after committing sheet changes (then export_pdf.sh, commit 'Stamp sheet hashes'), run 'pcb apply schematic --no-open <bench.zen>' to restore the .zen values (and tools/schematic/export_pdf.sh for a stale PDF; python3 blocks/<Block>/analysis.py for a stale design-analysis PDF), then review"; exit 1; fi
 echo "RESULT: IN SYNC - every checked KiCad schematic matches the Zener source of truth"
