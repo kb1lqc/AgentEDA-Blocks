@@ -60,12 +60,12 @@ def check_values(path, rel):
     return []
 
 
-RUN_DATE = re.compile(rb"^- Run date: \d{4}-\d{2}-\d{2}\.$", re.M)
+RESULTS_DATE = re.compile(rb"^- Results date: \d{4}-\d{2}-\d{2}\.$", re.M)
 
 
 def _masked(path):
-    """File bytes with the report's own run-date line blanked: the only content allowed to differ between runs."""
-    return RUN_DATE.sub(b"- Run date: <masked>.", path.read_bytes())
+    """File bytes with the report's own results-date line blanked: the only content allowed to differ between runs."""
+    return RESULTS_DATE.sub(b"- Results date: <masked>.", path.read_bytes())
 
 
 def run(root, zl, python=sys.executable):

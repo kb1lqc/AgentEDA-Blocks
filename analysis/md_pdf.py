@@ -4,12 +4,15 @@ Supported Markdown subset (anything else raises with the line number, nothing is
   # / ## / ### headings, paragraphs, GFM pipe tables (alignment colons honoured), "- " bullets,
   "> " blockquotes, ![alt](path) images (embedded as base64 data URIs), **bold**, *italic*, `code`.
 
-API:  write_pdf(md_path) -> pdf_path      writes docs/design-analysis.pdf next to the .md
+API:  write_report(md_path, text) -> pdf  writes the .md (unless only its results-date line changed) and the PDF
+      write_pdf(md_path) -> pdf_path      writes docs/design-analysis.pdf next to the .md (skipped when its stamp
+                                          already matches its sources: Chrome output differs byte for byte per run)
 CLI:  python3 -m analysis.md_pdf <md>...          write the PDFs
       python3 -m analysis.md_pdf --check <md>...  exit 1 if any PDF is missing or stale
 
 Staleness stamp: the HTML <title> (Chrome writes it as the PDF /Title) is
-"<bench folder name> design analysis md-sha256:<first 16 hex of sha256 of the .md bytes>".
+"<bench folder name> design analysis src-sha256:<first 16 hex of sha256 of the HTML Chrome renders>": the .md text,
+every embedded image and the CSS, so a chart-only or style-only change makes the PDF stale too.
 --check compares that stamp with the current .md.
 Chrome: $CHROME, else the default macOS install path. Missing Chrome or a missing PDF raises.
 """
@@ -29,7 +32,9 @@ from pathlib import Path
 
 CHROME_DEFAULT = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 PDF_NAME = "design-analysis.pdf"
-STAMP_RE = re.compile(r"md-sha256:([0-9a-f]{16})\s*$")
+STAMP_RE = re.compile(r"src-sha256:([0-9a-f]{16})\s*$")
+# The report line "- Results date: YYYY-MM-DD." is the date of the last run that changed a result (write_report).
+RESULTS_DATE = re.compile(r"^- Results date: \d{4}-\d{2}-\d{2}\.$", re.M)
 IMAGE_TYPES = {"image/png", "image/jpeg", "image/svg+xml", "image/gif"}
 
 CSS = """
@@ -216,12 +221,16 @@ def _html_doc(title, body):
     )
 
 
-def md_digest(md_path):
-    return hashlib.sha256(Path(md_path).read_bytes()).hexdigest()[:16]
+def source_digest(md_path):
+    """First 16 hex of sha256 of the HTML document that write_pdf renders, without the title: the .md text, each image
+    embedded as base64 and the CSS. Anything that changes the PDF's content changes this digest."""
+    md = Path(md_path).resolve()
+    body = md_to_body(md.read_text(encoding="utf-8"), md.parent)
+    return hashlib.sha256(_html_doc("", body).encode("utf-8")).hexdigest()[:16]
 
 
 def _pdf_stamp(pdf_path):
-    """The md-sha256 stamp in the PDF /Title (via pdfinfo), or None."""
+    """The src-sha256 stamp in the PDF /Title (via pdfinfo), or None."""
     try:
         res = subprocess.run(["pdfinfo", str(pdf_path)], capture_output=True, text=True, timeout=60)
     except FileNotFoundError:
@@ -238,14 +247,16 @@ def _pdf_stamp(pdf_path):
 def write_pdf(md_path):
     """Render md_path to docs/design-analysis.pdf next to it and return that path. Raises on any failure."""
     md = Path(md_path).resolve()
-    digest = md_digest(md)
+    digest = source_digest(md)
     bench = md.parent.parent.name
-    title = f"{bench} design analysis md-sha256:{digest}"
+    title = f"{bench} design analysis src-sha256:{digest}"
     body = md_to_body(md.read_text(encoding="utf-8"), md.parent)
+    pdf = md.parent / PDF_NAME
+    if pdf.is_file() and _pdf_stamp(pdf) == digest:
+        return pdf  # already rendered from these exact .md bytes; re-rendering would only change Chrome's dates
     chrome = os.environ.get("CHROME") or CHROME_DEFAULT
     if not Path(chrome).is_file():
         raise RuntimeError(f"Chrome not found at {chrome} (set CHROME to its path)")
-    pdf = md.parent / PDF_NAME
     with tempfile.TemporaryDirectory(prefix="md_pdf_") as tmp:
         html_path = Path(tmp) / "design-analysis.html"
         html_path.write_text(_html_doc(title, body), encoding="utf-8")
@@ -257,9 +268,19 @@ def write_pdf(md_path):
         if res.returncode != 0 or not out.is_file() or out.stat().st_size == 0:
             raise RuntimeError(f"Chrome did not produce {pdf} (exit {res.returncode}): {res.stderr.strip()[-800:]}")
         if _pdf_stamp(out) != digest:
-            raise RuntimeError(f"PDF /Title stamp is not md-sha256:{digest}; the staleness check would be wrong")
+            raise RuntimeError(f"PDF /Title stamp is not src-sha256:{digest}; the staleness check would be wrong")
         shutil.move(str(out), str(pdf))
     return pdf
+
+
+def write_report(md_path, text):
+    """Write the report text to md_path, then render its PDF (write_pdf). If the file on disk differs from text only in
+    the results-date line, it is kept as is, so a rerun that changes no result changes no file. Returns the PDF path."""
+    md = Path(md_path)
+    old = md.read_text(encoding="utf-8") if md.is_file() else None
+    if old is None or RESULTS_DATE.sub("", old) != RESULTS_DATE.sub("", text):
+        md.write_text(text, encoding="utf-8")
+    return write_pdf(md)
 
 
 def check(md_paths):
@@ -269,7 +290,7 @@ def check(md_paths):
         md = Path(m)
         pdf = md.parent / PDF_NAME
         block = md.resolve().parent.parent.name
-        if pdf.is_file() and _pdf_stamp(pdf) == md_digest(md):
+        if pdf.is_file() and _pdf_stamp(pdf) == source_digest(md):
             print(f"{pdf}: up to date")
         else:
             print(f"{pdf}: STALE or missing (run python3 blocks/{block}/analysis.py)")
