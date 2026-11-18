@@ -130,7 +130,7 @@
   "c0g_preferred_available": true,
   "bom_lines": 13,
   "divider_matches_params": true,
-  "library": "Released: Zener deps ISC035N10NM5LF2 v0.3.0 and TPS48000QDGXQ1 v0.3.0; Python library zener-library v0.5.0 (ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases (before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).",
+  "library": "Released: Zener deps ISC035N10NM5LF2 v0.4.0 and TPS48000QDGXQ1 v0.4.0; Python library zener-library v0.6.0 (ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases (before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).",
   "summary": [
     {
       "key": "uvlo_rise_max_v",
@@ -490,7 +490,7 @@
     "v_vds_range": "-1.2 to 40 V: off-state with the output at 0 V gives the bus maximum; reverse is the body-diode drop (`vsd` max 1.2 V, DS p.6); the turn-off avalanche transient is excluded (see `turnoff_transient_no_tvs`)",
     "vsense_op_max": "27.3 mV: shunt voltage at the 6 A design current, R_hi (self-heated, BOL), rounded up to 0.1 mV; Zener shunt v_across (decision D9)",
     "vsense_max": "65.5 mV: I_nt 14.31 A x R_hi 4.573 mohm (self-heated, BOL), rounded up to 0.1 mV; ESTIMATE (element temperature)",
-    "v_rdamp_dc": "1.0e-07 V: C1 blocks DC; leakage 5.39 nA (53.86 V gate to GND / IR 10 Gohm) x 10 ohm. IR is the series reference part's 125 degC row (`ir_125c_c0g`, more than 10000 Mohm, DS p.5, Specifications and Test Methods, No. 20 Insulation Resistance (IR), High Temperature), ASSUMED for the 6.8 nF part: not bounded for it in the library",
+    "v_rdamp_dc": "1.0e-07 V: C1 blocks DC; leakage 5.39 nA (53.86 V gate to GND / IR 10 Gohm) x 10 ohm. IR is the series reference part's 125 degC row (`ir_125c_c0g`, more than 10000 Mohm, DS p.5 (GCM1885C1H101GA16-01A-EN.pdf), Specifications and Test Methods, No. 20 Insulation Resistance (IR), High Temperature), ASSUMED for the 6.8 nF part: not bounded for it in the library",
     "r_top_ohm": "536 kohm",
     "r_mid_ohm": "30.1 kohm",
     "r_bot_ohm": "51.1 kohm",

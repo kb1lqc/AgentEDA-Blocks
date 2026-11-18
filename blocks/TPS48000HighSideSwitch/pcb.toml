@@ -1,7 +1,7 @@
 [dependencies]
-"github.com/kb1lqc/zener-library/components/Infineon/ISC035N10NM5LF2" = "0.3.0"
-"github.com/kb1lqc/zener-library/components/Murata/GCM188" = "0.2.0"
-"github.com/kb1lqc/zener-library/components/Murata/GCM21B" = "0.2.0"
-"github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF" = "0.3.0"
-"github.com/kb1lqc/zener-library/components/TexasInstruments/TPS48000QDGXQ1" = "0.3.0"
-"github.com/kb1lqc/zener-library/components/Vishay/WSK2512-LOW" = "0.2.0"
+"github.com/kb1lqc/zener-library/components/Infineon/ISC035N10NM5LF2" = "0.4.0"
+"github.com/kb1lqc/zener-library/components/Murata/GCM188" = "0.3.0"
+"github.com/kb1lqc/zener-library/components/Murata/GCM21B" = "0.3.0"
+"github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF" = "0.4.0"
+"github.com/kb1lqc/zener-library/components/TexasInstruments/TPS48000QDGXQ1" = "0.4.0"
+"github.com/kb1lqc/zener-library/components/Vishay/WSK2512-LOW" = "0.3.0"
