@@ -6,6 +6,7 @@
   `benches/<Block>/docs/<bench name>.pdf` (named after the Board / KiCad project; creation date pinned); `--check` fails on a stale or missing PDF (run by
   `check_sync.sh`).
 - `analysis/md_pdf.py`: renders each `benches/<Block>/docs/design-analysis.md` to `design-analysis.pdf` (written by every analysis run); `python3 -m analysis.md_pdf --check <md>...` fails on a missing or stale PDF (run by `check_sync.sh`).
+- `stamp_hash.py [--check] [sheets...]`: sets each sheet's title-block hash to the short hash of the commit that last changed that sheet's content (`--check` fails on a stale stamp; run by `check_sync.sh`). After committing sheet changes: `stamp_hash.py`, `export_pdf.sh`, commit "Stamp sheet hashes".
 - `update_notes.py benches/<Block>`: rewrites the parent-sheet engineering notes from the bench's `values.json`
   using the bench's `notes_rules.py` (pattern-matched, each must match once). Run after the analysis; then gate
   with apply/netlist/build/ERC.

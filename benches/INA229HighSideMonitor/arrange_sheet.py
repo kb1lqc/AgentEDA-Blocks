@@ -35,6 +35,8 @@ import notes_rules  # noqa: E402
 import overlap  # noqa: E402
 import passive_text as pt  # noqa: E402
 import place  # noqa: E402
+import stamp_hash  # noqa: E402
+import canon  # noqa: E402
 from place import Sheet  # noqa: E402
 
 NS = "circuit-blocks/INA229HighSideMonitor"
@@ -128,7 +130,7 @@ def title_block(sh, title, desc, subdir):
         rev=REV,
         date=DATE,
         company=COMPANY,
-        comments={1: place.repo_comment(str(REPO), subdir), 2: desc, 3: "Author: " + AUTHOR},
+        comments={1: stamp_hash.title_comment(sh.path, subdir), 2: desc, 3: "Author: " + AUTHOR},
     )
 
 
@@ -272,7 +274,7 @@ def child(path, v, f):
     al_b = place.snap(r_al + 5.5 + 2 * PITCH + 3.5 + 1.0)
     sk.box(spi_l, al_t, spi_r, al_b, "ALERT_N")
     sk.box(XL, T2, x_a, al_b, "INA229 MONITOR")
-    sk.sh.save()
+    canon.save(sk.sh)
     return {"ina": (XL, T2, x_a, al_b), "spi": (spi_l, T2, spi_r, spi_b), "alert": (spi_l, al_t, spi_r, al_b),
             "power": (XL, pw_top, pw_r, pw_bot)}
 
@@ -368,7 +370,7 @@ def root(path, v, f):
         sk.note("\n".join(c), xc, ytop + 6.8)
     nrows = max(len(c) for c in cols)
     sk.box(left, ytop, rt, ytop + 6.8 + nrows * 2.03 + 3.5, notes_rules.DV_TITLE.format(**fl))
-    sh.save()
+    canon.save(sh)
 
 
 def check_stacks(path):

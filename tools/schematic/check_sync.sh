@@ -9,6 +9,7 @@
 # 2. `pcb apply` on a throwaway copy must report "schematic unchanged" (catches part values, MPNs and
 #    other fields edited in KiCad, which the build does not check).
 # 3. benches/<Block>/docs/<bench name>.pdf must equal a fresh reproducible export (tools/schematic/export_pdf.sh).
+# 4. Each committed sheet's title-block hash is its own last-change commit (tools/schematic/stamp_hash.py --check).
 # Run after any human review in KiCad, and before committing (the pre-commit hook runs it).
 setopt nullglob
 repo=$PWD
@@ -50,10 +51,12 @@ for zen in $zens; do
     echo "      ${zen:h}: no arrange_sheet.py --check, skipped"
   fi
 done
+echo "== sheet title-block hashes (tools/schematic/stamp_hash.py --check)"
+if python3 tools/schematic/stamp_hash.py --check 2>&1 | sed 's/^/      /'; [[ ${pipestatus[1]} == 0 ]]; then :; else fail=1; fi
 echo "== schematic PDFs (benches/*/docs/<bench name>.pdf)"
 benches=(${zens:h})
 tools/schematic/export_pdf.sh --check $benches | sed 's/^/      /' || fail=1
 echo "== design-analysis PDFs (benches/*/docs/design-analysis.pdf vs its .md; python3 -m analysis.md_pdf --check)"
 if python3 -m analysis.md_pdf --check benches/*/docs/design-analysis.md 2>&1 | sed 's/^/      /'; [[ ${pipestatus[1]} == 0 ]]; then :; else fail=1; fi
-if (( fail )); then echo "RESULT: DRIFT - run 'pcb apply schematic --no-open <bench.zen>' to restore the .zen values (and tools/schematic/export_pdf.sh for a stale PDF; python3 blocks/<Block>/analysis.py for a stale design-analysis PDF), then review"; exit 1; fi
+if (( fail )); then echo "RESULT: DRIFT - run 'python3 tools/schematic/stamp_hash.py' after committing sheet changes (then export_pdf.sh, commit 'Stamp sheet hashes'), run 'pcb apply schematic --no-open <bench.zen>' to restore the .zen values (and tools/schematic/export_pdf.sh for a stale PDF; python3 blocks/<Block>/analysis.py for a stale design-analysis PDF), then review"; exit 1; fi
 echo "RESULT: IN SYNC - every checked KiCad schematic matches the Zener source of truth"

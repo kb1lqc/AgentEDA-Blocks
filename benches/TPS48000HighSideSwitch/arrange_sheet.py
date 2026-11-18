@@ -29,6 +29,8 @@ import notes_rules  # noqa: E402
 import overlap  # noqa: E402
 import passive_text as pt  # noqa: E402
 import place  # noqa: E402
+import stamp_hash  # noqa: E402
+import canon  # noqa: E402
 from place import Sheet  # noqa: E402
 
 NS = "circuit-blocks/TPS48000HighSideSwitch"
@@ -161,7 +163,7 @@ def title_block(sh, title, desc, subdir):
         rev=REV,
         date=DATE,
         company=COMPANY,
-        comments={1: place.repo_comment(str(REPO), subdir), 2: desc, 3: "Author: " + AUTHOR},
+        comments={1: stamp_hash.title_comment(sh.path, subdir), 2: desc, 3: "Author: " + AUTHOR},
     )
 
 
@@ -443,7 +445,7 @@ def child(path, v, f):
     sk.note(bn["scp"] + "\n" + bn["tmr"], ctl_l + 3.81, ygb + 6.0)
     lt_b = ygb + 6.0 + 2 * PITCH + 3.5
     sk.box(ctl_l, lt_t, ctl_r, lt_b, "SHORT-CIRCUIT / LATCH")
-    sk.sh.save()
+    canon.save(sk.sh)
     return {"ctl": (ctl_l, ctl_top, ctl_r, ctl_bot), "soft": (soft_l, T2, soft_r, gate_b), "bst": (bst_t, bst_b),
             "latch_b": lt_b, "left_b": uv_b, "power": (pw_top, pw_bot)}
 
@@ -547,7 +549,7 @@ def root(path, v, f):
     nrows = max(len(c) for c in cols)
     sk.box(left, ytop, right, ytop + 6.8 + nrows * 2.03 + 3.5,
            notes_rules.DV_TITLE.format(**fl))
-    sh.save()
+    canon.save(sh)
 
 
 def check_stacks(path):

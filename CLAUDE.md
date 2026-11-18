@@ -67,8 +67,11 @@ ask. Repository structure, standard ports, versioning and sheet reuse: the `reus
 From the repo root, judging by exit code:
 `pcb fmt <file>` -> `pcb sync` (if imports changed) -> `pcb build -Dwarnings benches/<Block>/bench.zen` -> the
 affected `python3 blocks/<Block>/analysis.py`. Delete `__pycache__/` afterwards. Report every UNVERIFIED, waiver and
-open item. The first `pcb build` after a `pcb.toml` change has been seen to fail once without diagnostics; re-run
+open item.
+The first `pcb build` after a `pcb.toml` change has been seen to fail once without diagnostics; re-run
 before concluding anything.
+After committing sheet changes: `python3 tools/schematic/stamp_hash.py`, `tools/schematic/export_pdf.sh`, commit
+"Stamp sheet hashes" (each sheet's title-block hash is the commit that last changed its content).
 For a design-value change: edit the analysis, params or `.zen`; run `python3 blocks/<Block>/analysis.py`
 (regenerates the bench datasheet and `values.json`), then `python3 tools/schematic/update_notes.py benches/<Block>`
 (schematic notes from the values, no hand typing), then `pcb apply schematic --no-open benches/<Block>/bench.zen`
