@@ -1,0 +1,31 @@
+"""
+Reference instance of TPS48000HighSideSwitch: the configs the bench (benches/TPS48000HighSideSwitch/bench.zen) passes
+and the block uses when it is built on its own (the `pcb publish` pre-flight). A board sets its own values; these are
+not defaults for a board. Basis of each value (numbers live in the bench docs/design-analysis.md and values.json;
+values come from params.json through the block analysis):
+- rshunt, rshunt_tol: WSK2512-LOW 4 mohm, tolerance D (+/-0.5 %), WSK25124L000DEA, spec.md Block design (decision D1).
+- riscp: 10.5 kohm, the exact V(SCP) table row (spec.md Block design, DS p.7).
+- ctmr, cgate: 6.8 nF C0G (spec.md Block design). rtmr, rgate: 100 kohm (spec.md Block design).
+- r_top, r_mid, r_bot: UVLO/OV ladder selected by the analysis (params.json r_top_ohm, r_mid_ohm, r_bot_ohm).
+- Pin-pair voltages from values.json: v_vgs_range (V(G)-V(S)), v_cs_pair_range (CS+ - CS-, both fault directions, D10),
+  v_vds_range (V(D)-V(S)), v_rdamp_dc (R_DAMP DC voltage), vsense_op_max (shunt voltage at the 6 A design current;
+  spec.md decision D9: soft-short survival is judged by power in the analysis, not by this check).
+"""
+
+REFERENCE = {
+    "rshunt": "4mohm",
+    "rshunt_tol": "D",
+    "riscp": "10.5kohm",
+    "ctmr": "6.8nF",
+    "rtmr": "100kohm",
+    "rgate": "100kohm",
+    "cgate": "6.8nF",
+    "r_top": "536kohm",
+    "r_mid": "30.1kohm",
+    "r_bot": "51.1kohm",
+    "v_vgs": "0V to 13.86V",
+    "v_abs_cs_pair": "-0.45445225V to 0.45445225V",
+    "v_vds_rating": "-1.2V to 40V",
+    "v_rdamp_across": "0.1uV",
+    "v_shunt_across": "27.3mV",
+}

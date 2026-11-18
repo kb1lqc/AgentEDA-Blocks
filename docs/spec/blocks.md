@@ -8,6 +8,7 @@ pcb.toml                          [workspace] repository = "github.com/<owner>/<
 blocks/<Block>/                   one package per block (`pcb new package blocks/<Block>`)
   pcb.toml                        dependencies on library parts (tool-managed)
   <Block>.zen                     the module: ports, configs, Project(name="<Block>", path=..., layout=False)
+  reference.zen                   REFERENCE = {config: value}: the reference instance (bench values, with basis)
   spec.md                         purpose, operating conditions, ports, configs with valid ranges, part table with
                                   basis, worst-case results, interfaces, limits and why, open items
   analysis.py                     parameterised worst-case analysis
@@ -56,12 +57,17 @@ Power paths through a block are nets, not rail symbols. Rails that only feed par
 - A logic rail that only feeds pull-ups or bias (`V3V3` on a switch block) enters at the lower left: a short wire left, the power symbol pointing up at its left end, no text over the sheet symbol. A rail that powers an IC in the block stays on the top edge.
 
 ## Versioning
-- Release with tag `blocks/<Block>/vX.Y.Z`. Without CI `pcb publish` cannot run (zener-library
-  `docs/spec/pcb-toolchain.md` "Publishing"): on the merged main, after the bench gates pass, create the tag
-  `pcb publish --check` would, `git tag -a blocks/<Block>/vX.Y.Z -m "github.com/<owner>/<repo>/blocks/<Block> vX.Y.Z"`,
-  push it, and prove it resolves with `pcb add <url>/blocks/<Block>@X.Y.Z` in a throwaway board.
-- Open item: giving each block reference-instance defaults (the bench values) would let the `pcb publish` pre-flight
-  pass.
+- Release with tag `blocks/<Block>/vX.Y.Z`. On the merged main, after the bench gates pass, `pcb publish --check` must
+  exit 0 and prints each package's tag and message. Without CI `pcb publish` cannot run (zener-library
+  `docs/spec/pcb-toolchain.md` "Publishing"): create exactly the tag it printed,
+  `git tag -a blocks/<Block>/vX.Y.Z -m "github.com/<owner>/<repo>/blocks/<Block> vX.Y.Z"`, push it, and prove it
+  resolves with `pcb add <url>/blocks/<Block>@X.Y.Z` in a throwaway board.
+- The pre-flight builds each block on its own, with no parent and unset configs. Each block therefore has
+  `reference.zen` (`REFERENCE`, the bench's instance values with their basis; the bench passes `**REFERENCE`, so the
+  numbers live once) and, in `<Block>.zen`, `_ROOT = len(builtin.current_module_path()) == 0`: only when `_ROOT` the
+  block uses `REFERENCE` (`_x = T(REFERENCE["x"]) if _ROOT else x`, no rebinding) and skips its `Project(...)`. A board
+  instance never takes that branch: required configs stay required, and unset `v_*` overrides keep the conservative
+  net-range checks. Never give a block config a plain default to satisfy the pre-flight.
 - A board pins each block with `pcb add github.com/<owner>/<repo>/blocks/<Block>@<version>`; never hand-edit versions. In a block folder, use `pcb add <url>@<version>`; a plain `pcb sync` picks old versions.
 - Patch: notes, docs, analysis fixes that change no result direction. Minor: new configs with backward-compatible defaults, new analysis outputs. Major: any port, topology or default change.
 
@@ -86,7 +92,7 @@ Known limits: a net shared between instances may change from a global-style name
 ## New block checklist
 1. Spec first: purpose, ports from the table, configs and valid ranges, requirements to bound.
 2. Library parts exist (or are added to the library and released first).
-3. Module plus bench; `pcb build -Dwarnings` exit 0 on the bench.
+3. Module, `reference.zen` and bench; `pcb build -Dwarnings` exit 0 on the bench; `pcb publish --check` exit 0.
 4. `analysis.py` with `analyze(params)`; bench datasheet generated; every requirement judged with margin.
 5. Reference sheet per `docs/briefs/schematic-capture.md` in the library.
 6. Release the tag; record standard-port additions here.

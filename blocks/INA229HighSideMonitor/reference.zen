@@ -1,0 +1,14 @@
+"""
+Reference instance of INA229HighSideMonitor: the configs the bench (benches/INA229HighSideMonitor/bench.zen) passes and
+the block uses when it is built on its own (the `pcb publish` pre-flight). A board sets its own values; these are not
+defaults for a board. Basis of each value (numbers live in the bench docs/design-analysis.md and values.json):
+- rshunt, rshunt_tol: WSK2512R0100DEA (10 mohm, code D, +/-0.5 %), designer choice 2026-11-15 (Design definition).
+  Availability and lifecycle are not checked in the analysis (open item in spec.md).
+- vsense_max: self-heated worst-case Vsense rounded up to 0.1 mV (section 1; values.json vsense_round_up_mv).
+"""
+
+REFERENCE = {
+    "rshunt": "10mohm",
+    "rshunt_tol": "D",
+    "vsense_max": "60.5mV",
+}
