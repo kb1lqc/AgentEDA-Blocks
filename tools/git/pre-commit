@@ -3,6 +3,12 @@
 # Activated per clone with: git config core.hooksPath tools/git   (see README.md, Setup)
 # Runs only when the commit touches the design or the schematic. Bypassing (git commit --no-verify) is not allowed
 # by the repo rules in CLAUDE.md.
+# Fast environment and naming checks (tools/check_env.py) run on every commit.
+if ! python3 tools/check_env.py; then
+  echo "pre-commit: tools/check_env.py failed; commit refused. Fix the listed items (or, for accepted data findings,"
+  echo "            add an exact entry to tools/known_findings.toml) and retry."
+  exit 1
+fi
 staged=$(git diff --cached --name-only)
 if ! print -r -- "$staged" | grep -qE '\.zen$|/eda/.*\.kicad_(sch|pro)$|pcb\.toml$|^benches/[^/]+/docs/[^/]+\.pdf$'; then
   exit 0
