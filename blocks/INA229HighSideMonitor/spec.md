@@ -14,7 +14,7 @@ Phase: schematic only. No PCB layout work until it is explicitly started.
 
 Worst-case analysis: `blocks/INA229HighSideMonitor/analysis.py` (per instance: `--params`, `--out`) -> for the bench,
 `benches/INA229HighSideMonitor/docs/design-analysis.md` and charts and `values.json` in `benches/INA229HighSideMonitor/docs/design-analysis/` (all
-min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl.py`, with its cite).
+min/max corners; every datasheet number from zener-library v0.4.0, `analysis/_zl.py`, with its cite).
 
 **Operating conditions (bench reference instance; a board sets its own per instance)**
 - Bus: 12 V to 40 V DC, high-side sensing. Shunt in the positive rail.
@@ -97,8 +97,8 @@ min/max corners; every datasheet number from zener-library v0.3.0, `analysis/_zl
 - Checks: `pcb apply schematic` twice (second unchanged), `pcb build -Dwarnings` exit 0, KiCad ERC reviewed.
 
 **Library dependency**
-- zener-library packages: INA229AIDGS 0.1.0, WSK2512 0.2.0, GCM188 0.2.0, ERJ-3EKF 0.3.0 (`pcb.toml`, tool-managed);
-  Python analysis pinned to v0.3.0. All symbols are KiCad 10 format, required by `pcb apply`.
+- zener-library packages: INA229AIDGS 0.2.0, WSK2512 0.2.0, GCM188 0.2.0, ERJ-3EKF 0.3.0 (`pcb.toml`, tool-managed);
+  Python analysis pinned to v0.4.0. All symbols are KiCad 10 format, required by `pcb apply`.
 
 ## Open Questions
 

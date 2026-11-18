@@ -4193,7 +4193,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_Infineon_ISC035N10NM5LF2@0.2.1-0.20261116080147-f563e7eb12a068f7fc1e2ec2d6c8ba3a7803e41a:ISC035N10NM5LF2"
+		(property "Footprint" "kb1lqc_zener-library_components_Infineon_ISC035N10NM5LF2@0.3.0:ISC035N10NM5LF2"
 			(at 254 43.18 270)
 			(hide yes)
 			(show_name no)
@@ -5362,7 +5362,7 @@
 				)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_TexasInstruments_TPS48000QDGXQ1@0.2.1-0.20261116080147-f563e7eb12a068f7fc1e2ec2d6c8ba3a7803e41a:TPS48000QDGXQ1"
+		(property "Footprint" "kb1lqc_zener-library_components_TexasInstruments_TPS48000QDGXQ1@0.3.0:TPS48000QDGXQ1"
 			(at 190.5 109.22 0)
 			(hide yes)
 			(show_name no)

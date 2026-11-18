@@ -11,7 +11,7 @@ every coordinate is computed from symbol pin geometry. Nothing here changes conn
 diff (netcmp.py) after `pcb apply`. Same structure as benches/TPS48000HighSideSwitch/arrange_sheet.py.
 
 Helpers come from the zener-library tools; set ZL_TOOLS to the directory holding place.py, overlap.py, kicad_sexpr.py
-(default: ../zener-library-tools/tools/schematic next to this repo). Passive text: tools/schematic/passive_text.py.
+(default: ../zener-library/tools/schematic next to this repo, the v0.4.0 release checkout). Passive text: tools/schematic/passive_text.py.
 Numbers on the sheets come from notes_rules.py (templates filled from values.json); update_notes.py keeps them current.
 
 Layout of the block sheet (INA229 mirrored in x: SPI pins face the SPI box, supply and sense pins face the sense taps):
@@ -27,7 +27,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-ZL = os.environ.get("ZL_TOOLS", str(REPO.parent / "zener-library-tools" / "tools" / "schematic"))
+ZL = os.environ.get("ZL_TOOLS", str(REPO.parent / "zener-library" / "tools" / "schematic"))
 sys.path.insert(0, ZL)
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(REPO / "tools" / "schematic"))

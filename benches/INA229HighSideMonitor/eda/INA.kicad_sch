@@ -2158,7 +2158,7 @@
 				)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_TexasInstruments_INA229AIDGS@0.1.0:INA229AIDGS"
+		(property "Footprint" "kb1lqc_zener-library_components_TexasInstruments_INA229AIDGS@0.2.0:INA229AIDGS"
 			(at 90.17 99.06 180)
 			(hide yes)
 			(show_name no)

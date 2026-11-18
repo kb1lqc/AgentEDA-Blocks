@@ -17,7 +17,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ZL_VERSION = "v0.3.0"
+ZL_VERSION = "v0.4.0"
 ZL = Path(os.environ.get("ZENER_LIBRARY", Path(__file__).resolve().parent.parent.parent / "zener-library")).resolve()
 
 if not (ZL / "lib" / "__init__.py").exists():
