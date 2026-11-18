@@ -130,7 +130,7 @@
   "c0g_preferred_available": true,
   "bom_lines": 13,
   "divider_matches_params": true,
-  "library": "Released: Zener deps ISC035N10NM5LF2 v0.3.0 and TPS48000QDGXQ1 v0.3.0; Python library zener-library v0.4.0 (ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases (before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).",
+  "library": "Released: Zener deps ISC035N10NM5LF2 v0.3.0 and TPS48000QDGXQ1 v0.3.0; Python library zener-library v0.5.0 (ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases (before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).",
   "summary": [
     {
       "key": "uvlo_rise_max_v",
