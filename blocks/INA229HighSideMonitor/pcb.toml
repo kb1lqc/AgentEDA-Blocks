@@ -1,5 +1,5 @@
 [dependencies]
-"github.com/kb1lqc/zener-library/components/Murata/GCM188" = "0.2.0"
-"github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF" = "0.3.0"
-"github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS" = "0.2.0"
-"github.com/kb1lqc/zener-library/components/Vishay/WSK2512" = "0.2.0"
+"github.com/kb1lqc/zener-library/components/Murata/GCM188" = "0.3.0"
+"github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF" = "0.4.0"
+"github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS" = "0.3.0"
+"github.com/kb1lqc/zener-library/components/Vishay/WSK2512" = "0.3.0"

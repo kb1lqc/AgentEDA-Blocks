@@ -273,9 +273,20 @@ def write_pdf(md_path):
     return pdf
 
 
-def write_report(md_path, text):
+PASS_WORD = re.compile(r"\bPASS\b(?! \(UNVERIFIED INPUTS\))")
+
+
+def mark_unverified(text, unverified):
+    """Every judged PASS becomes 'PASS (UNVERIFIED INPUTS)' when any library row the analysis read has no `verified`
+    stamp (zener-library docs/spec/lib-api.md; the rows come from lib.unverified_inputs())."""
+    return PASS_WORD.sub("PASS (UNVERIFIED INPUTS)", text) if unverified else text
+
+
+def write_report(md_path, text, unverified=()):
     """Write the report text to md_path, then render its PDF (write_pdf). If the file on disk differs from text only in
-    the results-date line, it is kept as is, so a rerun that changes no result changes no file. Returns the PDF path."""
+    the results-date line, it is kept as is, so a rerun that changes no result changes no file. unverified: the rows
+    lib.unverified_inputs() lists; any makes every PASS read 'PASS (UNVERIFIED INPUTS)'. Returns the PDF path."""
+    text = mark_unverified(text, unverified)
     md = Path(md_path)
     old = md.read_text(encoding="utf-8") if md.is_file() else None
     if old is None or RESULTS_DATE.sub("", old) != RESULTS_DATE.sub("", text):

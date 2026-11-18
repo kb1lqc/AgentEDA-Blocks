@@ -54,7 +54,7 @@ sys.path.insert(0, str(REPO))  # first, so `analysis` is the repo package and no
 
 from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.path)
 from analysis._zl import ZL_VERSION
-from lib import Param, load, wca
+from lib import Param, inputs_section, load, unverified_inputs, wca
 from analysis.md_pdf import write_report
 
 import matplotlib.pyplot as plt  # imported after lib, which selects the Agg backend
@@ -1857,7 +1857,8 @@ DESIGN_MD = ["## Design definition", ""] + mdtable(
 
 FINAL = HEADER + DESIGN_MD + md_summary + md
 DOCS.mkdir(parents=True, exist_ok=True)
-write_report(MD_PATH, "\n".join(FINAL) + "\n")  # .md unless only the results date changed, then the PDF (md hash stamp)
+FINAL += inputs_section()  # library rows read and their `verified` stamps (zener-library lib-api.md)
+write_report(MD_PATH, "\n".join(FINAL) + "\n", unverified=unverified_inputs())  # .md unless only the results date changed, then the PDF (md hash stamp)
 
 # %% [markdown]
 # ## values.json and console summary

@@ -98,5 +98,22 @@ class WriteReport(unittest.TestCase):
         self.assertEqual(self.md.read_text(), new)
 
 
+
+class MarkUnverified(unittest.TestCase):
+    def test_marks_every_pass_only_when_unverified(self):
+        text = "a | PASS\nb | ESTIMATE, PASS\nc | FAIL\nBYPASS PASSIVE\n"
+        self.assertEqual(md_pdf.mark_unverified(text, []), text)
+        out = md_pdf.mark_unverified(text, ["X:y"])
+        self.assertEqual(out.count("PASS (UNVERIFIED INPUTS)"), 2)
+        self.assertIn("BYPASS PASSIVE", out)
+        self.assertEqual(md_pdf.mark_unverified(out, ["X:y"]), out)  # idempotent
+
+    def test_write_report_applies_it(self):
+        with tempfile.TemporaryDirectory() as t, mock.patch.object(md_pdf, "write_pdf", return_value="pdf"):
+            md = Path(t) / "design-analysis.md"
+            md_pdf.write_report(md, "r | PASS\n", unverified=["X:y"])
+            self.assertEqual(md.read_text(), "r | PASS (UNVERIFIED INPUTS)\n")
+
+
 if __name__ == "__main__":
     unittest.main()

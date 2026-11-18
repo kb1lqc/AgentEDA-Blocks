@@ -47,7 +47,7 @@ sys.path.insert(0, str(REPO))  # first, so `analysis` is the repo package and no
 
 from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.path; keeps its version warning)
 from analysis._zl import ZL, ZL_VERSION, zl_git, zl_released
-from lib import Param, load as load_part, series, wca
+from lib import Param, inputs_section, load as load_part, series, unverified_inputs, wca
 from analysis.md_pdf import write_report
 
 import numpy as np
@@ -1491,9 +1491,10 @@ def analyze(params_path=None, out=None, instance="TPS"):
     md1 += ["", f"Divider selected for the bench (params): r_top {fmt_ohm(R_DIV[0])}, r_mid {fmt_ohm(R_DIV[1])}, r_bot {fmt_ohm(R_DIV[2])}.", ""]
     FINAL = HEADER + md1 + md_all
     DOCS.mkdir(parents=True, exist_ok=True)
-    write_report(MD_PATH, "\n".join(FINAL) + "\n")  # .md unless only the results date changed, then the PDF (md hash stamp)
+    FINAL += inputs_section()  # library rows read and their `verified` stamps (zener-library lib-api.md)
+    write_report(MD_PATH, "\n".join(FINAL) + "\n", unverified=unverified_inputs())  # .md unless only the results date changed, then the PDF (md hash stamp)
 
-    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.3.0 and TPS48000QDGXQ1 v0.3.0; Python library zener-library "
+    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.4.0 and TPS48000QDGXQ1 v0.4.0; Python library zener-library "
                 f"{ZL_VERSION} "
                 "(ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases "
                 "(before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).")
