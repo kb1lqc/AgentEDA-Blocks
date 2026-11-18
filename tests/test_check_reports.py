@@ -48,14 +48,14 @@ class Reports(unittest.TestCase):
         write(self.root / "benches/B/docs/design-analysis.md", "# report\nvalue 2\n")
         self.assertEqual(self.rules()[0], {"REP-STALE"})
 
-    def test_run_date_only_difference_passes(self):
-        write(self.root / "blocks/B/analysis.py", ANALYSIS.replace("# report\\n", "# report\\n- Run date: 2026-11-18.\\n"))
-        write(self.root / "benches/B/docs/design-analysis.md", "# report\n- Run date: 2026-11-17.\nvalue 1\n")
+    def test_results_date_only_difference_passes(self):
+        write(self.root / "blocks/B/analysis.py", ANALYSIS.replace("# report\\n", "# report\\n- Results date: 2026-11-18.\\n"))
+        write(self.root / "benches/B/docs/design-analysis.md", "# report\n- Results date: 2026-11-17.\nvalue 1\n")
         self.assertEqual(self.rules(), (set(), 1))
 
-    def test_run_date_plus_value_difference_fails(self):
-        write(self.root / "blocks/B/analysis.py", ANALYSIS.replace("# report\\n", "# report\\n- Run date: 2026-11-18.\\n"))
-        write(self.root / "benches/B/docs/design-analysis.md", "# report\n- Run date: 2026-11-17.\nvalue 2\n")
+    def test_results_date_plus_value_difference_fails(self):
+        write(self.root / "blocks/B/analysis.py", ANALYSIS.replace("# report\\n", "# report\\n- Results date: 2026-11-18.\\n"))
+        write(self.root / "benches/B/docs/design-analysis.md", "# report\n- Results date: 2026-11-17.\nvalue 2\n")
         self.assertEqual(self.rules()[0], {"REP-STALE"})
 
     def test_stale_values_fails(self):
