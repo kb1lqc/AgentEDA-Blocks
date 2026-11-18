@@ -26,6 +26,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: circuit-blocks
+          fetch-depth: 0  # sheet hash stamps compare against each sheet's last commit
       - name: Library release pinned by analysis/_zl.py
         id: zl
         run: echo "ref=$(sed -n 's/^ZL_VERSION = "\(.*\)"/\1/p' circuit-blocks/analysis/_zl.py)" >> "$GITHUB_OUTPUT"

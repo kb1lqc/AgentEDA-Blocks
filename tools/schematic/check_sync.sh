@@ -17,7 +17,7 @@ zens=("$@")
 (( ${#zens} )) || zens=(benches/*/bench.zen)
 (( ${#zens} )) || { echo "no benches/*/bench.zen found (run from the repo root)"; exit 1; }
 fail=0
-if pgrep -q eeschema; then echo "WARN: KiCad eeschema is running; close it so the files on disk are final"; fi
+if pgrep eeschema > /dev/null 2>&1; then echo "WARN: KiCad eeschema is running; close it so the files on disk are final"; fi
 tmp=$(mktemp -d)
 rsync -a --exclude .git --exclude '*.lck' $repo/ $tmp/
 for zen in $zens; do
