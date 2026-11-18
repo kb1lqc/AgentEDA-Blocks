@@ -56,7 +56,12 @@ Power paths through a block are nets, not rail symbols. Rails that only feed par
 - A logic rail that only feeds pull-ups or bias (`V3V3` on a switch block) enters at the lower left: a short wire left, the power symbol pointing up at its left end, no text over the sheet symbol. A rail that powers an IC in the block stays on the top edge.
 
 ## Versioning
-- Release with tag `blocks/<Block>/vX.Y.Z` (`pcb publish`, or a manual tag if it needs a TTY).
+- Release with tag `blocks/<Block>/vX.Y.Z`. Without CI `pcb publish` cannot run (zener-library
+  `docs/spec/pcb-toolchain.md` "Publishing"): on the merged main, after the bench gates pass, create the tag
+  `pcb publish --check` would, `git tag -a blocks/<Block>/vX.Y.Z -m "github.com/<owner>/<repo>/blocks/<Block> vX.Y.Z"`,
+  push it, and prove it resolves with `pcb add <url>/blocks/<Block>@X.Y.Z` in a throwaway board.
+- Open item: giving each block reference-instance defaults (the bench values) would let the `pcb publish` pre-flight
+  pass.
 - A board pins each block with `pcb add github.com/<owner>/<repo>/blocks/<Block>@<version>`; never hand-edit versions. In a block folder, use `pcb add <url>@<version>`; a plain `pcb sync` picks old versions.
 - Patch: notes, docs, analysis fixes that change no result direction. Minor: new configs with backward-compatible defaults, new analysis outputs. Major: any port, topology or default change.
 
