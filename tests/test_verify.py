@@ -146,6 +146,17 @@ class TestChain(unittest.TestCase):
         self.assertEqual(v.run_cmd(["/no/such/bin"], self.tmp.name)[0], 127)
 
 
+class TestLogDir(unittest.TestCase):
+    def test_default_log_dir_is_fresh_per_run(self):
+        # two runs at once must not share a log directory (circuit-blocks #8)
+        import shutil
+        a, b = v.Chain(".", None, None), v.Chain(".", None, None)
+        self.addCleanup(shutil.rmtree, a.log_dir, True)
+        self.addCleanup(shutil.rmtree, b.log_dir, True)
+        self.assertNotEqual(a.log_dir, b.log_dir)
+        self.assertTrue(a.log_dir.is_dir() and a.log_dir.name.startswith("cb-logs-"))
+
+
 class TestErc(unittest.TestCase):
     def test_classify(self):
         counts, bad = v.classify_erc(ERC_OK)
