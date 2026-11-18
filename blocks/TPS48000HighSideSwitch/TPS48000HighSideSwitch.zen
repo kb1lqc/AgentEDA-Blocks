@@ -22,6 +22,7 @@ SRC, DS p.5); the C1 node is declared against GND. Quiescent and timing values a
 """
 
 load("@stdlib/units.zen", "Capacitance", "Resistance", "Temperature", "Voltage")
+load("./reference.zen", "REFERENCE")
 
 TPS = Module("github.com/kb1lqc/zener-library/components/TexasInstruments/TPS48000QDGXQ1/TPS48000QDGXQ1.zen")
 ISC = Module("github.com/kb1lqc/zener-library/components/Infineon/ISC035N10NM5LF2/ISC035N10NM5LF2.zen")
@@ -30,7 +31,10 @@ GCM = Module("github.com/kb1lqc/zener-library/components/Murata/GCM188/GCM188.ze
 GCM21B = Module("github.com/kb1lqc/zener-library/components/Murata/GCM21B/GCM21B.zen")
 ERJ = Module("github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF/ERJ-3EKF.zen")
 
-Project(name="TPS48000HighSideSwitch", path="TPS48000HighSideSwitch", layout=False)
+# Built on its own (`pcb publish` pre-flight) or instantiated by a board/bench (the sub-sheet).
+_ROOT = len(builtin.current_module_path()) == 0
+if not _ROOT:  # standalone there is no parent sheet, and pcb would look for a KiCad project here
+    Project(name="TPS48000HighSideSwitch", path="TPS48000HighSideSwitch", layout=False)
 
 BUS_IN = io(Net)
 BUS_OUT = io(Net)
@@ -72,14 +76,34 @@ v_vds_rating = config(Voltage, optional=True, help="Range of V(D) - V(S) in oper
 v_shunt_across = config(Voltage, optional=True, help="Shunt voltage, normal operation at the 6 A design current")
 v_rdamp_across = config(Voltage, optional=True, help="Voltage across R_DAMP, DC, values.json v_rdamp_dc")
 
+# Built on its own (the `pcb publish` pre-flight builds each block standalone with unset configs): use the reference
+# instance (reference.zen, the bench values) so the library checks see orderable parts and the analysed pin-pair
+# voltages. A board instance never takes this branch: its configs stay required, and a v_* override the board does
+# not pass stays unset, so that check falls back to the conservative net ranges.
+_rshunt = Resistance(REFERENCE["rshunt"]) if _ROOT else rshunt
+_rshunt_tol = REFERENCE["rshunt_tol"] if _ROOT else rshunt_tol
+_riscp = Resistance(REFERENCE["riscp"]) if _ROOT else riscp
+_ctmr = Capacitance(REFERENCE["ctmr"]) if _ROOT else ctmr
+_rtmr = Resistance(REFERENCE["rtmr"]) if _ROOT else rtmr
+_rgate = Resistance(REFERENCE["rgate"]) if _ROOT else rgate
+_cgate = Capacitance(REFERENCE["cgate"]) if _ROOT else cgate
+_r_top = Resistance(REFERENCE["r_top"]) if _ROOT else r_top
+_r_mid = Resistance(REFERENCE["r_mid"]) if _ROOT else r_mid
+_r_bot = Resistance(REFERENCE["r_bot"]) if _ROOT else r_bot
+_v_vgs = Voltage(REFERENCE["v_vgs"]) if _ROOT else v_vgs
+_v_abs_cs_pair = Voltage(REFERENCE["v_abs_cs_pair"]) if _ROOT else v_abs_cs_pair
+_v_vds_rating = Voltage(REFERENCE["v_vds_rating"]) if _ROOT else v_vds_rating
+_v_rdamp_across = Voltage(REFERENCE["v_rdamp_across"]) if _ROOT else v_rdamp_across
+_v_shunt_across = Voltage(REFERENCE["v_shunt_across"]) if _ROOT else v_shunt_across
+
 # The wrappers' optional ambient config rejects None, so pass it only when the board sets it.
 _AMB = {"ambient": ambient} if ambient != None else {}
 # Pin-pair and shunt voltages, passed only when the board sets them (same pattern as ambient).
-_VGS = {"v_vgs": v_vgs} if v_vgs != None else {}
-_VDS = {"v_vds_rating": v_vds_rating} if v_vds_rating != None else {}
-_CSP = {"v_abs_cs_pair": v_abs_cs_pair} if v_abs_cs_pair != None else {}
-_VSH = {"v_across": v_shunt_across} if v_shunt_across != None else {}
-_VRD = {"v_across": v_rdamp_across} if v_rdamp_across != None else {}
+_VGS = {"v_vgs": _v_vgs} if _v_vgs != None else {}
+_VDS = {"v_vds_rating": _v_vds_rating} if _v_vds_rating != None else {}
+_CSP = {"v_abs_cs_pair": _v_abs_cs_pair} if _v_abs_cs_pair != None else {}
+_VSH = {"v_across": _v_shunt_across} if _v_shunt_across != None else {}
+_VRD = {"v_across": _v_rdamp_across} if _v_rdamp_across != None else {}
 
 # Internal nets. Voltages are declared as bounds (see the module docstring); the shunt and FET drain follow BUS_IN.
 DRAIN = Net(voltage=BUS_IN.voltage)
@@ -135,8 +159,8 @@ Q1 = ISC(
 
 SHUNT = WSK(
     name="SHUNT",
-    value=rshunt,
-    tolerance=rshunt_tol,
+    value=_rshunt,
+    tolerance=_rshunt_tol,
     I1=BUS_IN,
     I2=DRAIN,
     E1=CS_P,
@@ -146,13 +170,13 @@ SHUNT = WSK(
 )
 
 # ISCP set-point resistor to GND (V(SCP) from RISCP).
-R_ISCP = ERJ(name="R_ISCP", value=riscp, P1=ISCP_NET, P2=_GND, derate=derate, **_AMB)
+R_ISCP = ERJ(name="R_ISCP", value=_riscp, P1=ISCP_NET, P2=_GND, derate=derate, **_AMB)
 
 # Fault timer: CTMR, and the latch-off resistor RTMR across it (DS p.19). C0G so the timer tolerance is not temperature
 # or DC-bias dependent.
 C_TMR = GCM(
     name="C_TMR",
-    value=ctmr,
+    value=_ctmr,
     rated_v="100V",
     dielectric="C0G",
     tolerance="+/-5%",
@@ -161,15 +185,15 @@ C_TMR = GCM(
     derate=derate,
     **_AMB,
 )
-R_TMR = ERJ(name="R_TMR", value=rtmr, P1=TMR_NET, P2=_GND, dnp=not rtmr_fitted, derate=derate, **_AMB)
+R_TMR = ERJ(name="R_TMR", value=_rtmr, P1=TMR_NET, P2=_GND, dnp=not rtmr_fitted, derate=derate, **_AMB)
 
 # Gate ramp (DS Fig 7-4 p.15): PU -> R1 -> gate; PD tied to the gate (fast turn-off, DS p.16); gate -> R2 -> C1 -> GND.
-R_GATE = ERJ(name="R_GATE", value=rgate, P1=PU_NET, P2=GATE, derate=derate, **_AMB)
+R_GATE = ERJ(name="R_GATE", value=_rgate, P1=PU_NET, P2=GATE, derate=derate, **_AMB)
 R_DAMP = ERJ(name="R_DAMP", value=r_damp, P1=GATE, P2=C1_NODE, derate=derate, **dict(_AMB, **_VRD))
 # C1 sees V(gate - GND) up to the bus maximum plus V(BST-SRC) max (eq. 3 / eq. 4, DS p.16). 100 V C0G (designer D13).
 C_GATE = GCM(
     name="C_GATE",
-    value=cgate,
+    value=_cgate,
     rated_v="100V",
     dielectric="C0G",
     tolerance="+/-5%",
@@ -218,9 +242,9 @@ C_SRC = GCM(
 )
 
 # UVLO/OV ladder: BUS_IN -> r_top -> EN/UVLO -> r_mid -> OV -> r_bot -> GND (DS Fig 7-5 p.16, eq. 12, 13).
-R_TOP = ERJ(name="R_TOP", value=r_top, P1=BUS_IN, P2=EN_NODE, derate=derate, **_AMB)
-R_MID = ERJ(name="R_MID", value=r_mid, P1=EN_NODE, P2=OV_NODE, derate=derate, **_AMB)
-R_BOT = ERJ(name="R_BOT", value=r_bot, P1=OV_NODE, P2=_GND, derate=derate, **_AMB)
+R_TOP = ERJ(name="R_TOP", value=_r_top, P1=BUS_IN, P2=EN_NODE, derate=derate, **_AMB)
+R_MID = ERJ(name="R_MID", value=_r_mid, P1=EN_NODE, P2=OV_NODE, derate=derate, **_AMB)
+R_BOT = ERJ(name="R_BOT", value=_r_bot, P1=OV_NODE, P2=_GND, derate=derate, **_AMB)
 
 # Open-drain pull-ups to V3V3 (DNP-able). 10 kohm, as on INA229HighSideMonitor.
 R_FAULT = ERJ(name="R_FAULT", value="10kohm", P1=FAULT_N, P2=V3V3, dnp=not fault_pullup, derate=derate, **_AMB)

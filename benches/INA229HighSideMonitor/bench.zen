@@ -9,6 +9,7 @@ wrapper; an unset ambient reports UNVERIFIED on each part's temperature check.
 
 load("@stdlib/units.zen", "Temperature")
 load("@stdlib/interfaces.zen", "Spi")
+load("github.com/kb1lqc/circuit-blocks/blocks/INA229HighSideMonitor/reference.zen", "REFERENCE")
 
 INA229HighSideMonitor = Module(
     "github.com/kb1lqc/circuit-blocks/blocks/INA229HighSideMonitor/INA229HighSideMonitor.zen"
@@ -34,12 +35,11 @@ SPI = Spi(
     MISO=Net("SPI_MISO", voltage="0V to 3.399V"),
 )
 
-# Design inputs and their basis; numbers live in docs/design-analysis.md / values.json next to this file (do not copy them here).
-# Full scale: 6 A bidirectional, designer choice 2026-11-15. The +/-1 % of reading requirement at 6 A is judged on the
-# BOL calibrated, self-heated worst case (docs/design-analysis.md, section 5b; values.json err_fs_cal_pct).
-# rshunt, rshunt_tol: WSK2512R0100DEA (10 mohm, code D, +/-0.5 %), designer choice 2026-11-15 (Design definition).
-# Availability and lifecycle are not checked in the analysis (open item in spec.md).
-# vsense_max: self-heated worst-case Vsense rounded up to 0.1 mV (section 1; values.json vsense_round_up_mv).
+# Design inputs: the reference instance (rshunt, rshunt_tol, vsense_max) lives in the block package,
+# blocks/INA229HighSideMonitor/reference.zen, with the basis of each value; numbers live in docs/design-analysis.md /
+# values.json next to this file. Full scale: 6 A bidirectional, designer choice 2026-11-15. The +/-1 % of reading
+# requirement at 6 A is judged on the BOL calibrated, self-heated worst case (docs/design-analysis.md, section 5b;
+# values.json err_fs_cal_pct).
 INA = INA229HighSideMonitor(
     name="INA",
     BUS_IN=VBUS_IN,
@@ -48,11 +48,9 @@ INA = INA229HighSideMonitor(
     GND=GND,
     SPI=SPI,
     ALERT_N=ALERT_N,
-    rshunt="10mohm",
-    rshunt_tol="D",
-    vsense_max="60.5mV",
     ambient=ambient,
     derate=derate,
+    **REFERENCE,
 )
 
 Board(

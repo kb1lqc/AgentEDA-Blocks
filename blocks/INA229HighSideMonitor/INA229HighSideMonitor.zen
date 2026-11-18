@@ -27,8 +27,12 @@ and 100 nF VS decoupling are from DS Fig 8-2 and DS section 9.
 
 load("@stdlib/interfaces.zen", "Spi")
 load("@stdlib/units.zen", "Impedance", "Resistance", "Temperature", "Voltage")
+load("./reference.zen", "REFERENCE")
 
-Project(name="INA229HighSideMonitor", path="INA229HighSideMonitor", layout=False)
+# Built on its own (`pcb publish` pre-flight) or instantiated by a board/bench (the sub-sheet).
+_ROOT = len(builtin.current_module_path()) == 0
+if not _ROOT:  # standalone there is no parent sheet, and pcb would look for a KiCad project here
+    Project(name="INA229HighSideMonitor", path="INA229HighSideMonitor", layout=False)
 
 INA229 = Module("github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS/INA229AIDGS.zen")
 WSK2512 = Module("github.com/kb1lqc/zener-library/components/Vishay/WSK2512/WSK2512.zen")
@@ -62,10 +66,17 @@ vsense_max = config(
     Voltage, optional=True, help="Worst-case shunt voltage I_max x R_worst from the analysis; sets the shunt v_across"
 )
 
+# Built on its own (the `pcb publish` pre-flight builds each block standalone with unset configs): use the reference
+# instance (reference.zen, the bench values) so the library checks see orderable parts. A board instance never takes
+# this branch; its configs stay required.
+_rshunt = Resistance(REFERENCE["rshunt"]) if _ROOT else rshunt
+_rshunt_tol = REFERENCE["rshunt_tol"] if _ROOT else rshunt_tol
+_vsense_max = Voltage(REFERENCE["vsense_max"]) if _ROOT else vsense_max
+
 # The wrappers' optional ambient config rejects None, so pass it only when the board sets it.
 _AMB = {"ambient": ambient} if ambient != None else {}
 # Shunt v_across from the module's analysis, passed only when the board sets vsense_max.
-_VSENSE = {"v_across": vsense_max} if vsense_max != None else {}
+_VSENSE = {"v_across": _vsense_max} if _vsense_max != None else {}
 
 # Kelvin sense nets from the shunt taps to the INA229 IN+/IN-. The taps sit on the I1/I2 terminals, so they carry the
 # bus voltage; the shunt drop (<= 0.16 V) is negligible versus the declared range. None when the block is built alone.
@@ -94,8 +105,8 @@ U = INA229(
 
 SHUNT = WSK2512(
     name="SHUNT",
-    value=rshunt,
-    tolerance=rshunt_tol,
+    value=_rshunt,
+    tolerance=_rshunt_tol,
     I1=BUS_IN,
     I2=BUS_OUT,
     E1=SENSE_P,
