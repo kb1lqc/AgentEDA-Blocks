@@ -10,7 +10,7 @@ every coordinate is computed from symbol pin geometry. Nothing here changes conn
 diff (`netcmp.py`) after `pcb apply`.
 
 Helpers come from the zener-library tools; set ZL_TOOLS to the directory holding place.py, overlap.py, kicad_sexpr.py
-(default: ../zener-library/tools/schematic next to this repo's parent, the v0.4.0 release checkout). Numbers on the sheets come from
+(default: ../zener-library/tools/schematic next to this repo's parent, the ZL_VERSION release checkout). Numbers on the sheets come from
 notes_rules.py (templates filled from values.json); the notes script keeps them current.
 """
 import json

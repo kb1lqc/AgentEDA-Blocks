@@ -1,0 +1,4 @@
+# Accepted violations of tools/check_env.py and tools/check_reports.py (exact match; stale entries fail the run).
+# Format:  [[finding]]  file = "<path from repo root>"  location = "<key or location>"  rule = "<rule id>"
+#          reason = "<one line>"  found = "2026-11-17"
+# Empty on 2026-11-17: the checks found no violation in the committed tree.

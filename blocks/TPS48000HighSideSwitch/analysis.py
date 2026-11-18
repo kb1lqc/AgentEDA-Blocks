@@ -46,7 +46,7 @@ REPO = find_repo_root()
 sys.path.insert(0, str(REPO))  # first, so `analysis` is the repo package and not this script's own folder
 
 from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.path; keeps its version warning)
-from analysis._zl import ZL, ZL_VERSION
+from analysis._zl import ZL, ZL_VERSION, zl_git, zl_released
 from lib import Param, load as load_part, series, wca
 from analysis.md_pdf import write_pdf
 
@@ -76,12 +76,10 @@ def analyze(params_path=None, out=None, instance="TPS"):
     RUN_DATE = datetime.date.today().isoformat()
 
 
-    def git(*args):
-        return subprocess.run(["git", "-C", str(ZL), *args], capture_output=True, text=True).stdout.strip()
+    git = zl_git
 
 
-    _tags = git("tag", "--points-at", "HEAD").split()
-    if ZL_VERSION in _tags and not git("status", "--porcelain"):
+    if zl_released():
         LIB_TEXT = f"zener-library {ZL_VERSION} (`analysis/_zl.py`)"
     else:
         LIB_TEXT = (f"{git('branch', '--show-current') or 'detached'} @ {git('rev-parse', '--short', 'HEAD')}, "
@@ -1465,7 +1463,9 @@ def analyze(params_path=None, out=None, instance="TPS"):
             "- No reverse-polarity blocking, no input TVS, no output diode (designer decision): DS p.27-28 recommends them; open items in the spec.",
             "- The V(G_GOOD) / V(BST-SRC) ON overlap is an accepted residual risk (section 9).",
             "- The DS example numbers marked `DS` in section 3 are quoted from the datasheet text, not from `component.toml` (adding them to the library is a library change).",
-            f"- Library: {LIB_TEXT}. The FET curve rows (`soa_*`, `zthjc_*`, `rds_*`, `ioutput_*`) exist only on the unreleased branch; results must be regenerated after the release tag is pinned.", ""]
+            f"- Library: {LIB_TEXT}. The FET curve rows (`soa_*`, `zthjc_*`, `rds_*`, `ioutput_*`) "
+            + ("are in this release." if zl_released() else
+               "exist only on the unreleased branch; results must be regenerated after the release tag is pinned."), ""]
     md_all += md12
 
     # %% [markdown]
@@ -1494,7 +1494,8 @@ def analyze(params_path=None, out=None, instance="TPS"):
     MD_PATH.write_text("\n".join(FINAL) + "\n")
     write_pdf(MD_PATH)  # design-analysis.pdf: the datasheet as PDF, stamped with the .md hash
 
-    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.3.0 and TPS48000QDGXQ1 v0.3.0; Python library zener-library v0.4.0 "
+    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.3.0 and TPS48000QDGXQ1 v0.3.0; Python library zener-library "
+                f"{ZL_VERSION} "
                 "(ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases "
                 "(before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).")
     VSENSE_MAX = math.ceil(round(I_NT * r_hi(TE_NT) * 1e4, 6)) / 1e4  # V, rounded UP to 0.1 mV
