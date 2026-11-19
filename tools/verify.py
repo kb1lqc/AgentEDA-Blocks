@@ -17,7 +17,7 @@ Default chain, each step judged by exit code:
   hier_label_mismatch are fatal (docs/spec/pcb-toolchain.md "ERC"), every other class is counted; overlap.py on every
   sheet. kicad-cli: $KICAD_CLI or the macOS default. zener-library: --zl, $ZENER_LIBRARY or ../zener-library.
 Output: one PASS line with counts, or the first 5 failures as `file:line message` (`step: line` when no location).
-Full logs, one file per step incl. `pcb --version`: --log-dir (default $TMPDIR/cb-verify); the path is printed last.
+Full logs, one file per step incl. `pcb --version`: --log-dir (default: a new $TMPDIR/cb-logs-* per run); the path is printed last.
 __pycache__ directories are removed afterwards.
 """
 
@@ -95,7 +95,8 @@ def zl_dir(root, zl=None):
 class Chain:
     def __init__(self, root, log_dir, runner):
         self.root, self.runner = Path(root), runner
-        self.log_dir = Path(log_dir) if log_dir else Path(tempfile.gettempdir()) / "cb-verify"
+        # a fresh directory per run, so two runs at once never share logs (circuit-blocks #8)
+        self.log_dir = Path(log_dir) if log_dir else Path(tempfile.mkdtemp(prefix="cb-logs-"))
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.fails, self.counts, self.notes, self.n = [], {}, [], 0
 

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# kicad-cli from the pinned official KiCad image (kicad/kicad:$KICAD_IMAGE_TAG), run with the caller's paths mounted at
+# the same locations and the caller's uid/gid, so outputs land where verify.py expects them and stay owned by the runner.
+set -euo pipefail
+exec docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v /tmp:/tmp -v "${RUNNER_TEMP:-/tmp}:${RUNNER_TEMP:-/tmp}" -v "${GITHUB_WORKSPACE:-$PWD}:${GITHUB_WORKSPACE:-$PWD}" \
+  -w "$PWD" "kicad/kicad:${KICAD_IMAGE_TAG:?}" kicad-cli "$@"

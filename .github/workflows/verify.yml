@@ -1,0 +1,75 @@
+name: verify
+# Every PR and push to main runs the blocks' own gates: tools/verify.py (environment, bench builds, every design
+# analysis regenerated and compared, schematic sync) and tools/verify.py --schematic per bench (apply twice, netlist
+# diff, classified ERC). zener-library is checked out beside this repo at the release analysis/_zl.py pins.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PCB_VERSION: v0.4.102
+  KICAD_IMAGE_TAG: 10.0.8
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      KICAD_CLI: ${{ github.workspace }}/circuit-blocks/.github/scripts/kicad-cli
+      CHROME: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: circuit-blocks
+          fetch-depth: 0  # sheet hash stamps compare against each sheet's last commit
+      - name: Library release pinned by analysis/_zl.py
+        id: zl
+        run: echo "ref=$(sed -n 's/^ZL_VERSION = "\(.*\)"/\1/p' circuit-blocks/analysis/_zl.py)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: kb1lqc/zener-library
+          ref: ${{ steps.zl.outputs.ref }}
+          path: zener-library
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tools (matplotlib, poppler, zsh, KiCad ${{ env.KICAD_IMAGE_TAG }} image, pcb ${{ env.PCB_VERSION }})
+        run: |
+          pip install --quiet matplotlib
+          sudo apt-get install -y --no-install-recommends poppler-utils zsh > /dev/null
+          docker pull -q "kicad/kicad:$KICAD_IMAGE_TAG" > /dev/null
+          "$KICAD_CLI" version
+          circuit-blocks/.github/scripts/install-pcb.sh
+      - name: tools/verify.py
+        working-directory: circuit-blocks
+        run: |
+          set -o pipefail
+          python3 tools/verify.py --log-dir "$RUNNER_TEMP/verify-logs" | tee "$RUNNER_TEMP/verify.out"
+      - name: tools/verify.py --schematic (each bench)
+        if: always()
+        working-directory: circuit-blocks
+        run: |
+          set -o pipefail
+          rc=0
+          for b in benches/*/; do
+            b=${b%/}; n=$(basename "$b")
+            python3 tools/verify.py --schematic "$b" --log-dir "$RUNNER_TEMP/schematic-$n-logs" | tee "$RUNNER_TEMP/$n.out" || rc=1
+          done
+          exit $rc
+      - name: Summary
+        if: always()
+        working-directory: circuit-blocks
+        run: python3 .github/scripts/summary.py blocks "$RUNNER_TEMP/verify.out" $(ls "$RUNNER_TEMP"/*.out | grep -v '/verify.out$') >> "$GITHUB_STEP_SUMMARY"
+      - name: Logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-logs
+          path: ${{ runner.temp }}/*-logs

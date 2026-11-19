@@ -1,5 +1,7 @@
 # circuit-blocks
 
+[![verify](https://github.com/kb1lqc/circuit-blocks/actions/workflows/verify.yml/badge.svg)](https://github.com/kb1lqc/circuit-blocks/actions/workflows/verify.yml) [![INA229HighSideMonitor](https://img.shields.io/github/v/tag/kb1lqc/circuit-blocks?filter=blocks/INA229HighSideMonitor/*&label=INA229HighSideMonitor)](https://github.com/kb1lqc/circuit-blocks/tags) [![TPS48000HighSideSwitch](https://img.shields.io/github/v/tag/kb1lqc/circuit-blocks?filter=blocks/TPS48000HighSideSwitch/*&label=TPS48000HighSideSwitch)](https://github.com/kb1lqc/circuit-blocks/tags)
+
 Reusable circuit blocks designed in [Zener](https://docs.pcb.new) with Diode's `pcb` toolchain. Each block is a
 versioned package that board projects import by URL, the same way they import parts from
 [kb1lqc/zener-library](https://github.com/kb1lqc/zener-library). Every block comes with a worst-case analysis that a
