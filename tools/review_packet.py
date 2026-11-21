@@ -9,7 +9,8 @@ BLOCK is a blocks/<Block> name; none given = every blocks/*/analysis.py. Library
 Each analysis runs in a subprocess with `--out <temp>` (committed bench docs are never rewritten); afterwards the
 library's record of rows read is collected: lib.human_review_needed() when the library has it, else (older releases)
 lib.used_inputs() with every row listed (no stamp / machine stamp / no review record: a human stamp cannot be checked).
-Writes DIR/<Block>.html (one self-contained page, evidence PNGs embedded from the library's review/ records),
+Writes DIR/<Block>.html (one self-contained page; evidence PNGs embedded from the library's git-ignored
+.review-cache/<Mfr>/<Value>/, else an older release's committed review/; "no image (render locally)" when neither),
 DIR/summary.md (also printed) and DIR/annotations.txt (one GitHub `::warning::` line per block).
 
 Order in a packet: "fix before stamping" (DISAGREE, NOT_FOUND, review record older than the committed row); tier 1
@@ -99,6 +100,16 @@ def png_height(path):
     except OSError:
         return None
     return int.from_bytes(b[20:24], "big") if b[:8] == b"\x89PNG\r\n\x1a\n" and b[12:16] == b"IHDR" else None
+
+
+def evidence(d, rel):
+    """A review image: the library's git-ignored cache <library>/.review-cache/<Mfr>/<Value>/<rel> (current releases),
+    else <component>/review/<rel> (older releases committed images); None when neither exists (render locally)."""
+    d = Path(d)
+    for base in (d.parents[2] / ".review-cache" / d.parent.name / d.name, d / "review"):
+        if rel and (base / rel).is_file():
+            return base / rel
+    return None
 
 
 def url_takes_page(url):
@@ -193,16 +204,18 @@ def classify(item):
                           (row.get("foot_image"), "footnotes")]
     else:
         item["why"] = row.get("reason", "")
-        ev, rel = d / "review", row.get("image")
-        h = png_height(ev / rel) if rel else None
-        tall = h is not None and h * 72 / (row.get("dpi") or 150) >= MIN_FALLBACK_PT
+        rel = row.get("image")
+        found = evidence(d, rel)
+        h = png_height(found) if found else None
+        absent = rel and found is None  # not rendered on this machine: height unknown, keep it (shown as "no image")
+        tall = absent or (h is not None and h * 72 / (row.get("dpi") or 150) >= MIN_FALLBACK_PT)
         page = f"evidence/page_p{row.get('pdf_page')}.png" if row.get("pdf_page") else None
-        page = page if page and page != rel and (ev / page).is_file() else None
+        page = page if page and page != rel and evidence(d, page) else None
         item["images"] = [(rel, "table or page")] if tall else []
         if page:
             item["images"].append((page, "full page"))
         item["tier"] = "tier 3" if item["images"] else "page lookup"
-        if not tall and rel:
+        if not tall and rel and not absent:
             item["why"] += f" [crop {rel} too short to hold a row ({h} px at {row.get('dpi')} dpi); not shown]"
     item["images"] = [(r, a) for r, a in item.get("images", []) if r]
     return item
@@ -274,9 +287,11 @@ def render(name, zl, used, items, api):
     cache = {}
 
     def img(d, rel, alt):
-        p = Path(d) / "review" / rel
-        if not p.is_file():
-            return f'<p class="warn">image missing: review/{esc(rel)}</p>'
+        p = evidence(d, rel)
+        if p is None:
+            comp = "/".join(Path(d).parts[-3:])
+            return (f'<p class="warn">no image ({esc(alt)}: {esc(rel)}): render locally with '
+                    f'<code>python3 tools/ds_review.py {esc(comp)}</code> in the library (needs the PDF)</p>')
         if p not in cache:
             cache[p] = base64.b64encode(p.read_bytes()).decode()
         return f'<img src="data:image/png;base64,{cache[p]}" alt="{esc(alt)}">'

@@ -210,6 +210,25 @@ class Packet(unittest.TestCase):
         self.assertIn('alt="table or page"', d)  # 400 px: kept
         self.assertEqual(rp.png_height(self.comp / "review/evidence/page_p8.png"), 1600)
 
+    def test_cache_preferred_then_old_review_then_no_image(self):
+        self.review()
+        cache = self.zl / ".review-cache/Acme/X/evidence"
+        cache.mkdir(parents=True)
+        (cache / "a_p2.png").write_bytes(png(40, b"from-cache"))
+        self.build("B")
+        a = self.block((self.out / "B.html").read_text(), "X:a")
+        self.assertIn(base64.b64encode(png(40, b"from-cache")).decode(), a)  # the library's local cache wins
+        import shutil
+        shutil.rmtree(self.zl / ".review-cache")
+        shutil.rmtree(self.comp / "review/evidence")  # current release in CI: no images anywhere
+        rc, md = self.build("B")
+        self.assertEqual(rc, 0, md)
+        page = (self.out / "B.html").read_text()
+        self.assertNotIn("<img", page)
+        self.assertIn("no image (row: evidence/a_p2.png): render locally", self.block(page, "X:a"))
+        self.assertIn("tools/ds_review.py components/Acme/X", self.block(page, "X:a"))
+        self.assertIn("tier 3", self.block(page, "X:d"))  # absent fallback image: height unknown, not demoted
+
     def test_page_anchor_rule(self):
         self.assertTrue(rp.url_takes_page("https://a.com/x.PDF"))
         self.assertTrue(rp.url_takes_page("https://www.ti.com/lit/ds/symlink/ina229"))
