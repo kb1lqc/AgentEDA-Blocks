@@ -9,7 +9,7 @@
 		(date "2026-11-17")
 		(rev "A")
 		(company "Bryce Salmi Consulting")
-		(comment 1 "github.com/kb1lqc/circuit-blocks @ 892d3ee: blocks/INA229HighSideMonitor")
+		(comment 1 "github.com/kb1lqc/circuit-blocks @ a2583a1: blocks/INA229HighSideMonitor")
 		(comment 2 "Reference sheet: INA229 high-side monitor, on-block shunt, SPI, ALERT_N")
 		(comment 3 "Author: Bryce Salmi")
 	)
