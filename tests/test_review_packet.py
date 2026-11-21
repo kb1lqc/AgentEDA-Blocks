@@ -171,14 +171,24 @@ class Packet(unittest.TestCase):
                                             (rp.TITLES["page lookup"], "1"), (rp.TITLES["no record"], "1")])
         self.assertLess(page.index("X:e</h3>"), page.index("X:a</h3>"))  # fix first
         self.assertNotIn("X:c</h3>", page)  # current human stamp (per the lib): not listed
-        for ref in ("X:a", "X:b", "X:d", "X:h", "X:g"):  # tiers 1-3 and page lookup carry a stamp command
-            self.assertIn(f"python3 tools/stamp.py --who &lt;name&gt; {ref}</pre>", self.block(page, ref))
-        for ref in ("X:e", "X:f"):  # fix and no record: none
-            self.assertNotIn("tools/stamp.py --who", self.block(page, ref))
-        self.assertIn("zener-library working copy", self.block(page, "X:a"))
-        self.assertIn("--from FILE", page[:page.index("<h2>")])  # the several-rows line is at the top
+        for ref in ("X:a", "X:b", "X:d", "X:h", "X:g"):  # tiers 1-3 and page lookup: a tick box and a single-row command
+            self.assertIn(f'<input type="checkbox" class="ok" value="{ref}">', self.block(page, ref))
+            self.assertIn(f"<code>python3 tools/stamp.py {ref}</code>", self.block(page, ref))
+        for ref in ("X:e", "X:f"):  # fix and no record: neither
+            self.assertNotIn('class="ok"', self.block(page, ref))
+            self.assertNotIn("tools/stamp.py", self.block(page, ref))
+        self.assertEqual(page.count('class="ok"'), 5)
+        head = page[:page.index("<h2>")]
+        self.assertIn("zener-library working copy", head)
+        self.assertIn("--from FILE", head)  # the no-JavaScript fallback is at the top
         self.assertIn("<pre>X:a</pre>", page)  # tier 1 ref list
-        self.assertNotIn("<script", page)
+        self.assertIn('<body data-block="B">', page)
+        self.assertIn('id="copy"', page)  # one bar builds the command from the ticks
+        self.assertIn("python3 tools/stamp.py --from ", page.split("<script>")[1])
+        self.assertNotIn("--who &lt;name&gt;", page)  # --who defaults to the gh login
+        script = page.split("<script>")[1].split("</script>")[0]
+        cmd_line = next(ln for ln in script.splitlines() if "cmd.textContent=refs.length" in ln)
+        self.assertIn("<<'EOF'\\n", cmd_line)  # JS escapes, not real newlines inside a JS string (a syntax error)
         self.assertEqual(page.count(base64.b64encode(png(60, b"head_p2")).decode()), 2)  # shared header repeated, no JS
         self.assertIsNone(re.search(r"^verified", page, re.M))  # machine stamp not shown as part of the TOML
         self.assertIn("machine stamp (not a human check): sonnet-audit", self.block(page, "X:a"))
@@ -245,7 +255,7 @@ class Packet(unittest.TestCase):
         self.build("B")
         page = (self.out / "B.html").read_text()
         self.assertIn("review record older than the committed row", self.block(page, "X:b"))
-        self.assertNotIn("tools/stamp.py --who", self.block(page, "X:b"))
+        self.assertNotIn("tools/stamp.py", self.block(page, "X:b"))
 
     def test_old_library_degrades(self):
         write(self.zl / "lib/__init__.py", LIB_OLD)  # no human_review_needed, no review/ dirs
@@ -257,7 +267,7 @@ class Packet(unittest.TestCase):
         self.assertIn("no review record: human:bob", self.block(page, "X:c"))  # cannot be checked: listed
         self.assertIn("cite = &quot;DS p.4, T, d&quot;", page)
         self.assertIn("https://example.com/x.pdf#page=4", page)
-        self.assertNotIn("tools/stamp.py --who", page.split("<h2>")[-1])
+        self.assertNotIn("tools/stamp.py", page.split("<h2>")[-1])
         self.assertTrue((self.out / "C.html").is_file())
         self.assertEqual(len((self.out / "annotations.txt").read_text().splitlines()), 2)
 

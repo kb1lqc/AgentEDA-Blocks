@@ -66,8 +66,8 @@ STAMPABLE = ("tier 1", "tier 2", "tier 3", "page lookup")
 # the shortest crop showing a data row 66 pt (TPS48000 table_p5_y374).
 MIN_FALLBACK_PT = 64
 HINT_RE = re.compile(r"graph|curve|±", re.I)  # in the row's note or cite lines
-WHERE = ("Run in your zener-library working copy (tools/stamp.py; a library release after v0.6.0, or the diodecomputer "
-         "branch), after checking the image:")
+WHERE = ("Run it in your zener-library working copy (a release after v0.6.0), in your own terminal: stamp.py refuses to "
+         "run inside Claude Code.")
 
 
 def zl_dir(root, library=None):
@@ -270,6 +270,35 @@ h1{font-size:1.5em}h2{border-bottom:1px solid var(--line);padding-bottom:4px;mar
 pre{background:var(--code);padding:8px;overflow-x:auto;font-size:13px;white-space:pre-wrap}
 img{max-width:100%;display:block;margin:4px 0;background:#fff;border:1px solid var(--line)}
 table{border-collapse:collapse}td,th{border:1px solid var(--line);padding:3px 8px;text-align:left}
+.pick{display:inline-block;margin:6px 0;padding:4px 10px;border:1px solid var(--ok);border-radius:4px;cursor:pointer}
+.pick input{transform:scale(1.3);margin-right:8px}.item.done{border-color:var(--ok);border-width:2px}
+#bar{position:sticky;bottom:0;background:var(--bg);border-top:2px solid var(--ok);padding:8px 0;margin-top:2em}
+#bar button{font:inherit;padding:4px 12px;margin-right:8px;cursor:pointer}#cmd{max-height:9em}
+"""
+
+# Ticking rows builds one stamp command (a heredoc list for stamp.py --from); ticks persist per block in this browser.
+# Images never depend on this script; without it the per-tier ref lists still work.
+JS = r"""
+(function(){
+var key='review-packet:'+document.body.dataset.block, boxes=[].slice.call(document.querySelectorAll('input.ok'));
+var cmd=document.getElementById('cmd'), n=document.getElementById('n');
+function load(){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch(e){return []}}
+function save(v){try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}}
+function update(){
+  var refs=boxes.filter(function(b){return b.checked}).map(function(b){return b.value});
+  boxes.forEach(function(b){b.closest('.item').classList.toggle('done',b.checked)});
+  n.textContent=refs.length; save(refs);
+  var f='/tmp/checked-'+document.body.dataset.block+'.txt';
+  cmd.textContent=refs.length?"cat > "+f+" <<'EOF'\n"+refs.join('\n')+"\nEOF\npython3 tools/stamp.py --from "+f:'(tick the rows you checked)';
+}
+var saved=load(); boxes.forEach(function(b){b.checked=saved.indexOf(b.value)>=0; b.addEventListener('change',update)});
+document.getElementById('copy').addEventListener('click',function(){
+  var t=cmd.textContent; function fb(){var r=document.createRange();r.selectNodeContents(cmd);var s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy')}catch(e){}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).catch(fb)}else{fb()}
+});
+document.getElementById('clear').addEventListener('click',function(){boxes.forEach(function(b){b.checked=false});update()});
+update();
+})();
 """
 
 
@@ -282,7 +311,8 @@ def stamp_text(item):
 
 
 def render(name, zl, used, items, api):
-    """One self-contained HTML page, no script: every <img> carries its PNG as a data URI (repeated where shared)."""
+    """One self-contained HTML page: every <img> carries its PNG as a data URI (repeated where shared); a small inline
+    script turns the per-row ticks into one stamp command (images never depend on it)."""
     esc = html.escape
     cache = {}
 
@@ -304,8 +334,11 @@ def render(name, zl, used, items, api):
             + "".join(f"<td>{counts[t]}</td>" for t in TIERS) + "</tr></table>",
             "<p>Check each row against its image: value, sign, unit, column (header image), conditions, footnotes, page. "
             "Never stamp from the text alone; existing machine stamps are not checks.</p>",
-            f"<p><b>Several rows at once:</b> {esc(WHERE)} copy a tier's ref list below into a file, delete the rows you did "
-            "not check, and run <code>python3 tools/stamp.py --who &lt;name&gt; --from FILE</code>.</p>"]
+            "<p><b>How to stamp:</b> tick <i>matches the datasheet</i> on each row you checked. The bar at the bottom "
+            "builds one command for all ticked rows (ticks are kept in this browser); copy it and paste it in your own "
+            f"terminal. {esc(WHERE)}</p>",
+            "<noscript><p class=warn>JavaScript is off: copy a tier's ref list below into a file, delete the rows you did "
+            "not check, and run <code>python3 tools/stamp.py --from FILE</code>.</p></noscript>"]
     for tier in TIERS:
         group = [i for i in items if i["tier"] == tier]
         if not group:
@@ -315,7 +348,11 @@ def render(name, zl, used, items, api):
         if refs:
             body.append(f"<p>Refs of this tier for <code>--from FILE</code> ({len(refs)}):</p><pre>" + esc("\n".join(refs)) + "</pre>")
         for i in group:
-            parts = [f'<div class="item"><h3>{esc(i["input"])}</h3>',
+            parts = [f'<div class="item"><h3>{esc(i["input"])}</h3>']
+            if i.get("ref") and tier in STAMPABLE:
+                parts.append(f'<label class="pick"><input type="checkbox" class="ok" value="{esc(i["ref"])}">'
+                             "matches the datasheet (stamp this row)</label>")
+            parts += [
                      f"<p>Reason: <b>{esc(stamp_text(i))}</b>; {esc(tier)}</p>",
                      f"<p>Page: {page_html(i)}</p>"]
             if i.get("why"):
@@ -327,12 +364,16 @@ def render(name, zl, used, items, api):
             if tier == "page lookup":
                 parts.append('<p class="warn">No usable image: open the page link and find the row yourself.</p>')
             if i.get("ref") and tier in STAMPABLE:
-                parts.append(f"<p>{esc(WHERE)}</p><pre>python3 tools/stamp.py --who &lt;name&gt; {esc(i['ref'])}</pre>")
+                parts.append(f'<p class="mute">Single row: <code>python3 tools/stamp.py {esc(i["ref"])}</code></p>')
             parts.append("</div>")
             body.append("\n".join(parts))
+    if any(i.get("ref") and i["tier"] in STAMPABLE for i in items):
+        body.append('<div id="bar"><b><span id="n">0</span> ticked</b> <button id="copy">Copy stamp command</button>'
+                    '<button id="clear">Clear ticks</button><pre id="cmd"></pre></div>')
+        body.append(f"<script>{JS}</script>")
     return ("<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
-            f"<title>{esc(name)} review packet</title><style>{CSS}</style></head><body>\n" + "\n".join(body)
-            + "\n</body></html>\n")
+            f"<title>{esc(name)} review packet</title><style>{CSS}</style></head><body data-block=\"{esc(name)}\">\n"
+            + "\n".join(body) + "\n</body></html>\n")
 
 
 def summary_lines(name, used, items):
