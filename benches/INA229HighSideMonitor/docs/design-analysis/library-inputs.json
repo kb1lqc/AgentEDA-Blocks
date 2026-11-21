@@ -1,0 +1,320 @@
+[
+ {
+  "value": "ERJ-3EKF",
+  "key": "p70",
+  "input": "ERJ-3EKF:p70",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "res_range",
+  "input": "ERJ-3EKF:res_range",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "tcr_10r_1m",
+  "input": "ERJ-3EKF:tcr_10r_1m",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "tol",
+  "input": "ERJ-3EKF:tol",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "esd_cdm",
+  "input": "INA229AIDGS:esd_cdm",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "esd_hbm",
+  "input": "INA229AIDGS:esd_hbm",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "gb_drift_25c",
+  "input": "INA229AIDGS:gb_drift_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "gberr_25c",
+  "input": "INA229AIDGS:gberr_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "gs_drift_25c",
+  "input": "INA229AIDGS:gs_drift_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "gserr_25c",
+  "input": "INA229AIDGS:gserr_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "ib_25c",
+  "input": "INA229AIDGS:ib_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "iin_abs",
+  "input": "INA229AIDGS:iin_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "iout_abs",
+  "input": "INA229AIDGS:iout_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "iq_25c",
+  "input": "INA229AIDGS:iq_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "iq_full",
+  "input": "INA229AIDGS:iq_full",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "iqsd_25c",
+  "input": "INA229AIDGS:iqsd_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "lsb_vbus_25c",
+  "input": "INA229AIDGS:lsb_vbus_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "ptme_full",
+  "input": "INA229AIDGS:ptme_full",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "rtheta_ja",
+  "input": "INA229AIDGS:rtheta_ja",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "ta_rec",
+  "input": "INA229AIDGS:ta_rec",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "tj_abs",
+  "input": "INA229AIDGS:tj_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "tstg_abs",
+  "input": "INA229AIDGS:tstg_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vbus_abs",
+  "input": "INA229AIDGS:vbus_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vcm_abs",
+  "input": "INA229AIDGS:vcm_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vcm_rec",
+  "input": "INA229AIDGS:vcm_rec",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vdiff_adcr0_full",
+  "input": "INA229AIDGS:vdiff_adcr0_full",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vin_diff_abs",
+  "input": "INA229AIDGS:vin_diff_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vio_abs",
+  "input": "INA229AIDGS:vio_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "voh_25c",
+  "input": "INA229AIDGS:voh_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vol_25c",
+  "input": "INA229AIDGS:vol_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vos_bus_25c",
+  "input": "INA229AIDGS:vos_bus_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vos_bus_drift_full",
+  "input": "INA229AIDGS:vos_bus_drift_full",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vos_bus_psrr_25c",
+  "input": "INA229AIDGS:vos_bus_psrr_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vos_drift_full",
+  "input": "INA229AIDGS:vos_drift_full",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vos_vcm0_25c",
+  "input": "INA229AIDGS:vos_vcm0_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vos_vcm48_25c",
+  "input": "INA229AIDGS:vos_vcm48_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vs_abs",
+  "input": "INA229AIDGS:vs_abs",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "vs_rec",
+  "input": "INA229AIDGS:vs_rec",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "INA229AIDGS",
+  "key": "zvbus_25c",
+  "input": "INA229AIDGS:zvbus_25c",
+  "dir": "components/TexasInstruments/INA229AIDGS"
+ },
+ {
+  "value": "WSK2512",
+  "key": "derate_knee",
+  "input": "WSK2512:derate_knee",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "derate_zero",
+  "input": "WSK2512:derate_zero",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "max_working_voltage",
+  "input": "WSK2512:max_working_voltage",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "p70",
+  "input": "WSK2512:p70",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "perf_offset_ohm",
+  "input": "WSK2512:perf_offset_ohm",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "perf_solder_heat",
+  "input": "WSK2512:perf_solder_heat",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "r_range_b",
+  "input": "WSK2512:r_range_b",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "r_range_d",
+  "input": "WSK2512:r_range_d",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "r_range_f",
+  "input": "WSK2512:r_range_f",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "res_range",
+  "input": "WSK2512:res_range",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "t_oper",
+  "input": "WSK2512:t_oper",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "tcr_5m_200m",
+  "input": "WSK2512:tcr_5m_200m",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "tcr_5m_200m_range",
+  "input": "WSK2512:tcr_5m_200m_range",
+  "dir": "components/Vishay/WSK2512"
+ },
+ {
+  "value": "WSK2512",
+  "key": "tol_d",
+  "input": "WSK2512:tol_d",
+  "dir": "components/Vishay/WSK2512"
+ }
+]

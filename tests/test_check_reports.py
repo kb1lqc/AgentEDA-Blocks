@@ -15,6 +15,7 @@ d = root / "benches" / "B" / "docs"
 (d / "design-analysis").mkdir(parents=True, exist_ok=True)
 (d / "design-analysis.md").write_text("# report\\nvalue 1\\n")
 (d / "design-analysis" / "values.json").write_text(json.dumps({"a": 1}))
+(d / "design-analysis" / "library-inputs.json").write_text("[]\\n")
 '''
 
 
@@ -33,6 +34,7 @@ class Reports(unittest.TestCase):
         write(r / "blocks/B/analysis.py", ANALYSIS)
         write(r / "benches/B/docs/design-analysis.md", "# report\nvalue 1\n")
         write(r / "benches/B/docs/design-analysis/values.json", '{"a": 1}')
+        write(r / "benches/B/docs/design-analysis/library-inputs.json", "[]\n")
 
     def tearDown(self):
         self._t.cleanup()
@@ -60,6 +62,13 @@ class Reports(unittest.TestCase):
 
     def test_stale_values_fails(self):
         write(self.root / "benches/B/docs/design-analysis/values.json", '{"a": 2}')
+        self.assertEqual(self.rules()[0], {"REP-STALE"})
+
+    def test_stale_or_missing_library_inputs_fails(self):
+        p = self.root / "benches/B/docs/design-analysis/library-inputs.json"
+        write(p, '[{"value": "X", "key": "k", "input": "X:k"}]\n')
+        self.assertEqual(self.rules()[0], {"REP-STALE"})
+        p.unlink()
         self.assertEqual(self.rules()[0], {"REP-STALE"})
 
     def test_check_never_writes_into_repo(self):

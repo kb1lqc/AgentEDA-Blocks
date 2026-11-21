@@ -56,6 +56,7 @@ from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.
 from analysis._zl import ZL_VERSION
 from lib import Param, inputs_section, load, unverified_inputs, wca
 from analysis.md_pdf import write_report
+from analysis._export import write_library_inputs
 
 import matplotlib.pyplot as plt  # imported after lib, which selects the Agg backend
 from matplotlib.lines import Line2D
@@ -1930,6 +1931,7 @@ TEXT = {
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 (FIG_DIR / "values.json").write_text(
     json.dumps({"instance": INSTANCE, "params_file": PARAMS_REL, **VALUES, "text": TEXT}, indent=2) + "\n")
+write_library_inputs(FIG_DIR)  # rows read, for the library's tools/review.py --block
 
 print(f"Design: {R_NOM * 1e3:g} mohm, code {code}, ADCRANGE {ADCRANGE}, MPN {MPN}, full scale {I_MAX:g} A")
 print(f"Vsense worst (self-heated) {mv(VS_SH)} mV, headroom {mv(VS_MARGIN)} mV ({pct(VS_MARGIN / ADC_LIM[ADCRANGE])} % of limit); "
