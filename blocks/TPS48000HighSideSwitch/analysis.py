@@ -49,6 +49,7 @@ from analysis import _zl  # noqa: F401  (side effect: puts zener-library on sys.
 from analysis._zl import ZL, ZL_VERSION, zl_git, zl_released
 from lib import Param, inputs_section, load as load_part, series, unverified_inputs, wca
 from analysis.md_pdf import write_report
+from analysis._export import write_library_inputs
 
 import numpy as np
 import matplotlib.pyplot as plt  # imported after lib, which selects the Agg backend
@@ -1542,6 +1543,7 @@ def analyze(params_path=None, out=None, instance="TPS"):
         {"instance": INSTANCE, "params_file": PARAMS_REL, **VALUES,
          "summary": [{"key": r[0].strip("`"), "label": r[1], "result": r[2], "limit": r[3], "margin": r[4], "status": r[5]} for r in SUMMARY],
          "text": TEXT}, indent=2) + "\n")
+    write_library_inputs(FIG_DIR)  # rows read, for the library's tools/review.py --block
 
     print(f"Design: {R0 * 1e3:g} mohm code {CODE} (`{MPN_SHUNT}`), {I_DES:g} A, divider {' / '.join(fmt_ohm(r) for r in R_DIV)} "
           f"({'matches the selection' if DIV_MATCH else 'DIFFERS from the selection ' + str(SEL_DIV)})")

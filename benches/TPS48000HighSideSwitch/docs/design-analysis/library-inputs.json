@@ -1,0 +1,902 @@
+[
+ {
+  "value": "ERJ-3EKF",
+  "key": "p70",
+  "input": "ERJ-3EKF:p70",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "perf_soldering_heat",
+  "input": "ERJ-3EKF:perf_soldering_heat",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "res_range",
+  "input": "ERJ-3EKF:res_range",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "tcr_10r_1m",
+  "input": "ERJ-3EKF:tcr_10r_1m",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "tol",
+  "input": "ERJ-3EKF:tol",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "ERJ-3EKF",
+  "key": "v_limit",
+  "input": "ERJ-3EKF:v_limit",
+  "dir": "components/Panasonic/ERJ-3EKF"
+ },
+ {
+  "value": "GCM188",
+  "key": "capacitance",
+  "input": "GCM188[GCM1885C2A682JE02]:capacitance",
+  "dir": "components/Murata/GCM188"
+ },
+ {
+  "value": "GCM188",
+  "key": "capacitance",
+  "input": "GCM188[GCM188R71H104KA57]:capacitance",
+  "dir": "components/Murata/GCM188"
+ },
+ {
+  "value": "GCM188",
+  "key": "capdrift_m10_c0g",
+  "input": "GCM188[GCM1885C2A682JE02]:capdrift_m10_c0g",
+  "dir": "components/Murata/GCM188"
+ },
+ {
+  "value": "GCM188",
+  "key": "rated_v",
+  "input": "GCM188[GCM1885C2A682JE02]:rated_v",
+  "dir": "components/Murata/GCM188"
+ },
+ {
+  "value": "GCM188",
+  "key": "rated_v",
+  "input": "GCM188[GCM188R71H104KA57]:rated_v",
+  "dir": "components/Murata/GCM188"
+ },
+ {
+  "value": "GCM188",
+  "key": "tc_c0g",
+  "input": "GCM188[GCM1885C2A682JE02]:tc_c0g",
+  "dir": "components/Murata/GCM188"
+ },
+ {
+  "value": "GCM188",
+  "key": "tolerance",
+  "input": "GCM188[GCM1885C2A682JE02]:tolerance",
+  "dir": "components/Murata/GCM188"
+ },
+ {
+  "value": "GCM21B",
+  "key": "capacitance",
+  "input": "GCM21B[GCM21BR71H474KA55]:capacitance",
+  "dir": "components/Murata/GCM21B"
+ },
+ {
+  "value": "GCM21B",
+  "key": "rated_v",
+  "input": "GCM21B[GCM21BR71H474KA55]:rated_v",
+  "dir": "components/Murata/GCM21B"
+ },
+ {
+  "value": "GCM21B",
+  "key": "tc_x7r",
+  "input": "GCM21B[GCM21BR71H474KA55]:tc_x7r",
+  "dir": "components/Murata/GCM21B"
+ },
+ {
+  "value": "GCM21B",
+  "key": "tolerance",
+  "input": "GCM21B[GCM21BR71H474KA55]:tolerance",
+  "dir": "components/Murata/GCM21B"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "eas",
+  "input": "ISC035N10NM5LF2:eas",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "id_pcb",
+  "input": "ISC035N10NM5LF2:id_pcb",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "id_pulse",
+  "input": "ISC035N10NM5LF2:id_pulse",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "ioutput_tj25_vgs8v_vds5v",
+  "input": "ISC035N10NM5LF2:ioutput_tj25_vgs8v_vds5v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "norm_rds_100c",
+  "input": "ISC035N10NM5LF2:norm_rds_100c",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "norm_rds_125c",
+  "input": "ISC035N10NM5LF2:norm_rds_125c",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "norm_rds_150c",
+  "input": "ISC035N10NM5LF2:norm_rds_150c",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "norm_rds_175c",
+  "input": "ISC035N10NM5LF2:norm_rds_175c",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "norm_rds_25c",
+  "input": "ISC035N10NM5LF2:norm_rds_25c",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "norm_rds_75c",
+  "input": "ISC035N10NM5LF2:norm_rds_75c",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "ptot_pcb",
+  "input": "ISC035N10NM5LF2:ptot_pcb",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "qg",
+  "input": "ISC035N10NM5LF2:qg",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "rds_on_10v",
+  "input": "ISC035N10NM5LF2:rds_on_10v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "rds_tj175_vgs10v_id50a",
+  "input": "ISC035N10NM5LF2:rds_tj175_vgs10v_id50a",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "rds_tj175_vgs8p24v_id50a",
+  "input": "ISC035N10NM5LF2:rds_tj175_vgs8p24v_id50a",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "rds_tj25_vgs10v_id50a",
+  "input": "ISC035N10NM5LF2:rds_tj25_vgs10v_id50a",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "rds_tj25_vgs8p24v_id50a",
+  "input": "ISC035N10NM5LF2:rds_tj25_vgs8p24v_id50a",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "rth_ja",
+  "input": "ISC035N10NM5LF2:rth_ja",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "rth_jc_bottom",
+  "input": "ISC035N10NM5LF2:rth_jc_bottom",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100ms_12v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100ms_12v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100ms_20v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100ms_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100ms_40v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100ms_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100ms_50v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100ms_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100ms_80v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100ms_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100us_12v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100us_12v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100us_40v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100us_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100us_50v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100us_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_100us_80v",
+  "input": "ISC035N10NM5LF2:soa_tc125_100us_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10ms_12v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10ms_12v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10ms_20v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10ms_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10ms_40v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10ms_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10ms_50v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10ms_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10ms_80v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10ms_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10us_20v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10us_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10us_40v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10us_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_10us_80v",
+  "input": "ISC035N10NM5LF2:soa_tc125_10us_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1ms_12v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1ms_12v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1ms_40v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1ms_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1ms_50v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1ms_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1ms_80v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1ms_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1us_12v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1us_12v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1us_20v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1us_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1us_40v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1us_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1us_50v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1us_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_1us_80v",
+  "input": "ISC035N10NM5LF2:soa_tc125_1us_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_dc_12v",
+  "input": "ISC035N10NM5LF2:soa_tc125_dc_12v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_dc_20v",
+  "input": "ISC035N10NM5LF2:soa_tc125_dc_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_dc_40v",
+  "input": "ISC035N10NM5LF2:soa_tc125_dc_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_dc_50v",
+  "input": "ISC035N10NM5LF2:soa_tc125_dc_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc125_dc_80v",
+  "input": "ISC035N10NM5LF2:soa_tc125_dc_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_100us_20v",
+  "input": "ISC035N10NM5LF2:soa_tc25_100us_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_100us_40v",
+  "input": "ISC035N10NM5LF2:soa_tc25_100us_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_100us_50v",
+  "input": "ISC035N10NM5LF2:soa_tc25_100us_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_100us_80v",
+  "input": "ISC035N10NM5LF2:soa_tc25_100us_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_10ms_20v",
+  "input": "ISC035N10NM5LF2:soa_tc25_10ms_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_10ms_40v",
+  "input": "ISC035N10NM5LF2:soa_tc25_10ms_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_10ms_50v",
+  "input": "ISC035N10NM5LF2:soa_tc25_10ms_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_10ms_80v",
+  "input": "ISC035N10NM5LF2:soa_tc25_10ms_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_10us_50v",
+  "input": "ISC035N10NM5LF2:soa_tc25_10us_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_10us_80v",
+  "input": "ISC035N10NM5LF2:soa_tc25_10us_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1ms_20v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1ms_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1ms_40v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1ms_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1ms_50v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1ms_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1ms_80v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1ms_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1us_12v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1us_12v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1us_20v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1us_20v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1us_40v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1us_40v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1us_50v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1us_50v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "soa_tc25_1us_80v",
+  "input": "ISC035N10NM5LF2:soa_tc25_1us_80v",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "tj_tstg",
+  "input": "ISC035N10NM5LF2:tj_tstg",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "vbr_dss",
+  "input": "ISC035N10NM5LF2:vbr_dss",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "vds_rating",
+  "input": "ISC035N10NM5LF2:vds_rating",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "vgs",
+  "input": "ISC035N10NM5LF2:vgs",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "vgs_th",
+  "input": "ISC035N10NM5LF2:vgs_th",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "vsd",
+  "input": "ISC035N10NM5LF2:vsd",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "zthjc_single_100ms",
+  "input": "ISC035N10NM5LF2:zthjc_single_100ms",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "zthjc_single_100us",
+  "input": "ISC035N10NM5LF2:zthjc_single_100us",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "zthjc_single_10ms",
+  "input": "ISC035N10NM5LF2:zthjc_single_10ms",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "zthjc_single_10us",
+  "input": "ISC035N10NM5LF2:zthjc_single_10us",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "ISC035N10NM5LF2",
+  "key": "zthjc_single_1ms",
+  "input": "ISC035N10NM5LF2:zthjc_single_1ms",
+  "dir": "components/Infineon/ISC035N10NM5LF2"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_cs_pair",
+  "input": "TPS48000QDGXQ1:abs_cs_pair",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_flt_gnd",
+  "input": "TPS48000QDGXQ1:abs_flt_gnd",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_gate_bst_src",
+  "input": "TPS48000QDGXQ1:abs_gate_bst_src",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_gate_out_gnd",
+  "input": "TPS48000QDGXQ1:abs_gate_out_gnd",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_i_flt_sink",
+  "input": "TPS48000QDGXQ1:abs_i_flt_sink",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_input_vs_pos",
+  "input": "TPS48000QDGXQ1:abs_input_vs_pos",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_iscp_tmr_scp_test",
+  "input": "TPS48000QDGXQ1:abs_iscp_tmr_scp_test",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_src_gnd",
+  "input": "TPS48000QDGXQ1:abs_src_gnd",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "abs_vs_cs_gnd",
+  "input": "TPS48000QDGXQ1:abs_vs_cs_gnd",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "i_bst",
+  "input": "TPS48000QDGXQ1:i_bst",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "i_en",
+  "input": "TPS48000QDGXQ1:i_en",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "i_gnd_full",
+  "input": "TPS48000QDGXQ1:i_gnd_full",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "i_iscp",
+  "input": "TPS48000QDGXQ1:i_iscp",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "i_ov",
+  "input": "TPS48000QDGXQ1:i_ov",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "i_shdn",
+  "input": "TPS48000QDGXQ1:i_shdn",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "i_tmr_src_cb",
+  "input": "TPS48000QDGXQ1:i_tmr_src_cb",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "r_flt_pd",
+  "input": "TPS48000QDGXQ1:r_flt_pd",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "rec_cap_bst_src",
+  "input": "TPS48000QDGXQ1:rec_cap_bst_src",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "rec_en_inp_cs_sel",
+  "input": "TPS48000QDGXQ1:rec_en_inp_cs_sel",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "rec_flt",
+  "input": "TPS48000QDGXQ1:rec_flt",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "rec_vs",
+  "input": "TPS48000QDGXQ1:rec_vs",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "rth_ja",
+  "input": "TPS48000QDGXQ1:rth_ja",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "t_pd_en_off",
+  "input": "TPS48000QDGXQ1:t_pd_en_off",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "t_pd_flt_gd_on",
+  "input": "TPS48000QDGXQ1:t_pd_flt_gd_on",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "t_pu_inp_h",
+  "input": "TPS48000QDGXQ1:t_pu_inp_h",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "t_sc_hard",
+  "input": "TPS48000QDGXQ1:t_sc_hard",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "ta_grade_1",
+  "input": "TPS48000QDGXQ1:ta_grade_1",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "tj_abs",
+  "input": "TPS48000QDGXQ1:tj_abs",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_bst_src_off",
+  "input": "TPS48000QDGXQ1:v_bst_src_off",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_bst_src_on",
+  "input": "TPS48000QDGXQ1:v_bst_src_on",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_bst_uvlor",
+  "input": "TPS48000QDGXQ1:v_bst_uvlor",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_g_good",
+  "input": "TPS48000QDGXQ1:v_g_good",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_inp_h",
+  "input": "TPS48000QDGXQ1:v_inp_h",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_inp_l",
+  "input": "TPS48000QDGXQ1:v_inp_l",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_ovf",
+  "input": "TPS48000QDGXQ1:v_ovf",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_ovr",
+  "input": "TPS48000QDGXQ1:v_ovr",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_scp_r10k5",
+  "input": "TPS48000QDGXQ1:v_scp_r10k5",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_scp_test_h",
+  "input": "TPS48000QDGXQ1:v_scp_test_h",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_tmr_sc",
+  "input": "TPS48000QDGXQ1:v_tmr_sc",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_uvlof",
+  "input": "TPS48000QDGXQ1:v_uvlof",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "TPS48000QDGXQ1",
+  "key": "v_uvlor",
+  "input": "TPS48000QDGXQ1:v_uvlor",
+  "dir": "components/TexasInstruments/TPS48000QDGXQ1"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "derate_knee",
+  "input": "WSK2512-LOW:derate_knee",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "derate_zero",
+  "input": "WSK2512-LOW:derate_zero",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "max_working_voltage",
+  "input": "WSK2512-LOW:max_working_voltage",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "p70",
+  "input": "WSK2512-LOW:p70",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "perf_offset_ohm",
+  "input": "WSK2512-LOW:perf_offset_ohm",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "perf_solder_heat",
+  "input": "WSK2512-LOW:perf_solder_heat",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "res_range",
+  "input": "WSK2512-LOW:res_range",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "tcr_1m_2m9_range",
+  "input": "WSK2512-LOW:tcr_1m_2m9_range",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "tcr_3m_4m9",
+  "input": "WSK2512-LOW:tcr_3m_4m9",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "tcr_3m_4m9_range",
+  "input": "WSK2512-LOW:tcr_3m_4m9_range",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "tcr_500u_990u_range",
+  "input": "WSK2512-LOW:tcr_500u_990u_range",
+  "dir": "components/Vishay/WSK2512-LOW"
+ },
+ {
+  "value": "WSK2512-LOW",
+  "key": "tol_d",
+  "input": "WSK2512-LOW:tol_d",
+  "dir": "components/Vishay/WSK2512-LOW"
+ }
+]

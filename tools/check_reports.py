@@ -7,6 +7,7 @@ For every benches/<Block>/ (with bench.zen) the committed report is regenerated 
 never into the repo) by `python3 blocks/<Block>/analysis.py` with its defaults, then compared byte for byte:
   benches/<Block>/docs/design-analysis.md
   benches/<Block>/docs/design-analysis/values.json
+  benches/<Block>/docs/design-analysis/library-inputs.json   (rows read, for the library's tools/review.py)
 The PDF (benches/<Block>/docs/design-analysis.pdf) is not compared: it is not byte-reproducible (known finding;
 check_sync.sh verifies its embedded hash of the Markdown instead).
 
@@ -34,7 +35,7 @@ from _findings import Finding, load_allowlist, report  # noqa: E402
 from check_env import default_zl  # noqa: E402
 
 RULES = {"REP-NO-BENCHES", "REP-GENERATE", "REP-STALE", "REP-VALUES"}
-COMPARED = ("design-analysis.md", "design-analysis/values.json")
+COMPARED = ("design-analysis.md", "design-analysis/values.json", "design-analysis/library-inputs.json")
 
 
 def benches(root):

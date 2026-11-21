@@ -109,6 +109,11 @@ https://github.com/kb1lqc/zener-library/blob/main/CONTRIBUTING.md#verify-paramet
 
 Rows are checked and stamped only by a person, in the library repo. Agents never stamp.
 
+The quick way: in your library working copy, run `python3 tools/review.py --block <Block>` (for example
+`--block INA229HighSideMonitor`; add `--blocks-repo <path to this repo>` if it is not next to the library). It reads
+`benches/<Block>/docs/design-analysis/library-inputs.json` (the rows the block reads, written by its `analysis.py`),
+opens one page with the rows still to check, and one button stamps the rows you ticked and opens the library PR.
+
 Verified stamps show up here only after two things happen:
 
 - the library rows are verified and a new library version is released, and
