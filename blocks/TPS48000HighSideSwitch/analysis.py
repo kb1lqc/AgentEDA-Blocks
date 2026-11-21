@@ -1495,7 +1495,7 @@ def analyze(params_path=None, out=None, instance="TPS"):
     FINAL += inputs_section()  # library rows read and their `verified` stamps (zener-library lib-api.md)
     write_report(MD_PATH, "\n".join(FINAL) + "\n", unverified=unverified_inputs())  # .md unless only the results date changed, then the PDF (md hash stamp)
 
-    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.4.0 and TPS48000QDGXQ1 v0.4.0; Python library zener-library "
+    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.5.0 and TPS48000QDGXQ1 v0.5.0; Python library zener-library "
                 f"{ZL_VERSION} "
                 "(ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases "
                 "(before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).")
