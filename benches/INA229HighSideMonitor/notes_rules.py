@@ -10,8 +10,8 @@ The block sheet (eda/INA.kicad_sch) carries the shunt and termination numbers of
 when the sheet is stamped); the parent sheet carries the DESIGN VALUES. Every number is a values.json or params.json
 key (analysis.py output and its inputs); fixed numbers in the text are INA229 datasheet limits quoted by spec.md.
 """
-import json
 import re
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -46,9 +46,17 @@ def pin_number(name, path=None):
     return hits.pop()
 
 
+def analysis_inputs():
+    """params.json plus the design values the analysis read from the .zen (analysis/_bind.py bench_inputs)."""
+    if str(HERE.parents[1]) not in sys.path:
+        sys.path.insert(0, str(HERE.parents[1]))
+    from analysis._bind import bench_inputs
+    return bench_inputs(HERE)
+
+
 def fields(v, f):
     """Formatted numbers and designators for the templates (f(x, n) = fixed decimals)."""
-    p = json.load(open(HERE / "params.json"))  # analysis inputs (basis in params.json)
+    p = analysis_inputs()
     refs = child_refs()
     rf = lambda n: refs.get(n, n)
     return {

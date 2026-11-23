@@ -9,7 +9,8 @@ BENCH is a name (INA229HighSideMonitor) or a path to benches/<Block>/bench.zen; 
 
 Default chain, each step judged by exit code:
   tools/check_env.py -> `pcb build -Dwarnings <bench>` per bench (one retry when the first build fails with no
-  Error/Warning line, logged "retried") -> tools/check_reports.py -> `zsh tools/schematic/check_sync.sh <benches>`.
+  Error/Warning line, logged "retried") -> tools/check_reports.py -> tools/bind.py (topology preconditions, design
+  values, design outputs, spec account; docs/spec/blocks.md "Binding") -> `zsh tools/schematic/check_sync.sh <benches>`.
 --schematic BENCH: the deferred schematic gates, all on TEMP COPIES (rsync, never the repo):
   `pcb apply schematic --no-open` twice (the second must print "schematic unchanged"); kicad-cli netlist of the
   committed sheets vs of the applied copy with zener-library tools/schematic/netcmp.py (identical, and not zero nets);
@@ -169,6 +170,14 @@ def verify(root, names=(), log_dir=None, runner=run_cmd):
         return c.finish()
     if c.step("check_reports", [sys.executable, "tools/check_reports.py"])[0]:
         return c.finish()
+    rc, out = c.step("bind", [sys.executable, "tools/bind.py"])
+    if rc:
+        return c.finish()
+    m = re.search(r"bind: PASS \((\d+) checked", out)
+    c.counts["bound"] = m.group(1) if m else "?"
+    unbound = re.findall(r"^UNBOUND (\S+):", out, re.M)
+    if unbound:
+        c.notes.append("UNBOUND " + ", ".join(unbound))
     rc, out = c.step("check_sync", ["zsh", "tools/schematic/check_sync.sh", *zens])
     if not rc and "IN SYNC" not in out:
         c.fail("check_sync: exit 0 but no 'IN SYNC' line printed")

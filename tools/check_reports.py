@@ -8,6 +8,9 @@ never into the repo) by `python3 blocks/<Block>/analysis.py` with its defaults, 
   benches/<Block>/docs/design-analysis.md
   benches/<Block>/docs/design-analysis/values.json
   benches/<Block>/docs/design-analysis/library-inputs.json   (rows read, for the library's tools/review.py)
+and, for a bound block (blocks/<Block>/topology.toml; tools/bind.py checks them against the .zen and spec.md):
+  benches/<Block>/docs/design-analysis/design-outputs.json   (analysis results that set instance configs)
+  benches/<Block>/docs/design-analysis/account.json          (judged results, rendered into the block spec.md)
 The PDF (benches/<Block>/docs/design-analysis.pdf) is not compared: it is not byte-reproducible (known finding;
 check_sync.sh verifies its embedded hash of the Markdown instead).
 
@@ -36,6 +39,11 @@ from check_env import default_zl  # noqa: E402
 
 RULES = {"REP-NO-BENCHES", "REP-GENERATE", "REP-STALE", "REP-VALUES"}
 COMPARED = ("design-analysis.md", "design-analysis/values.json", "design-analysis/library-inputs.json")
+BOUND = ("design-analysis/design-outputs.json", "design-analysis/account.json")  # blocks with topology.toml
+
+
+def compared(root, name):
+    return COMPARED + (BOUND if (Path(root) / "blocks" / name / "topology.toml").is_file() else ())
 
 
 def benches(root):
@@ -85,14 +93,14 @@ def run(root, zl, python=sys.executable):
             if not script.is_file():
                 findings.append(Finding("REP-GENERATE", f"blocks/{name}/analysis.py", "", "analysis.py missing"))
                 continue
-            for rel in COMPARED:  # remove any committed copy so a script that writes nothing cannot pass
+            for rel in compared(root, name):  # remove any committed copy so a script that writes nothing cannot pass
                 (Path(tmp) / docs / rel).unlink(missing_ok=True)
             r = subprocess.run([python, str(script)], cwd=tmp, env=env, capture_output=True, text=True)
             if r.returncode:
                 findings.append(Finding("REP-GENERATE", f"blocks/{name}/analysis.py", "",
                                         f"exit {r.returncode}: {(r.stderr or r.stdout).strip().splitlines()[-1:]}"))
                 continue
-            for rel in COMPARED:
+            for rel in compared(root, name):
                 old, new = root / docs / rel, Path(tmp) / docs / rel
                 if not old.is_file():
                     findings.append(Finding("REP-STALE", docs + rel, "", "committed file missing"))

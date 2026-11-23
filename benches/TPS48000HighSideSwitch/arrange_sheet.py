@@ -171,7 +171,7 @@ def title_block(sh, title, desc, subdir):
 
 
 def _expected(p):
-    """Analysis inputs (params.json) each decoded passive must equal."""
+    """Analysis inputs (notes_rules.analysis_inputs) each decoded passive must equal."""
     return {
         "R_TOP": p["r_top_ohm"], "R_MID": p["r_mid_ohm"], "R_BOT": p["r_bot_ohm"], "R_ISCP": p["riscp_ohm"],
         "R_TMR": p["rtmr_ohm"], "R_GATE": p["r1_ohm"], "R_DAMP": p["r2_ohm"], "SHUNT": p["rshunt_ohm"],
@@ -202,7 +202,7 @@ def child(path, v, f):
     rf = sk.ref
     fl = notes_rules.fields(v, f)
     bn = {k: t.format(**fl) for k, t in notes_rules.BLOCK_NOTES.items()}
-    expected = _expected(json.load(open(HERE / "params.json")))
+    expected = _expected(notes_rules.analysis_inputs())
     lab = lambda n: n if rf[n] == n else "%s (%s)" % (rf[n], n)  # "R4 (R_GATE)": designator first, Zener name second
     us = sh.symbol(rf["U"])
     pn = {p.name: n for n, p in sh.lib_pins(us.lib_id, us.unit).items()}  # pin number by pin name
@@ -553,7 +553,7 @@ def root(path, v, f):
 
 
 def check_stacks(path):
-    return pt.check_stacks(path, NS + "/" + Path(path).stem, _expected(json.load(open(HERE / "params.json"))))
+    return pt.check_stacks(path, NS + "/" + Path(path).stem, _expected(notes_rules.analysis_inputs()))
 
 
 if __name__ == "__main__":

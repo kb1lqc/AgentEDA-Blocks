@@ -11,9 +11,18 @@ Sources: every number is a values.json key (analysis.py output; spec.md quotes i
 from spec.md: the 12-40 V rated bus and the 200 uF reference load capacitance (Operating conditions, Inrush), the
 100 V VS/CS+ abs max (DS) is quoted by the analysis row turnoff_transient_no_tvs.
 """
-import json
 import re
+import sys
 from pathlib import Path
+
+
+def analysis_inputs():
+    """params.json plus the design values the analysis read from the .zen (analysis/_bind.py bench_inputs)."""
+    here = Path(__file__).resolve().parent
+    if str(here.parents[1]) not in sys.path:
+        sys.path.insert(0, str(here.parents[1]))
+    from analysis._bind import bench_inputs
+    return bench_inputs(here)
 
 NUM = r"[0-9.]+"
 
@@ -59,7 +68,7 @@ def ref_range(refs):
 def fields(v, f):
     """Formatted numbers for the templates (f(x, n) = fixed decimals)."""
     sm = {s["key"]: s for s in v["summary"]}
-    p = json.load(open(Path(__file__).parent / "params.json"))  # analysis inputs (basis in params.json)
+    p = analysis_inputs()  # params.json plus the design values the analysis read from the .zen
     div = re.fullmatch(r"([0-9.]+) to ([0-9.]+) uA", sm["divider_current_ua"]["result"])
     drop = re.fullmatch(r"([0-9.]+) mV", sm["drop_des_mv"]["result"])
     if not (div and drop):

@@ -1,0 +1,53 @@
+{
+  "r_top": {
+    "value": 536000.0,
+    "unit": "ohm",
+    "basis": "UVLO/OV ladder selected by the analysis (section 4)",
+    "text": "536kohm"
+  },
+  "r_mid": {
+    "value": 30100.0,
+    "unit": "ohm",
+    "basis": "UVLO/OV ladder selected by the analysis (section 4)",
+    "text": "30.1kohm"
+  },
+  "r_bot": {
+    "value": 51100.0,
+    "unit": "ohm",
+    "basis": "UVLO/OV ladder selected by the analysis (section 4)",
+    "text": "51.1kohm"
+  },
+  "v_vgs": {
+    "min": 0.0,
+    "max": 13.86,
+    "unit": "V",
+    "basis": "V(G) - V(S) range (values.json v_vgs_range)",
+    "text": "0V to 13.86V"
+  },
+  "v_abs_cs_pair": {
+    "min": -0.45445225,
+    "max": 0.45445225,
+    "unit": "V",
+    "basis": "CS+ - CS- range, both fault directions (D10) (values.json v_cs_pair_range)",
+    "text": "-454.45225mV to 454.45225mV"
+  },
+  "v_vds_rating": {
+    "min": -1.2,
+    "max": 40.0,
+    "unit": "V",
+    "basis": "V(D) - V(S) range in operation (values.json v_vds_range)",
+    "text": "-1.2V to 40V"
+  },
+  "v_rdamp_across": {
+    "value": 1e-07,
+    "unit": "V",
+    "basis": "R_DAMP DC voltage (values.json v_rdamp_dc)",
+    "text": "100nV"
+  },
+  "v_shunt_across": {
+    "value": 0.0273,
+    "unit": "V",
+    "basis": "shunt voltage at the design current, rounded up to 0.1 mV (values.json vsense_op_max, D9)",
+    "text": "27.3mV"
+  }
+}

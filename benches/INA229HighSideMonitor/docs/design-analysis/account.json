@@ -1,0 +1,219 @@
+{
+  "block": "INA229HighSideMonitor",
+  "instance": "INA",
+  "report": "benches/INA229HighSideMonitor/docs/design-analysis.md",
+  "library": "v0.7.0",
+  "topology": "blocks/INA229HighSideMonitor/topology.toml",
+  "inputs": {
+    "rows": 53,
+    "human": 16
+  },
+  "requirements": [
+    {
+      "requirement": "Sense voltage headroom (self-heated worst Vsense at 6 A)",
+      "result": "60.47 mV",
+      "limit": "163.8 mV (ADCRANGE 0)",
+      "margin": "103.4 mV (63.09 %)",
+      "status": "PASS",
+      "section": "1",
+      "rests_on": [
+        "ESTIMATE theta_est (shunt self-heating, 3.2)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)"
+      ],
+      "open_items": [
+        "OI-EOL"
+      ]
+    },
+    {
+      "requirement": "Shunt dissipation at 6 A, 70 degC (ambient rating)",
+      "result": "0.3624 W",
+      "limit": "1 W (p70 x derate)",
+      "margin": "0.6376 W (63.76 %)",
+      "status": "PASS",
+      "section": "2",
+      "rests_on": [
+        "ASSUMPTION t_ref_c (shunt TCR reference)"
+      ],
+      "open_items": [
+        "OI-PATH"
+      ]
+    },
+    {
+      "requirement": "Shunt element temperature at 6 A, 70 degC (theta_est 100 degC/W, self-consistent)",
+      "result": "106.3 degC",
+      "limit": "170 degC (ASSUMED element limit)",
+      "margin": "63.72 degC",
+      "status": "ESTIMATE, PASS only if element limit = 170 degC (assumption)",
+      "section": "3",
+      "rests_on": [
+        "ESTIMATE theta_est (shunt self-heating, 3.2)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)",
+        "ASSUMPTION t_elem_limit_c (element limit)"
+      ],
+      "open_items": [
+        "OI-PATH"
+      ]
+    },
+    {
+      "requirement": "BOL calibrated error at 6 A (REQUIREMENT, judged)",
+      "result": "-0.374 to +0.375 % (max 0.375 %)",
+      "limit": "+/-1 % of reading",
+      "margin": "+0.625 % of reading",
+      "status": "PASS, BOL, self-heated, one-point cal at 6 A / 25 degC",
+      "section": "5b",
+      "rests_on": [
+        "ESTIMATE theta_est (shunt self-heating, 3.2)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)",
+        "ASSUMPTION cal_ta_c (calibration ambient)",
+        "design input cal_ref_pct (calibration reference)"
+      ],
+      "open_items": [
+        "OI-EOL",
+        "OI-CAL",
+        "OI-DATA"
+      ]
+    },
+    {
+      "requirement": "BOL uncalibrated error at 6 A (self-heated, solder-heat limit)",
+      "result": "-6.424 to +6.444 % (max 6.444 %)",
+      "limit": "+/-1 % (not the judged case)",
+      "margin": "-5.444 % of reading",
+      "status": "FAIL (reported; the judged case is calibrated)",
+      "section": "5b",
+      "rests_on": [
+        "ESTIMATE theta_est (shunt self-heating, 3.2)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)",
+        "solder-heat qualification limit used as a bound"
+      ],
+      "open_items": [
+        "OI-EOL",
+        "OI-DATA"
+      ]
+    },
+    {
+      "requirement": "INA229 junction temperature at TA 70 degC (typical-based)",
+      "result": "71.04 degC (all power)",
+      "limit": "150 degC (tj_abs)",
+      "margin": "78.96 degC",
+      "status": "ESTIMATE, PASS",
+      "section": "9",
+      "rests_on": [
+        "ESTIMATE rtheta_ja (typical only)"
+      ],
+      "open_items": []
+    },
+    {
+      "requirement": "Differential, hard load short (IN+ = 40 V, IN- = 0 V)",
+      "result": "40 to 40 V",
+      "limit": "`vin_diff_abs`: -40 to 40 V",
+      "margin": "0 V",
+      "status": "PASS, ZERO MARGIN (OPEN ITEM)",
+      "section": "11",
+      "rests_on": [],
+      "open_items": [
+        "OI-SHORT"
+      ]
+    },
+    {
+      "requirement": "VIO high level, MOSI/MISO/SCLK/ALERT_N (3.3 V +/-3 %)",
+      "result": "3.399 to 3.399 V",
+      "limit": "`vio_abs`: -0.3 to 3.501 V",
+      "margin": "0.102 V",
+      "status": "PASS",
+      "section": "11",
+      "rests_on": [],
+      "open_items": []
+    },
+    {
+      "requirement": "MISO output source resistance (design placeholder)",
+      "result": "33 ohm",
+      "limit": "<= 400 ohm (`voh_25c`)",
+      "margin": "367 ohm",
+      "status": "PASS (placeholder, OPEN ITEM)",
+      "section": "12",
+      "rests_on": [
+        "DESIGN CHOICE R_MISO placeholder"
+      ],
+      "open_items": [
+        "OI-MISO"
+      ]
+    }
+  ],
+  "report_only": 10,
+  "design": [
+    {
+      "key": "rshunt_ohm",
+      "value": "0.01",
+      "source": "config `rshunt` = `10m`"
+    },
+    {
+      "key": "rshunt_tol_code",
+      "value": "'D'",
+      "source": "config `rshunt_tol` = `D`"
+    },
+    {
+      "key": "r_miso_ohm",
+      "value": "33.0",
+      "source": "R_MISO MPN `ERJ3EKF33R0V` value (library)"
+    },
+    {
+      "key": "r_alert_pullup_ohm",
+      "value": "10000.0",
+      "source": "R_ALERT MPN `ERJ3EKF1002V` value (library)"
+    },
+    {
+      "key": "vbus_lo_v",
+      "value": "12.0",
+      "source": "net `VBUS_LOAD` (`12–40V (26V nom.)`) min"
+    },
+    {
+      "key": "vbus_hi_v",
+      "value": "40.0",
+      "source": "net `VBUS_LOAD` (`12–40V (26V nom.)`) max"
+    },
+    {
+      "key": "vs_nom_v",
+      "value": "3.3",
+      "source": "net `V3V3` (`3.3V 3%`) nominal"
+    },
+    {
+      "key": "vs_tol_frac",
+      "value": "0.03",
+      "source": "net `V3V3` (`3.3V 3%`) tolerance"
+    },
+    {
+      "key": "ta_min_c",
+      "value": "0.0",
+      "source": "bench config `ambient` = `0–70°C (35°C nom.)` min"
+    },
+    {
+      "key": "ta_max_c",
+      "value": "70.0",
+      "source": "bench config `ambient` = `0–70°C (35°C nom.)` max"
+    },
+    {
+      "key": "derate",
+      "value": "1.0",
+      "source": "bench config `derate` = `1.0`"
+    }
+  ],
+  "outputs": {
+    "vsense_max": {
+      "value": 0.0605,
+      "unit": "V",
+      "basis": "self-heated worst Vsense at I_MAX rounded up to 0.1 mV (section 1)",
+      "text": "60.5mV"
+    }
+  },
+  "preconditions": [
+    "SENSE-P",
+    "SENSE-N",
+    "SHUNT-PATH",
+    "VBUS-LOAD",
+    "BUS-RANGE",
+    "SHUNT-MPN",
+    "VS-BYPASS",
+    "MISO-SERIES",
+    "ALERT-PULLUP"
+  ]
+}
