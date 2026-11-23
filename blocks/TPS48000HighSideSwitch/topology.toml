@@ -1,0 +1,169 @@
+# What blocks/TPS48000HighSideSwitch/analysis.py assumes about the circuit, and where its design values come from.
+# Started from `python3 tools/bind.py --init TPS48000HighSideSwitch` (the bench netlist), then edited. Checked against
+# the bench netlist by tools/bind.py; kinds and fields: docs/spec/blocks.md "Binding". Sections are the headings of
+# benches/TPS48000HighSideSwitch/docs/design-analysis.md.
+
+[parts]
+exclusive = true
+U = "TPS48000QDGXQ1"
+Q1 = "ISC035N10NM5LF2"
+SHUNT = "WSK2512-LOW"
+C_BST = "GCM21B"
+C_GATE = "GCM188"
+C_SRC = "GCM188"
+C_TMR = "GCM188"
+C_VS = "GCM188"
+R_BOT = "ERJ-3EKF"
+R_DAMP = "ERJ-3EKF"
+R_FAULT = "ERJ-3EKF"
+R_GATE = "ERJ-3EKF"
+R_ISCP = "ERJ-3EKF"
+R_MID = "ERJ-3EKF"
+R_PGOOD = "ERJ-3EKF"
+R_TMR = "ERJ-3EKF"
+R_TOP = "ERJ-3EKF"
+
+[[pre]]
+id = "CS-P"
+what = "Kelvin tap E1 straight to CS+, nothing else on CS_P"
+exact = ["SHUNT.E1", "U.CS+"]
+sections = ["5", "8", "10"]
+
+[[pre]]
+id = "CS-N"
+what = "Kelvin tap E2 straight to CS-, nothing else on CS_N"
+exact = ["SHUNT.E2", "U.CS-"]
+sections = ["5", "8", "10"]
+
+[[pre]]
+id = "POWER-PATH"
+what = "BUS_IN -> shunt I1-I2 -> DRAIN -> FET D-S -> BUS_OUT, the shunt and FET in series and nothing else on DRAIN"
+exact = ["SHUNT.I2", "Q1.D"]
+sections = ["5", "6", "7", "8"]
+
+[[pre]]
+id = "SHUNT-PATH"
+what = "Shunt terminals on separate nets: the bus current flows through the shunt"
+separate = ["SHUNT.I1", "SHUNT.I2", "SHUNT.E1", "SHUNT.E2"]
+sections = ["5", "6", "8"]
+
+[[pre]]
+id = "SHUNT-MPN"
+what = "Shunt MPN is the library MPN of the instance configs rshunt and rshunt_tol"
+mpn = "SHUNT"
+value = "rshunt"
+tolerance = "rshunt_tol"
+sections = ["2", "5", "6", "8"]
+
+[[pre]]
+id = "BUS-IN"
+what = "VS, the divider top and the VS bypass on BUS_IN, with the shunt current terminal I1"
+contains = ["SHUNT.I1", "U.VS", "R_TOP.1", "C_VS.1"]
+sections = ["4", "6", "10"]
+
+[[pre]]
+id = "BUS-OUT"
+what = "FET source, SRC, the bootstrap return and the SRC bypass on BUS_OUT"
+contains = ["Q1.S", "U.SRC", "C_BST.2", "C_SRC.1"]
+sections = ["7", "9", "10"]
+
+[[pre]]
+id = "BUS-RANGE"
+what = "BUS_IN and BUS_OUT declare one bus voltage range (the analysis has one bus range)"
+same_voltage = ["SHUNT.I1", "Q1.S"]
+sections = ["4", "6", "7", "8", "10"]
+
+[[pre]]
+id = "DIVIDER"
+what = "UVLO/OV ladder BUS_IN -> R_TOP -> EN/UVLO -> R_MID -> OV -> R_BOT -> GND (DS Fig 7-5), nothing else on its nodes"
+exact = [["R_TOP.2", "R_MID.1", "U.EN/UVLO"], ["R_MID.2", "R_BOT.1", "U.OV"]]
+contains = ["R_BOT.2", "U.GND"]
+sections = ["3", "4", "10"]
+
+[[pre]]
+id = "GATE"
+what = "Gate node: FET gate, PD (fast turn-off), R_GATE from PU and R_DAMP to C_GATE, nothing else"
+exact = [["Q1.G", "R_DAMP.1", "R_GATE.2", "U.PD"], ["R_GATE.1", "U.PU"], ["C_GATE.1", "R_DAMP.2"]]
+contains = ["C_GATE.2", "U.GND"]
+sections = ["7", "8", "9"]
+
+[[pre]]
+id = "BOOTSTRAP"
+what = "C_BST alone from BST to BUS_OUT (SRC)"
+exact = ["C_BST.1", "U.BST"]
+sections = ["7", "9"]
+
+[[pre]]
+id = "ISCP"
+what = "R_ISCP alone from ISCP to GND (sets V(SCP))"
+exact = ["R_ISCP.1", "U.ISCP"]
+contains = ["R_ISCP.2", "U.GND"]
+sections = ["5", "8"]
+
+[[pre]]
+id = "TIMER"
+what = "C_TMR and R_TMR from TMR to GND, nothing else on TMR"
+exact = ["C_TMR.1", "R_TMR.1", "U.TMR"]
+contains = [["C_TMR.2", "U.GND"], ["R_TMR.2", "U.GND"]]
+sections = ["8"]
+
+[[pre]]
+id = "MODE-PINS"
+what = "CS_SEL and SCP_TEST tied to GND (the sense mode and SCP test the analysis models)"
+contains = ["U.GND", "U.CS_SEL", "U.SCP_TEST"]
+sections = ["5", "8"]
+
+[[pre]]
+id = "VS-BYPASS"
+what = "C_VS from VS to GND and C_SRC from SRC to GND"
+contains = [["C_VS.2", "U.GND"], ["C_SRC.2", "U.GND"]]
+sections = ["9", "10"]
+
+[[pre]]
+id = "STATUS-PULLUPS"
+what = "FAULT_N (FLT) and PGOOD_N (FLT_GD) pulled up to V3V3 by R_FAULT and R_PGOOD"
+contains = [["R_FAULT.1", "U.FLT"], ["R_PGOOD.1", "U.FLT_GD"], ["R_FAULT.2", "R_PGOOD.2"]]
+sections = ["10", "11"]
+
+# Analysis inputs read from the .zen (params.json must not repeat them).
+[design]
+rshunt_ohm = { config = "rshunt" }
+rshunt_tol_code = { config = "rshunt_tol" }
+riscp_ohm = { config = "riscp" }
+ctmr_f = { config = "ctmr" }
+rtmr_ohm = { config = "rtmr" }
+r1_ohm = { config = "rgate" }
+c1_f = { config = "cgate" }
+r2_ohm = { part = "R_DAMP" }
+r_top_ohm = { config = "r_top" }
+r_mid_ohm = { config = "r_mid" }
+r_bot_ohm = { config = "r_bot" }
+r_fault_pullup_ohm = { part = "R_FAULT" }
+r_pgood_pullup_ohm = { part = "R_PGOOD" }
+c_small_rated_v = { part = "C_TMR", field = "rated_v" }
+c_small_dielectric = { part = "C_TMR", field = "dielectric" }
+c_small_tolerance = { part = "C_TMR", field = "tolerance" }
+cbst_f = { part = "C_BST" }
+cbst_rated_v = { part = "C_BST", field = "rated_v" }
+cbst_dielectric = { part = "C_BST", field = "dielectric" }
+cbst_tolerance = { part = "C_BST", field = "tolerance" }
+cbyp_f = { part = "C_VS" }
+cbyp_rated_v = { part = "C_VS", field = "rated_v" }
+vbus_lo_v = { net = "U.VS", field = "min" }
+vbus_hi_v = { net = "U.VS", field = "max" }
+v3v3_nom_v = { net = "R_FAULT.2", field = "nominal" }
+v3v3_tol_frac = { net = "R_FAULT.2", field = "tolerance" }
+ta_min_c = { bench = "ambient", field = "min" }
+ta_max_c = { bench = "ambient", field = "max" }
+derate = { bench = "derate" }
+
+# Analysis results that set instance configs in blocks/TPS48000HighSideSwitch/reference.zen (`--apply` writes them).
+[outputs]
+r_top = {}
+r_mid = {}
+r_bot = {}
+v_vgs = {}
+v_abs_cs_pair = {}
+v_vds_rating = {}
+v_rdamp_across = {}
+v_shunt_across = {}

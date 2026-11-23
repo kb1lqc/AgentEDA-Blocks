@@ -39,6 +39,20 @@ def library_inputs(inputs, zl=ZL):
     return sorted(rows, key=lambda r: (r["value"], r["key"], r["input"]))
 
 
+def review_counts():
+    """(rows read, rows with a current human stamp) for the rows read so far, judged from the library's review ledger
+    only (no local PDF check), so the count is the same on every machine. Uses zener-library lib.component internals
+    (_ROWS, _review(local_pdf=False)); fails loudly if a release changes them."""
+    import lib.component as c
+    from lib import used_inputs
+    rows = c._ROWS
+    need = [k for k, e in rows.items() if c._review(e["dir"], e["review_key"], e["stamp"], local_pdf=False)[1]]
+    n = len(used_inputs())
+    if set(rows) != set(used_inputs()):
+        raise RuntimeError("zener-library review record (_ROWS) does not cover every row read; update review_counts")
+    return n, n - len(need)
+
+
 def write_library_inputs(fig_dir):
     from lib import used_inputs
     path = Path(fig_dir) / "library-inputs.json"

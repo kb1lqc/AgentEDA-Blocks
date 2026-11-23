@@ -135,7 +135,7 @@ def title_block(sh, title, desc, subdir):
 
 
 def _expected(p):
-    """Analysis inputs (params.json) each decoded passive must equal; C_VS (100 nF) is set only in the .zen."""
+    """Analysis inputs (notes_rules.analysis_inputs) each decoded passive must equal; C_VS (100 nF) is set only in the .zen."""
     return {"SHUNT": p["rshunt_ohm"], "R_MISO": p["r_miso_ohm"], "R_ALERT": p["r_alert_pullup_ohm"], "C_VS": None}
 
 
@@ -157,7 +157,7 @@ def child(path, v, f):
     rf = sk.ref
     fl = notes_rules.fields(v, f)
     bn = {k: t.format(**fl) for k, t in notes_rules.BLOCK_NOTES.items()}
-    expected = _expected(json.load(open(HERE / "params.json")))
+    expected = _expected(notes_rules.analysis_inputs())
     lab = lambda n: "%s (%s)" % (rf[n], n)  # "R3 (SHUNT)": designator first, Zener name second
     st = lambda name, x, ymid: stack(sk, name, x, ymid, expected)
 
@@ -374,7 +374,7 @@ def root(path, v, f):
 
 
 def check_stacks(path):
-    return pt.check_stacks(path, NS + "/" + Path(path).stem, _expected(json.load(open(HERE / "params.json"))))
+    return pt.check_stacks(path, NS + "/" + Path(path).stem, _expected(notes_rules.analysis_inputs()))
 
 
 if __name__ == "__main__":

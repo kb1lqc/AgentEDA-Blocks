@@ -1,0 +1,75 @@
+"""Netlist and design-value export for tools/bind.py and the block analyses (analysis/_bind.py).
+
+A bench's bind.zen runs a TestBench over its bench.zen with `checks=[extract(...)]`; `pcb test` then prints one line
+`BIND-JSON <json>` (stderr) holding:
+  nets:       {net name: [[component path, pin], ...]}           (sorted; component paths without the TestBench prefix)
+  components: {component path: {component, mpn, dnp, pins: {pin: net name}}}
+  voltages:   {net name: {min, max, nominal, tolerance, text}}  (only nets that declare a voltage; SI floats)
+  configs:    {instance: {config: {text, value, unit}}}          (instance configs as passed by the bench)
+  bench:      {config: {text, value, unit}}                      (bench configs the analysis reads, e.g. ambient)
+Physical values carry their SI float (`value`, and `min`/`max` for ranges) from Zener itself, so no Python side parses
+unit text. Temperatures are kelvin, as Zener stores them.
+"""
+
+
+def _strip(path, prefix):
+    return path[len(prefix) :] if path.startswith(prefix) else path
+
+
+def _quantity(v):
+    """{text, value, unit, min, max, nominal, tolerance} for a Zener physical value; {text, value} for anything else."""
+    if hasattr(v, "unit"):
+        out = {"text": str(v), "unit": str(v.unit), "value": v.value, "min": v.min, "max": v.max}
+        out["nominal"] = v.nominal
+        out["tolerance"] = v.tolerance
+        return out
+    return {"text": str(v), "value": v}
+
+
+def extract(configs={}, bench={}):
+    """A TestBench check that prints the BIND-JSON line. configs: {instance: {name: value}}; bench: {name: value}."""
+
+    def check(module, inputs):
+        nets = module.nets()
+        comps = module.components()
+
+        # TestBench paths carry "<bench name>__<case>." in front of every component path; drop it.
+        prefix = ""
+        for name in nets:
+            for member in nets[name]:
+                p = member[0]
+                if "__" in p.split(".")[0]:
+                    prefix = p.split(".")[0] + "."
+                break
+            if prefix:
+                break
+
+        out_nets = {}
+        for name in nets:
+            out_nets[name] = sorted([[_strip(m[0], prefix), m[1]] for m in nets[name]])
+
+        out_comps, voltages = {}, {}
+        for path in comps:
+            c = comps[path]
+            pins = {}
+            for pin in c.pins:
+                net = c.pins[pin]
+                pins[pin] = net.name
+                if net.voltage != None and net.name not in voltages:
+                    voltages[net.name] = _quantity(net.voltage)
+            out_comps[path] = {"component": c.name, "mpn": c.mpn, "dnp": c.dnp, "pins": pins}
+
+        out_cfg = {}
+        for inst in configs:
+            out_cfg[inst] = {k: _quantity(configs[inst][k]) for k in configs[inst]}
+
+        data = {
+            "nets": out_nets,
+            "components": out_comps,
+            "voltages": voltages,
+            "configs": out_cfg,
+            "bench": {k: _quantity(bench[k]) for k in bench},
+        }
+        print("BIND-JSON " + json.encode(data))
+
+    return check

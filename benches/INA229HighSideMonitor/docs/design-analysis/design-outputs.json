@@ -1,0 +1,8 @@
+{
+  "vsense_max": {
+    "value": 0.0605,
+    "unit": "V",
+    "basis": "self-heated worst Vsense at I_MAX rounded up to 0.1 mV (section 1)",
+    "text": "60.5mV"
+  }
+}

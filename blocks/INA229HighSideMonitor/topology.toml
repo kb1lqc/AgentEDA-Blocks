@@ -1,0 +1,99 @@
+# What blocks/INA229HighSideMonitor/analysis.py assumes about the circuit, and where its design values come from.
+# Checked against the bench netlist (benches/<Block>/bind.zen, pcb test) by tools/bind.py; how binding works:
+# docs/spec/blocks.md "Binding". Parts are named by role: the instance-relative module name in the .zen (U, SHUNT, ...);
+# pins are "<role>.<pin>" with the library symbol's pin names.
+
+# Each role must be exactly one fitted component from this library wrapper. exclusive: no other part in the instance.
+[parts]
+exclusive = true
+U = "INA229AIDGS"
+SHUNT = "WSK2512"
+C_VS = "GCM188"
+R_MISO = "ERJ-3EKF"
+R_ALERT = "ERJ-3EKF"
+
+# Preconditions. Kinds (exact and contains take one pin group or a list of groups): exact = the net holding the
+# group's first pin has exactly these pins and nothing else; contains = that net has at least these pins (port nets,
+# where a board adds its own parts); separate = no two of
+# these pins share a net; same_voltage = the nets of these pins declare the same voltage range; mpn = the role's MPN is
+# the library MPN of the instance configs (value, tolerance). sections: report sections that are no longer valid when
+# the precondition breaks (headings of benches/<Block>/docs/design-analysis.md; the analysis lists them per section).
+[[pre]]
+id = "SENSE-P"
+what = "Kelvin tap E1 wired straight to IN+, nothing else on SENSE_P"
+exact = ["SHUNT.E1", "U.IN+"]
+sections = ["1", "5", "5b", "6", "8", "11"]
+
+[[pre]]
+id = "SENSE-N"
+what = "Kelvin tap E2 wired straight to IN-, nothing else on SENSE_N"
+exact = ["SHUNT.E2", "U.IN-"]
+sections = ["1", "5", "5b", "6", "8", "11"]
+
+[[pre]]
+id = "SHUNT-PATH"
+what = "Shunt current terminals on separate nets (BUS_IN, BUS_OUT): the bus current flows through the shunt"
+separate = ["SHUNT.I1", "SHUNT.I2", "SHUNT.E1", "SHUNT.E2"]
+sections = ["1", "2", "3", "5", "5b", "6", "8"]
+
+[[pre]]
+id = "VBUS-LOAD"
+what = "INA229 VBUS sensed at the load-side current terminal I2 (BUS_OUT), DS Fig 10-1 note 1"
+contains = ["SHUNT.I2", "U.VBUS"]
+sections = ["7", "8", "9", "11"]
+
+[[pre]]
+id = "BUS-RANGE"
+what = "BUS_IN and BUS_OUT declare one bus voltage range (the analysis has one bus range)"
+same_voltage = ["SHUNT.I1", "SHUNT.I2"]
+sections = ["7", "8", "9", "11"]
+
+[[pre]]
+id = "SHUNT-MPN"
+what = "Shunt MPN is the library MPN of the instance configs rshunt and rshunt_tol"
+mpn = "SHUNT"
+value = "rshunt"
+tolerance = "rshunt_tol"
+sections = ["Design definition", "1", "2", "3", "4", "5", "5b", "6", "8"]
+
+[[pre]]
+id = "VS-BYPASS"
+what = "VS bypass capacitor C_VS across VS and GND"
+contains = [["U.VS", "C_VS.1"], ["U.GND", "C_VS.2"]]
+sections = ["Design definition"]
+
+[[pre]]
+id = "MISO-SERIES"
+what = "R_MISO is the only part on the INA229 MISO pin (source series termination)"
+exact = ["U.MISO", "R_MISO.1"]
+sections = ["11", "12"]
+
+[[pre]]
+id = "ALERT-PULLUP"
+what = "ALERT_N pulled up to VS by R_ALERT"
+contains = [["U.ALERT", "R_ALERT.1"], ["U.VS", "R_ALERT.2"]]
+sections = ["10", "11"]
+
+# Analysis inputs read from the netlist export instead of params.json (which must not repeat them). Kinds:
+# config = an instance config; part = a field of a role's placed part, decoded from its netlist MPN through the library
+# (value for a resistor series or capacitor catalog; rated_v, dielectric, tolerance for a capacitor); net = a voltage
+# field (min, max, nominal, tolerance) of the net holding a pin; bench = a bench config. field picks a range bound;
+# temperatures are degC.
+[design]
+rshunt_ohm = { config = "rshunt" }
+rshunt_tol_code = { config = "rshunt_tol" }
+r_miso_ohm = { part = "R_MISO" }
+r_alert_pullup_ohm = { part = "R_ALERT" }
+vbus_lo_v = { net = "U.VBUS", field = "min" }
+vbus_hi_v = { net = "U.VBUS", field = "max" }
+vs_nom_v = { net = "U.VS", field = "nominal" }
+vs_tol_frac = { net = "U.VS", field = "tolerance" }
+ta_min_c = { bench = "ambient", field = "min" }
+ta_max_c = { bench = "ambient", field = "max" }
+derate = { bench = "derate" }
+
+# Analysis results that set instance configs (design-analysis/design-outputs.json). tools/bind.py fails when the
+# config disagrees; `python3 tools/bind.py --apply <Block>` writes it into the REFERENCE entry of the same name in
+# blocks/<Block>/reference.zen (file = ..., key = ... to override).
+[outputs]
+vsense_max = {}

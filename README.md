@@ -49,6 +49,16 @@ tools/schematic/export_pdf.sh                                      # schematic P
 tools/schematic/check_sync.sh                                      # schematics match the .zen; PDFs up to date
 ```
 
+## How binding works
+
+A block's analysis reads its design values (shunt, resistors, bus and supply ranges, ambient) from the `.zen` through a
+netlist export (`benches/<Block>/bind.zen`, `pcb test`); `params.json` keeps only analysis-only inputs. `tools/bind.py`
+fails when the circuit no longer matches what the analysis assumes (`blocks/<Block>/topology.toml`, naming the report
+sections that become invalid), when an analysis output such as `vsense_max` disagrees with the `.zen` (fix:
+`python3 tools/bind.py --apply <Block>`), or when the generated account in `spec.md` is stale (fix: `--write-spec`).
+New block or one being bound: `python3 tools/bind.py --init <Block>` writes the bench export and drafts `topology.toml`
+from the netlist. Details: `docs/spec/blocks.md` "Binding".
+
 ## Using a block on a board
 
 ```sh

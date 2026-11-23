@@ -25,6 +25,7 @@ class Fake:
         self.calls, self.replies = [], {
             "pcb --version": (0, "pcbc 0.4.102\n"), "check_env": (0, "check_env: PASS\n"),
             "pcb build": (0, ""), "check_reports": (0, "check_reports: PASS\n"),
+            "tools/bind.py": (0, "bind: PASS (1 checked, 0 violations, 0 stale allowlist entries, 0 allowlisted findings)\n"),
             "check_sync": (0, "RESULT: IN SYNC\n"),
         }
         self.replies.update(replies)
@@ -67,13 +68,15 @@ class TestChain(unittest.TestCase):
     def test_pass(self):
         rc, lines = self.go(Fake())
         self.assertEqual(rc, 0)
-        self.assertEqual(lines[0], "PASS: benches 2/2 built, sync IN SYNC")
+        self.assertEqual(lines[0], "PASS: benches 2/2 built, bound 1, sync IN SYNC")
 
     def test_steps_run_in_order(self):
         f = Fake()
         self.go(f)
-        order = [next(k for k in ("pcb --version", "check_env", "pcb build", "check_reports", "check_sync") if k in c) for c in f.calls]
-        self.assertEqual(order, ["pcb --version", "check_env", "pcb build", "pcb build", "check_reports", "check_sync"])
+        keys = ("pcb --version", "check_env", "pcb build", "check_reports", "tools/bind.py", "check_sync")
+        order = [next(k for k in keys if k in c) for c in f.calls]
+        self.assertEqual(order, ["pcb --version", "check_env", "pcb build", "pcb build", "check_reports", "tools/bind.py",
+                                 "check_sync"])
 
     def test_named_bench_only(self):
         f = Fake()
@@ -126,6 +129,19 @@ class TestChain(unittest.TestCase):
         rc, lines = self.go(Fake(check_reports=(1, "REP-STALE design-analysis.md differs\n")))
         self.assertEqual(rc, 1)
         self.assertIn("REP-STALE", lines[1])
+
+    def test_bind_failure_stops_chain(self):
+        f = Fake(**{"tools/bind.py": (1, "FAIL [BIND-TOPO] blocks/B/topology.toml SENSE-P: Kelvin: not on one net\n")})
+        rc, lines = self.go(f)
+        self.assertEqual(rc, 1)
+        self.assertIn("BIND-TOPO", lines[1])
+        self.assertFalse(any("check_sync" in c for c in f.calls))
+
+    def test_unbound_block_is_a_note(self):
+        f = Fake(**{"tools/bind.py": (0, "UNBOUND T: no blocks/T/topology.toml\nbind: PASS (1 checked, 0 violations)\n")})
+        rc, lines = self.go(f)
+        self.assertEqual(rc, 0)
+        self.assertEqual(lines[0], "PASS: benches 2/2 built, bound 1, sync IN SYNC; UNBOUND T")
 
     def test_check_sync_exit0_without_in_sync_fails(self):
         self.assertEqual(self.go(Fake(check_sync=(0, "nothing\n")))[0], 1)

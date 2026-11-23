@@ -1,6 +1,6 @@
 name: verify
 # Every PR and push to main runs the blocks' own gates: tools/verify.py (environment, bench builds, every design
-# analysis regenerated and compared, schematic sync) and tools/verify.py --schematic per bench (apply twice, netlist
+# analysis regenerated and compared, binding, schematic sync), the bind mutation tests and tools/verify.py --schematic per bench (apply twice, netlist
 # diff, classified ERC). zener-library is checked out beside this repo at the release analysis/_zl.py pins.
 on:
   pull_request:
@@ -52,6 +52,12 @@ jobs:
         run: |
           set -o pipefail
           python3 tools/verify.py --log-dir "$RUNNER_TEMP/verify-logs" | tee "$RUNNER_TEMP/verify.out"
+      - name: bind (tools/bind.py checks, tests/test_bind.py mutation tests against a copy of the repo)
+        if: always()
+        working-directory: circuit-blocks
+        run: |
+          python3 tools/bind.py
+          python3 -m unittest -v tests.test_bind
       - name: Human review packet (flags library rows without a human stamp; never fails)
         if: always()
         working-directory: circuit-blocks

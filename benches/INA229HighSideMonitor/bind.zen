@@ -1,0 +1,30 @@
+"""
+Netlist and design-value export of this bench (not a board). GENERATED: do not edit; regenerate with
+`python3 tools/bind.py --init INA229HighSideMonitor`. `pcb test` prints one BIND-JSON line (tools/bind/extract.zen)
+for the block analysis and tools/bind.py.
+"""
+
+load("@stdlib/units.zen", "Resistance", "Voltage")
+load("../../tools/bind/extract.zen", "extract")
+load("github.com/kb1lqc/circuit-blocks/blocks/INA229HighSideMonitor/reference.zen", "REFERENCE")
+load("./bench.zen", "ambient", "derate")
+
+Bench = Module("./bench.zen")
+
+TestBench(
+    name="bind",
+    module=Bench,
+    test_cases={"default": {}},
+    checks=[
+        extract(
+            configs={
+                "INA": {
+                    "rshunt": Resistance(REFERENCE["rshunt"]),
+                    "rshunt_tol": REFERENCE["rshunt_tol"],
+                    "vsense_max": Voltage(REFERENCE["vsense_max"]),
+                },
+            },
+            bench={"ambient": ambient, "derate": derate},
+        ),
+    ],
+)

@@ -1,0 +1,587 @@
+{
+  "block": "TPS48000HighSideSwitch",
+  "instance": "TPS",
+  "report": "benches/TPS48000HighSideSwitch/docs/design-analysis.md",
+  "library": "v0.7.0",
+  "topology": "blocks/TPS48000HighSideSwitch/topology.toml",
+  "inputs": {
+    "rows": 150,
+    "human": 0
+  },
+  "requirements": [
+    {
+      "requirement": "UVLO rising trip max (turn-on guaranteed below)",
+      "result": "10.527 V",
+      "limit": "<= 10.6 V (10.8 - 0.2)",
+      "margin": "+0.073 V",
+      "status": "PASS",
+      "section": "4",
+      "rests_on": [],
+      "open_items": []
+    },
+    {
+      "requirement": "Turn-on margin to the minimum bus",
+      "result": "0.273 V",
+      "limit": ">= 0.2 V",
+      "margin": "+0.073 V",
+      "status": "PASS",
+      "section": "4",
+      "rests_on": [],
+      "open_items": []
+    },
+    {
+      "requirement": "OV rising trip min",
+      "result": "13.203 V",
+      "limit": ">= 13.2 V",
+      "margin": "+0.003 V",
+      "status": "PASS",
+      "section": "4",
+      "rests_on": [],
+      "open_items": []
+    },
+    {
+      "requirement": "Divider current at the bench bus (worst-case range)",
+      "result": "19.21 to 19.68 uA",
+      "limit": "10 to 20 uA",
+      "margin": "+0.32 uA",
+      "status": "PASS",
+      "section": "4",
+      "rests_on": [],
+      "open_items": []
+    },
+    {
+      "requirement": "EN/UVLO pin at 40 V bus (max)",
+      "result": "5.417 V",
+      "limit": "<= 65 V rec",
+      "margin": "+59.58 V",
+      "status": "PASS",
+      "section": "4",
+      "rests_on": [],
+      "open_items": []
+    },
+    {
+      "requirement": "OV pin at 40 V bus (max)",
+      "result": "3.417 V",
+      "limit": "<= 70 V abs",
+      "margin": "+66.58 V",
+      "status": "PASS",
+      "section": "4",
+      "rests_on": [],
+      "open_items": []
+    },
+    {
+      "requirement": "Short-circuit trip, minimum (self-heated, tol, TCR, solder BOL)",
+      "result": "6.78 A",
+      "limit": "> 6 A design current",
+      "margin": "+0.78 A (+13.0 %)",
+      "status": "ESTIMATE, PASS",
+      "section": "5",
+      "rests_on": [
+        "ESTIMATE shunt self-heating (derating-curve theta)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)"
+      ],
+      "open_items": [
+        "OI-ACCURACY"
+      ]
+    },
+    {
+      "requirement": "Shunt power at the highest non-tripping current, 40 degC",
+      "result": "0.937 W",
+      "limit": "<= 1 W",
+      "margin": "+0.063 W",
+      "status": "ESTIMATE, PASS",
+      "section": "5",
+      "rests_on": [
+        "ESTIMATE shunt self-heating (derating-curve theta)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)"
+      ],
+      "open_items": [
+        "OI-SOFT"
+      ]
+    },
+    {
+      "requirement": "FET Tj at the highest non-tripping current, 40 degC",
+      "result": "111.6 degC",
+      "limit": "<= 175 degC",
+      "margin": "+63.4 K",
+      "status": "ESTIMATE, PASS",
+      "section": "5",
+      "rests_on": [
+        "ESTIMATE FET Rds(on) below VGS 10 V and thermal (typical curves)"
+      ],
+      "open_items": [
+        "OI-RDS"
+      ]
+    },
+    {
+      "requirement": "FET Tj at 6 A, 40 degC",
+      "result": "49.4 degC",
+      "limit": "<= 175 degC",
+      "margin": "+125.6 K",
+      "status": "ESTIMATE, PASS",
+      "section": "6",
+      "rests_on": [
+        "ESTIMATE FET Rds(on) below VGS 10 V and thermal (typical curves)"
+      ],
+      "open_items": [
+        "OI-RDS",
+        "OI-COPPER"
+      ]
+    },
+    {
+      "requirement": "Shunt power at 6 A, 40 degC",
+      "result": "0.164 W",
+      "limit": "<= 1 W",
+      "margin": "+0.836 W",
+      "status": "ESTIMATE, PASS",
+      "section": "6",
+      "rests_on": [
+        "ESTIMATE shunt self-heating (derating-curve theta)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)"
+      ],
+      "open_items": []
+    },
+    {
+      "requirement": "Shunt element temperature at 6 A, 40 degC",
+      "result": "56.4 degC",
+      "limit": "<= 170 degC (ASSUMED)",
+      "margin": "+113.6 K",
+      "status": "ESTIMATE, PASS only if the element limit is the assumed one",
+      "section": "6",
+      "rests_on": [
+        "ESTIMATE shunt self-heating (derating-curve theta)",
+        "ASSUMPTION t_ref_c (shunt TCR reference)",
+        "ASSUMPTION t_elem_limit_c (element limit)"
+      ],
+      "open_items": []
+    },
+    {
+      "requirement": "TPS48000 Tj at 40 degC (rth_ja typical)",
+      "result": "40.21 degC",
+      "limit": "<= 150 degC",
+      "margin": "+109.8 K",
+      "status": "ESTIMATE, PASS",
+      "section": "6",
+      "rests_on": [
+        "ESTIMATE rth_ja (typical only)"
+      ],
+      "open_items": [
+        "OI-DATA"
+      ]
+    },
+    {
+      "requirement": "FET Tj peak during turn-on, 12 and 40 V, both loads, both ramp corners",
+      "result": "95.4 degC",
+      "limit": "<= 175 degC",
+      "margin": "+79.6 K",
+      "status": "ESTIMATE, PASS",
+      "section": "7",
+      "rests_on": [
+        "ESTIMATE SOA and Zth curve rows (typical only)",
+        "design input cload_f"
+      ],
+      "open_items": [
+        "OI-LOADS"
+      ]
+    },
+    {
+      "requirement": "Turn-on I_eq / SOA limit (TC 125 degC curve), worst",
+      "result": "0.857",
+      "limit": "<= 1",
+      "margin": "+0.143",
+      "status": "ESTIMATE, PASS",
+      "section": "7",
+      "rests_on": [
+        "ESTIMATE SOA and Zth curve rows (typical only)",
+        "design input cload_f"
+      ],
+      "open_items": [
+        "OI-LOADS"
+      ]
+    },
+    {
+      "requirement": "Largest passing bus voltage at turn-on (grid 0.5 V, to 80 V)",
+      "result": "45 V",
+      "limit": ">= 40 V rated",
+      "margin": "+5.0 V",
+      "status": "ESTIMATE, PASS",
+      "section": "7",
+      "rests_on": [
+        "ESTIMATE SOA and Zth curve rows (typical only)",
+        "design input cload_f"
+      ],
+      "open_items": [
+        "OI-LOADS"
+      ]
+    },
+    {
+      "requirement": "FET Tj after 100 A for tSC max, from the soft-short state",
+      "result": "116.7 degC",
+      "limit": "<= 175 degC",
+      "margin": "+58.3 K",
+      "status": "ESTIMATE, PASS",
+      "section": "8",
+      "rests_on": [
+        "ESTIMATE FET Rds(on) below VGS 10 V and thermal (typical curves)",
+        "design input i_fault_a"
+      ],
+      "open_items": [
+        "OI-RDS"
+      ]
+    },
+    {
+      "requirement": "Fault current with Tj at the limit (tSC max, soft-short start)",
+      "result": "312 A",
+      "limit": ">= 100 A",
+      "margin": "+212 A",
+      "status": "ESTIMATE, PASS",
+      "section": "8",
+      "rests_on": [
+        "ESTIMATE FET Rds(on) below VGS 10 V and thermal (typical curves)"
+      ],
+      "open_items": [
+        "OI-RDS"
+      ]
+    },
+    {
+      "requirement": "Fault current vs pulsed drain current",
+      "result": "100 A",
+      "limit": "<= 656 A (`id_pulse`)",
+      "margin": "+556 A",
+      "status": "PASS",
+      "section": "8",
+      "rests_on": [
+        "design input i_fault_a"
+      ],
+      "open_items": []
+    },
+    {
+      "requirement": "CS+ to CS- in the fault",
+      "result": "0.454 V",
+      "limit": "<= 100 V abs",
+      "margin": "+99.5 V",
+      "status": "PASS",
+      "section": "8",
+      "rests_on": [
+        "design input i_fault_a"
+      ],
+      "open_items": []
+    },
+    {
+      "requirement": "Avalanche energy, worst of the L sweep (0.25-5 uH)",
+      "result": "41.7 mJ",
+      "limit": "`eas` 398 mJ at 50 A only",
+      "margin": "9.6x",
+      "status": "ESTIMATE (eas not valid above 50 A)",
+      "section": "8",
+      "rests_on": [
+        "design input l_lead_uh (inductance not known)"
+      ],
+      "open_items": [
+        "OI-AVALANCHE"
+      ]
+    },
+    {
+      "requirement": "Turn-off through lead inductance, no TVS: avalanche clamps BUS_IN at V(BR)DSS min or above vs VS / CS+ abs max",
+      "result": ">= 100 V",
+      "limit": "<= 100 V (`abs_vs_cs_gnd`)",
+      "margin": "+0 V (V(BR) is a minimum, so the clamp can be higher)",
+      "status": "FAIL (risk: unprotected transient; TVS deferred by the designer; DS p.27-28 recommends a TVS)",
+      "section": "8",
+      "rests_on": [],
+      "open_items": [
+        "OI-TVS"
+      ]
+    },
+    {
+      "requirement": "Bootstrap capacitor minimum needed (eq. 4, C1 max)",
+      "result": "159.6 nF",
+      "limit": "<= 360 nF (low corner, no DC bias loss)",
+      "margin": "+200 nF",
+      "status": "ESTIMATE: DC-bias loss not bounded in the library",
+      "section": "9",
+      "rests_on": [],
+      "open_items": [
+        "OI-CBST"
+      ]
+    },
+    {
+      "requirement": "V(G_GOOD) max above V(BST-SRC) ON min",
+      "result": "0.24 V",
+      "limit": "<= 0 V (no overlap)",
+      "margin": "-0.24 V",
+      "status": "FAIL (accepted residual risk, OPEN ITEM)",
+      "section": "9",
+      "rests_on": [],
+      "open_items": [
+        "OI-GGOOD"
+      ]
+    },
+    {
+      "requirement": "C1 gate to GND, worst case (bus max + V(BST-SRC_OFF) max)",
+      "result": "53.86 V",
+      "limit": "<= 100 V (C0G rated_v, derate 1)",
+      "margin": "+46.14 V",
+      "status": "PASS",
+      "section": "9",
+      "rests_on": [],
+      "open_items": [
+        "OI-CGATE"
+      ]
+    },
+    {
+      "requirement": "Largest DC-bias and aging loss of CBST that still meets eq. 4 at the low corner (not a DS equation)",
+      "result": "55.6 % allowed loss",
+      "limit": "loss NOT BOUNDED in the library",
+      "margin": "-",
+      "status": "OPEN ITEM: DC-bias loss not bounded",
+      "section": "9",
+      "rests_on": [],
+      "open_items": [
+        "OI-CBST"
+      ]
+    },
+    {
+      "requirement": "C1 dump peak current into PD through R2 (v_c1_max_v / R2 min, not a DS equation)",
+      "result": "5.45 A",
+      "limit": "PD peak sink not bounded (i_pd_peak: 2 A typ only)",
+      "margin": "-",
+      "status": "OPEN ITEM: PD sink and R2 pulse rating not bounded",
+      "section": "9",
+      "rests_on": [],
+      "open_items": [
+        "OI-R2-PULSE",
+        "OI-PD-SINK"
+      ]
+    },
+    {
+      "requirement": "Smallest rating margin (table in section 10, normalised: see table)",
+      "result": "32 rows",
+      "limit": "all margins >= 0",
+      "margin": "none failing",
+      "status": "PASS",
+      "section": "10",
+      "rests_on": [],
+      "open_items": []
+    }
+  ],
+  "report_only": 11,
+  "design": [
+    {
+      "key": "rshunt_ohm",
+      "value": "0.004",
+      "source": "config `rshunt` = `4m`"
+    },
+    {
+      "key": "rshunt_tol_code",
+      "value": "'D'",
+      "source": "config `rshunt_tol` = `D`"
+    },
+    {
+      "key": "riscp_ohm",
+      "value": "10500.0",
+      "source": "config `riscp` = `10.5k`"
+    },
+    {
+      "key": "ctmr_f",
+      "value": "6.8e-09",
+      "source": "config `ctmr` = `6.8nF`"
+    },
+    {
+      "key": "rtmr_ohm",
+      "value": "100000.0",
+      "source": "config `rtmr` = `100k`"
+    },
+    {
+      "key": "r1_ohm",
+      "value": "100000.0",
+      "source": "config `rgate` = `100k`"
+    },
+    {
+      "key": "c1_f",
+      "value": "6.8e-09",
+      "source": "config `cgate` = `6.8nF`"
+    },
+    {
+      "key": "r2_ohm",
+      "value": "10.0",
+      "source": "R_DAMP MPN `ERJ3EKF10R0V` value (library)"
+    },
+    {
+      "key": "r_top_ohm",
+      "value": "536000.0",
+      "source": "config `r_top` = `536k`"
+    },
+    {
+      "key": "r_mid_ohm",
+      "value": "30100.0",
+      "source": "config `r_mid` = `30.1k`"
+    },
+    {
+      "key": "r_bot_ohm",
+      "value": "51100.0",
+      "source": "config `r_bot` = `51.1k`"
+    },
+    {
+      "key": "r_fault_pullup_ohm",
+      "value": "10000.0",
+      "source": "R_FAULT MPN `ERJ3EKF1002V` value (library)"
+    },
+    {
+      "key": "r_pgood_pullup_ohm",
+      "value": "10000.0",
+      "source": "R_PGOOD MPN `ERJ3EKF1002V` value (library)"
+    },
+    {
+      "key": "c_small_rated_v",
+      "value": "100.0",
+      "source": "C_TMR MPN `GCM1885C2A682JE02D` rated_v (library)"
+    },
+    {
+      "key": "c_small_dielectric",
+      "value": "'C0G'",
+      "source": "C_TMR MPN `GCM1885C2A682JE02D` dielectric (library)"
+    },
+    {
+      "key": "c_small_tolerance",
+      "value": "'+/-5%'",
+      "source": "C_TMR MPN `GCM1885C2A682JE02D` tolerance (library)"
+    },
+    {
+      "key": "cbst_f",
+      "value": "4.7e-07",
+      "source": "C_BST MPN `GCM21BR71H474KA55L` value (library)"
+    },
+    {
+      "key": "cbst_rated_v",
+      "value": "50.0",
+      "source": "C_BST MPN `GCM21BR71H474KA55L` rated_v (library)"
+    },
+    {
+      "key": "cbst_dielectric",
+      "value": "'X7R'",
+      "source": "C_BST MPN `GCM21BR71H474KA55L` dielectric (library)"
+    },
+    {
+      "key": "cbst_tolerance",
+      "value": "'+/-10%'",
+      "source": "C_BST MPN `GCM21BR71H474KA55L` tolerance (library)"
+    },
+    {
+      "key": "cbyp_f",
+      "value": "1e-07",
+      "source": "C_VS MPN `GCM188R71H104KA57D` value (library)"
+    },
+    {
+      "key": "cbyp_rated_v",
+      "value": "50.0",
+      "source": "C_VS MPN `GCM188R71H104KA57D` rated_v (library)"
+    },
+    {
+      "key": "vbus_lo_v",
+      "value": "12.0",
+      "source": "net `VBUS_IN` (`12–40V (26V nom.)`) min"
+    },
+    {
+      "key": "vbus_hi_v",
+      "value": "40.0",
+      "source": "net `VBUS_IN` (`12–40V (26V nom.)`) max"
+    },
+    {
+      "key": "v3v3_nom_v",
+      "value": "3.3",
+      "source": "net `V3V3` (`3.3V 3%`) nominal"
+    },
+    {
+      "key": "v3v3_tol_frac",
+      "value": "0.03",
+      "source": "net `V3V3` (`3.3V 3%`) tolerance"
+    },
+    {
+      "key": "ta_min_c",
+      "value": "5.0",
+      "source": "bench config `ambient` = `5–40°C (22.5°C nom.)` min"
+    },
+    {
+      "key": "ta_max_c",
+      "value": "40.0",
+      "source": "bench config `ambient` = `5–40°C (22.5°C nom.)` max"
+    },
+    {
+      "key": "derate",
+      "value": "1.0",
+      "source": "bench config `derate` = `1.0`"
+    }
+  ],
+  "outputs": {
+    "r_top": {
+      "value": 536000.0,
+      "unit": "ohm",
+      "basis": "UVLO/OV ladder selected by the analysis (section 4)",
+      "text": "536kohm"
+    },
+    "r_mid": {
+      "value": 30100.0,
+      "unit": "ohm",
+      "basis": "UVLO/OV ladder selected by the analysis (section 4)",
+      "text": "30.1kohm"
+    },
+    "r_bot": {
+      "value": 51100.0,
+      "unit": "ohm",
+      "basis": "UVLO/OV ladder selected by the analysis (section 4)",
+      "text": "51.1kohm"
+    },
+    "v_vgs": {
+      "min": 0.0,
+      "max": 13.86,
+      "unit": "V",
+      "basis": "V(G) - V(S) range (values.json v_vgs_range)",
+      "text": "0V to 13.86V"
+    },
+    "v_abs_cs_pair": {
+      "min": -0.45445225,
+      "max": 0.45445225,
+      "unit": "V",
+      "basis": "CS+ - CS- range, both fault directions (D10) (values.json v_cs_pair_range)",
+      "text": "-454.45225mV to 454.45225mV"
+    },
+    "v_vds_rating": {
+      "min": -1.2,
+      "max": 40.0,
+      "unit": "V",
+      "basis": "V(D) - V(S) range in operation (values.json v_vds_range)",
+      "text": "-1.2V to 40V"
+    },
+    "v_rdamp_across": {
+      "value": 1e-07,
+      "unit": "V",
+      "basis": "R_DAMP DC voltage (values.json v_rdamp_dc)",
+      "text": "100nV"
+    },
+    "v_shunt_across": {
+      "value": 0.0273,
+      "unit": "V",
+      "basis": "shunt voltage at the design current, rounded up to 0.1 mV (values.json vsense_op_max, D9)",
+      "text": "27.3mV"
+    }
+  },
+  "preconditions": [
+    "CS-P",
+    "CS-N",
+    "POWER-PATH",
+    "SHUNT-PATH",
+    "SHUNT-MPN",
+    "BUS-IN",
+    "BUS-OUT",
+    "BUS-RANGE",
+    "DIVIDER",
+    "GATE",
+    "BOOTSTRAP",
+    "ISCP",
+    "TIMER",
+    "MODE-PINS",
+    "VS-BYPASS",
+    "STATUS-PULLUPS"
+  ]
+}

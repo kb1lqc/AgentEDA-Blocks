@@ -1,0 +1,42 @@
+"""
+Netlist and design-value export of this bench (not a board). GENERATED: do not edit; regenerate with
+`python3 tools/bind.py --init TPS48000HighSideSwitch`. `pcb test` prints one BIND-JSON line (tools/bind/extract.zen)
+for the block analysis and tools/bind.py.
+"""
+
+load("@stdlib/units.zen", "Capacitance", "Resistance", "Voltage")
+load("../../tools/bind/extract.zen", "extract")
+load("github.com/kb1lqc/circuit-blocks/blocks/TPS48000HighSideSwitch/reference.zen", "REFERENCE")
+load("./bench.zen", "ambient", "derate")
+
+Bench = Module("./bench.zen")
+
+TestBench(
+    name="bind",
+    module=Bench,
+    test_cases={"default": {}},
+    checks=[
+        extract(
+            configs={
+                "TPS": {
+                    "rshunt": Resistance(REFERENCE["rshunt"]),
+                    "rshunt_tol": REFERENCE["rshunt_tol"],
+                    "riscp": Resistance(REFERENCE["riscp"]),
+                    "ctmr": Capacitance(REFERENCE["ctmr"]),
+                    "rtmr": Resistance(REFERENCE["rtmr"]),
+                    "rgate": Resistance(REFERENCE["rgate"]),
+                    "cgate": Capacitance(REFERENCE["cgate"]),
+                    "r_top": Resistance(REFERENCE["r_top"]),
+                    "r_mid": Resistance(REFERENCE["r_mid"]),
+                    "r_bot": Resistance(REFERENCE["r_bot"]),
+                    "v_vgs": Voltage(REFERENCE["v_vgs"]),
+                    "v_abs_cs_pair": Voltage(REFERENCE["v_abs_cs_pair"]),
+                    "v_vds_rating": Voltage(REFERENCE["v_vds_rating"]),
+                    "v_rdamp_across": Voltage(REFERENCE["v_rdamp_across"]),
+                    "v_shunt_across": Voltage(REFERENCE["v_shunt_across"]),
+                },
+            },
+            bench={"ambient": ambient, "derate": derate},
+        ),
+    ],
+)
