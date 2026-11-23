@@ -91,7 +91,7 @@ Results, margins and their status: the generated account below.
 
 ## Results account (generated)
 
-Bench reference instance `INA`, from `benches/INA229HighSideMonitor/docs/design-analysis.md` (zener-library v0.7.0). Library rows read by the analysis: 53; checked by a person (current human stamp): **16 of 53**; the rest carry a machine `verified` stamp or none. The library does not attribute rows to individual results, so the count is per analysis, not per row below.
+Bench reference instance `INA`, from `benches/INA229HighSideMonitor/docs/design-analysis.md` (zener-library v0.8.0). Library rows read by the analysis: 53; checked by a person (current human stamp): **36 of 53**; the rest carry a machine `verified` stamp or none. The library does not attribute rows to individual results, so the count is per analysis, not per row below.
 
 | Requirement | Result (worst case) | Limit | Margin | Status | Rests on (assumption / estimate) | Open items | Section |
 |---|---|---|---|---|---|---|---|

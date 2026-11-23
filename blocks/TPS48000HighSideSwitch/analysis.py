@@ -23,6 +23,7 @@ import argparse
 import datetime
 import itertools
 import json
+import tomllib
 import math
 import subprocess
 import sys
@@ -1489,7 +1490,11 @@ def analyze(params_path=None, out=None, instance="TPS"):
     FINAL += inputs_section()  # library rows read and their `verified` stamps (zener-library lib-api.md)
     write_report(MD_PATH, "\n".join(FINAL) + "\n", unverified=unverified_inputs())  # .md unless only the results date changed, then the PDF (md hash stamp)
 
-    LIB_PINS = ("Released: Zener deps ISC035N10NM5LF2 v0.5.0 and TPS48000QDGXQ1 v0.5.0; Python library zener-library "
+    # Zener dep versions read from the block's pcb.toml (tool-managed), not typed here: a bump cannot leave them stale.
+    _deps = tomllib.loads((REPO / "blocks" / "TPS48000HighSideSwitch" / "pcb.toml").read_text())["dependencies"]
+    _dep_v = {k.rsplit("/", 1)[1]: v for k, v in _deps.items()}
+    LIB_PINS = (f"Released: Zener deps ISC035N10NM5LF2 v{_dep_v['ISC035N10NM5LF2']} and TPS48000QDGXQ1 "
+                f"v{_dep_v['TPS48000QDGXQ1']}; Python library zener-library "
                 f"{ZL_VERSION} "
                 "(ZL_VERSION in analysis/_zl.py). The pin-pair v_<key> configs and FET curve rows are in these releases "
                 "(before the release: dev commit f563e7e and feat/isc035-soa @ 0426982).")

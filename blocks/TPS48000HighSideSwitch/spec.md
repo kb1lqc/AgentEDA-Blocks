@@ -210,7 +210,7 @@ The designer asked for the build to proceed without stopping; each of these woul
 
 ## Results account (generated)
 
-Bench reference instance `TPS`, from `benches/TPS48000HighSideSwitch/docs/design-analysis.md` (zener-library v0.7.0). Library rows read by the analysis: 150; checked by a person (current human stamp): **0 of 150**; the rest carry a machine `verified` stamp or none. The library does not attribute rows to individual results, so the count is per analysis, not per row below.
+Bench reference instance `TPS`, from `benches/TPS48000HighSideSwitch/docs/design-analysis.md` (zener-library v0.8.0). Library rows read by the analysis: 150; checked by a person (current human stamp): **3 of 150**; the rest carry a machine `verified` stamp or none. The library does not attribute rows to individual results, so the count is per analysis, not per row below.
 
 | Requirement | Result (worst case) | Limit | Margin | Status | Rests on (assumption / estimate) | Open items | Section |
 |---|---|---|---|---|---|---|---|

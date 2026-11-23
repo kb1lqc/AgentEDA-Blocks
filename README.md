@@ -29,7 +29,7 @@ board runs for its own instance values, a bench board, and an arranged reference
 # pcb toolchain 0.4.x: https://docs.pcb.new
 git clone https://github.com/kb1lqc/circuit-blocks.git
 # Python analyses need the library checked out next to this repo, at the version pinned in analysis/_zl.py:
-git clone --branch v0.7.0 https://github.com/kb1lqc/zener-library.git zener-library
+git clone --branch v0.8.0 https://github.com/kb1lqc/zener-library.git zener-library
 git -C circuit-blocks config core.hooksPath tools/git   # schematic sync check on commit
 ```
 
