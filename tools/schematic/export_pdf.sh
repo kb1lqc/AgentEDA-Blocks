@@ -24,7 +24,8 @@ for b in $benches; do
   if ! $kc sch export pdf -o $out $tmp/eda/$name.kicad_sch >/dev/null 2>&1; then
     echo "$b: kicad-cli export failed"; fail=1; continue
   fi
-  LC_ALL=C sed -i '' -E 's#/CreationDate \(D:[0-9:]{19}\)#/CreationDate (D:2000:01:01:00:00:00)#' $out
+  # -i.bak (then delete it) is the in-place form both BSD (macOS) and GNU (Linux, CI) sed accept; `-i ''` is BSD only.
+  LC_ALL=C sed -i.bak -E 's#/CreationDate \(D:[0-9:]{19}\)#/CreationDate (D:2000:01:01:00:00:00)#' $out && rm -f $out.bak
   dest=$b/docs/$name.pdf
   if (( check )); then
     if cmp -s $out $dest; then echo "$dest: up to date"; else echo "$dest: STALE or missing (run tools/schematic/export_pdf.sh $b)"; fail=1; fi
