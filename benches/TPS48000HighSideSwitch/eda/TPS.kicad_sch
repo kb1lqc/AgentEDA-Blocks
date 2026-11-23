@@ -9,7 +9,7 @@
 		(date "2026-11-16")
 		(rev "A")
 		(company "Bryce Salmi Consulting")
-		(comment 1 "github.com/kb1lqc/circuit-blocks @ a2583a1: blocks/TPS48000HighSideSwitch")
+		(comment 1 "github.com/kb1lqc/circuit-blocks @ d042ec5: blocks/TPS48000HighSideSwitch")
 		(comment 2 "Reference sheet: TPS48000 high-side switch, on-block shunt, latch-off, status")
 		(comment 3 "Author: Bryce Salmi")
 	)
