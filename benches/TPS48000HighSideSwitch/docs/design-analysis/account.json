@@ -2,11 +2,11 @@
   "block": "TPS48000HighSideSwitch",
   "instance": "TPS",
   "report": "benches/TPS48000HighSideSwitch/docs/design-analysis.md",
-  "library": "v0.7.0",
+  "library": "v0.8.0",
   "topology": "blocks/TPS48000HighSideSwitch/topology.toml",
   "inputs": {
     "rows": 150,
-    "human": 0
+    "human": 3
   },
   "requirements": [
     {

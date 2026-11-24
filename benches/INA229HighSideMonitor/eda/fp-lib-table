@@ -1,7 +1,7 @@
 (fp_lib_table
   (version 7)
-  (lib (name "kb1lqc_zener-library_components_Murata_GCM188@0.4.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/Murata/GCM188/0.4.0") (options "") (descr ""))
-  (lib (name "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.5.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF/0.5.0") (options "") (descr ""))
-  (lib (name "kb1lqc_zener-library_components_TexasInstruments_INA229AIDGS@0.4.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS/0.4.0") (options "") (descr ""))
-  (lib (name "kb1lqc_zener-library_components_Vishay_WSK2512@0.4.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/Vishay/WSK2512/0.4.0") (options "") (descr ""))
+  (lib (name "kb1lqc_zener-library_components_Murata_GCM188@0.5.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/Murata/GCM188/0.5.0") (options "") (descr ""))
+  (lib (name "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.6.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/Panasonic/ERJ-3EKF/0.6.0") (options "") (descr ""))
+  (lib (name "kb1lqc_zener-library_components_TexasInstruments_INA229AIDGS@0.5.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/TexasInstruments/INA229AIDGS/0.5.0") (options "") (descr ""))
+  (lib (name "kb1lqc_zener-library_components_Vishay_WSK2512@0.5.0") (type "KiCad") (uri "${KIPRJMOD}/../../../.pcb/cache/github.com/kb1lqc/zener-library/components/Vishay/WSK2512/0.5.0") (options "") (descr ""))
 )

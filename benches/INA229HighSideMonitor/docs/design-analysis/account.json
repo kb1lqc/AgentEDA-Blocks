@@ -2,11 +2,11 @@
   "block": "INA229HighSideMonitor",
   "instance": "INA",
   "report": "benches/INA229HighSideMonitor/docs/design-analysis.md",
-  "library": "v0.7.0",
+  "library": "v0.8.0",
   "topology": "blocks/INA229HighSideMonitor/topology.toml",
   "inputs": {
     "rows": 53,
-    "human": 16
+    "human": 36
   },
   "requirements": [
     {

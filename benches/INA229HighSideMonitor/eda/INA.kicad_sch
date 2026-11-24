@@ -9,7 +9,7 @@
 		(date "2026-11-17")
 		(rev "A")
 		(company "Bryce Salmi Consulting")
-		(comment 1 "github.com/kb1lqc/circuit-blocks @ a2583a1: blocks/INA229HighSideMonitor")
+		(comment 1 "github.com/kb1lqc/circuit-blocks @ d042ec5: blocks/INA229HighSideMonitor")
 		(comment 2 "Reference sheet: INA229 high-side monitor, on-block shunt, SPI, ALERT_N")
 		(comment 3 "Author: Bryce Salmi")
 	)
@@ -2064,7 +2064,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_Murata_GCM188@0.4.0:GCM188"
+		(property "Footprint" "kb1lqc_zener-library_components_Murata_GCM188@0.5.0:GCM188"
 			(at 52.07 114.3 180)
 			(hide yes)
 			(show_name no)
@@ -2158,7 +2158,7 @@
 				)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_TexasInstruments_INA229AIDGS@0.4.0:INA229AIDGS"
+		(property "Footprint" "kb1lqc_zener-library_components_TexasInstruments_INA229AIDGS@0.5.0:INA229AIDGS"
 			(at 90.17 99.06 180)
 			(hide yes)
 			(show_name no)
@@ -2276,7 +2276,7 @@
 				)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_Vishay_WSK2512@0.4.0:WSK2512"
+		(property "Footprint" "kb1lqc_zener-library_components_Vishay_WSK2512@0.5.0:WSK2512"
 			(at 76.2 38.1 0)
 			(hide yes)
 			(show_name no)
@@ -2378,7 +2378,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.5.0:ERJ-3EKF"
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.6.0:ERJ-3EKF"
 			(at 193.04 140.97 0)
 			(hide yes)
 			(show_name no)
@@ -2473,7 +2473,7 @@
 				)
 			)
 		)
-		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.5.0:ERJ-3EKF"
+		(property "Footprint" "kb1lqc_zener-library_components_Panasonic_ERJ-3EKF@0.6.0:ERJ-3EKF"
 			(at 138.43 101.6 0)
 			(hide yes)
 			(show_name no)
